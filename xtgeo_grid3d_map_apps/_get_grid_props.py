@@ -24,8 +24,6 @@ format = xtg.loggingformat
 logging.basicConfig(format=format, stream=sys.stdout)
 logging.getLogger().setLevel(xtg.logginglevel)
 
-print(xtg.logginglevel)
-
 logger = logging.getLogger(__name__)
 
 

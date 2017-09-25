@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""Script to make HC thickness maps directly from 3D grids.
-
-A typical scnario is to HC thcikness maps directly from Eclipse
-(or eventually other similators)
-
-"""
-
 from __future__ import division, print_function, absolute_import
 
 import argparse
@@ -31,9 +24,7 @@ format = xtg.loggingformat
 logging.basicConfig(format=format, stream=sys.stdout)
 logging.getLogger().setLevel(xtg.logginglevel)
 
-print(xtg.logginglevel)
-
-logger = logging.getLogger('__main__')
+logger = logging.getLogger(__name__)
 
 # -----------------------------------------------------------------------------
 # Parse command line

@@ -20,13 +20,13 @@ from . import _get_zonation_filters
 from . import _compute_hcpfz
 from . import _plotmap
 
-# from . import _version
+from . import _version
 
 appname = 'grid3d_hc_thickness'
 
 appdescr = 'Make HC thickness maps directly from 3D grids'
 
-__version__ = '0.0.1'  # _version.get_versions()['version']
+__version__ = _version.get_versions()['version']
 
 xtg = XTGeoDialog()
 

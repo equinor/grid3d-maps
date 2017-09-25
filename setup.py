@@ -30,15 +30,15 @@ setup(
     name='xtgeo_grid3d_map_apps',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Make HC thickness directly from Eclipse results",
+    description="Make HC thickness, avg maps, etc directly from 3D grids and props",
     long_description=readme + '\n\n' + history,
     author="Jan C. Rivenaes",
     author_email='jriv@statoil.com',
-    url='https://git.statoil.no/jriv/xtgeo_grid3d_map_apps',
+    url='https://git.statoil.no/xtgeo/xtgeo_grid3d_map_apps',
     packages=find_packages(include=['xtgeo_grid3d_map_apps']),
     entry_points={
         'console_scripts': [
-            'xtgeo_grid3d_map_apps=xtgeo_grid3d_map_apps.xtgeo_grid3d_map_apps:main'
+            'grid3d_hc_thickness=xtgeo_grid3d_map_apps.grid3d_hc_thickness:main'
         ]
     },
 

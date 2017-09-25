@@ -3,13 +3,8 @@
 from __future__ import division, print_function, absolute_import
 
 import sys
-import os.path
-import pprint
-from collections import defaultdict
-from collections import OrderedDict
 import logging
 import numpy as np
-import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
@@ -24,8 +19,6 @@ format = xtg.loggingformat
 
 logging.basicConfig(format=format, stream=sys.stdout)
 logging.getLogger().setLevel(xtg.logginglevel)
-
-print(xtg.logginglevel)
 
 logger = logging.getLogger(__name__)
 
