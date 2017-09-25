@@ -1,0 +1,57 @@
+#
+# New spec proposal!!!!!!!!!!!!!!!!!!
+#
+title: Gullfaks
+#
+# Reading a mix of ROFF data, example
+#
+# one of the input must be "grid" which is thye geometry. For the others
+# use the parameter name as-is defined
+input:
+  eclroot: ../xtgeo-testdata/3dgrids/gfb/GULLFAKS_R003B-0
+  grid: $eclroot.EGRID
+  properties:
+    PORO: $eclroot.INIT
+    # pressure from restart, need to specify date; shall be ignored if date is wrong
+    PRESSURE--20000702: $eclroot.UNRST
+    # a pressure difference
+    PRESSURE--20000701_19960701: $eclroot.UNRST
+
+computesettings:
+  zone: Yes
+  all: No
+  truncate_le: 0.05
+  # a number of named filters are possible
+  filters:
+    swfilter:
+      type: continuous
+      file: ../../testdata/Zone/gullfaks2_sw.roff
+      name: SW
+      use: [0.0, 0.4]  # use a range for Sw
+    facfilter:
+      type: discrete
+      file: ../../testdata/Zone/gullfaks2_facies.roff
+      name: FACIES
+      use: [1, 3, 7]  # use selected facies
+
+zonation:
+  zranges:
+    - Upper: [1, 3]
+    - Middle: [4, 8]
+
+
+# map definition
+mapsettings:
+  xori: 451000.0
+  xinc: 100.0
+  yori: 6779000.0
+  yinc: 100.0
+  ncol: 120
+  nrow: 130
+
+
+# these are root names; automatic extensions will be _<propname>.png
+# and _<propname>.gri
+output:
+  mapfolder: TMP
+  plotfolder: TMP

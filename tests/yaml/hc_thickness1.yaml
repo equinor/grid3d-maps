@@ -1,0 +1,37 @@
+title: Grane
+
+
+# just give rootname in case of "eclipserun" model
+# input is what to be made maps of
+input:
+  eclroot: ../xtgeo-testdata/3dgrids/gra/ECLIPSE
+  dates:
+    - 20050816
+    - 20050816--19930101  # difference map
+
+zonation:
+  zranges:
+    - LowerHeimdal_1: [1, 5]
+    - LowerHeimdal_2: [6, 9]
+
+computesettings:
+  # choose oil, gas or both
+  mode: oil
+  critmode: No
+  shc_interval: [0.1, 1]          # saturation interv
+  method: use_poro
+  zone: Yes
+  all: No
+
+# map definition
+mapsettings:
+  xori: 467510
+  xinc: 25.0
+  yori: 6552965
+  yinc: 25.0
+  ncol: 400
+  nrow: 600
+
+output:
+  mapfolder: TMP
+  plotfolder: TMP
