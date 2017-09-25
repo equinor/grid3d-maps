@@ -1,0 +1,4 @@
+zranges:
+  - Heimdal1: [1, 5]
+  - Heimdal2: [6, 9]
+  - Heimdal3: [10, 12]

@@ -188,8 +188,8 @@ def yconfig_set_defaults(config, appname):
     if 'zname' not in newconfig['zonation']:
         newconfig['zonation']['zname'] = 'all'
 
-    if 'file' not in newconfig['zonation']:
-        newconfig['zonation']['file'] = None
+    if 'yamlfile' not in newconfig['zonation']:
+        newconfig['zonation']['yamlfile'] = None
 
     if appname == 'grid3d_hc_thickness':
 
@@ -217,5 +217,20 @@ def yconfig_set_defaults(config, appname):
     pp = pprint.PrettyPrinter(indent=4)
     out = pp.pformat(newconfig)
     logger.debug('After setting defaults: \n{}'.format(out))
+
+    return newconfig
+
+
+def yconfig_addons(config, appname):
+    """Addons e.g. YAML import spesified in the top config."""
+
+    newconfig = copy.deepcopy(config)
+
+    if config['zonation']['yamlfile'] is not None:
+
+        # re-use yconfig:
+        zconfig = yconfig(config['zonation']['yamlfile'])
+        if 'zranges' in zconfig:
+            newconfig['zonation']['zranges'] = zconfig['zranges']
 
     return newconfig

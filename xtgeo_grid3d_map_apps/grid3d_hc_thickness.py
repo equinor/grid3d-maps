@@ -64,6 +64,9 @@ def yamlconfig(inputfile, args):
 
     config = _configparser.yconfig_set_defaults(config, appname)
 
+    # in case of YAML input (e.g. zonation from file)
+    config = _configparser.yconfig_addons(config, appname)
+
     return config
 
 
