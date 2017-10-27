@@ -52,6 +52,8 @@ PIP := pip${PSHORT}
 
 TARGET := ${SDP_BINDIST_ROOT}/lib/python${PYTHON_SHORT}/site-packages
 
+BININSTALL := /project/res/x86_64_RH_6/bin
+
 MY_BINDIST ?= $HOME
 
 USRPYPATH := ${MY_BINDIST}/lib/python${PYVER}/site-packages
@@ -129,6 +131,7 @@ dist: clean  ## builds wheel package
 install: dist ## version to VENV install place
 	@echo "Running ${PIP} (${PYTHON_VERSION}) ..."
 	@${PIP} install --upgrade ./dist/*
+	@rsync -av --delete bin/grid3d* ${VIRTUAL_ENV}/bin/.
 
 
 siteinstall: dist ## Install in project/res (Trondheim) using $TARGET
@@ -137,12 +140,14 @@ siteinstall: dist ## Install in project/res (Trondheim) using $TARGET
 	\rm -fr  ${TARGET}/${APPLICATION}-*
 	@${PIP} install --target ${TARGET} --upgrade  ./dist/${APPLICATION}*.whl
 	/project/res/bin/res_perm ${TARGET}/${APPLICATION}*
-
+	@rsync -av --delete bin/grid3d* ${BININSTALL}/.
+	/project/res/bin/res_perm ${BININSTALL}/grid3d_*
 
 userinstall: dist ## Install on user directory (need a MY_BINDIST env variable)
 	@\rm -fr  ${USRPYPATH}/${APPLICATION}
 	@\rm -fr  ${USRPYPATH}/${APPLICATION}-*
 	@${PIP} install --target ${USRPYPATH} --upgrade  ./dist/*.whl
+	@rsync -av --delete bin/grid3d* ${MYBINDIST}/bin/.
 
 
 docsinstall: docsrun
