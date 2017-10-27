@@ -3,24 +3,13 @@
 from __future__ import division, print_function, absolute_import
 
 import sys
-import os.path
-import pprint
-from collections import defaultdict
 from collections import OrderedDict
 import logging
 import numpy as np
-import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
-from xtgeo.grid3d import Grid
-from xtgeo.grid3d import GridProperties
 
 xtg = XTGeoDialog()
-
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
 format = xtg.loggingformat
 
 logging.basicConfig(format=format, stream=sys.stdout)
@@ -30,9 +19,21 @@ logger = logging.getLogger(__name__)
 
 
 def zonation(config, dz):
-    """Get the zonation, by either a file or a config spec"""
+    """Get the zonations, by either a file (TODO) or a config spec
 
-    zonation = np.zeros((dz.shape), dtype=np.int32) + 999
+    The super zonation is a collection of zones, whcih do not need to be
+    in sequence.
+
+    Args:
+        The config dict, the dz property object (just as a proxy)
+
+    Returns:
+        zonation (np): zonation, 3D numpy
+        zoned (dict): Zonation dictionary (name: zone number)
+        superzoned (dict): Super zonation dictionary (name: [zone range])
+    """
+
+    zonation = np.zeros((dz.shape), dtype=np.int32, order='F')
 
     # make azonation dictionary on the form
     # 'Tarbert: [1, 1]  # CHECK! note, inclusive?
@@ -40,6 +41,7 @@ def zonation(config, dz):
     # 'all': [1, 17]
 
     zoned = OrderedDict()
+    superzoned = OrderedDict()
 
     if 'zranges' in config['zonation']:
         for i, zz in enumerate(config['zonation']['zranges']):
@@ -51,27 +53,36 @@ def zonation(config, dz):
             logger.info('K01 K02: {} - {}'.format(k01, k02))
 
             zonation[:, :, k01: k02] = i + 1
-            zoned[zname] = [i + 1, i + 1]
-            zoned['all'] = [1, i + 1]
+            zoned[zname] = i + 1
 
-    else:
-        zoned['all'] = [1, dz.shape[2]]
-        zonation[:, :, :] = 1
+    if 'superranges' in config['zonation']:
+        logger.info('Found superranges keyword...')
+        for i, zz in enumerate(config['zonation']['superranges']):
+            zname = zz.keys()[0]
+            superzoned[zname] = []
+            intv = zz.values()[0]
+            logger.debug('Superzone spec no {}: {}  {}'
+                         .format(i + 1, zname, intv))
+            for zn in intv:
+                superzoned[zname].append(zoned[zn])
 
     for myz, val in zoned.items():
         logger.info('Zonation list: {}: {}'.format(myz, val))
 
-    logger.debug('Zonation matrix: {}\n'.format(zonation))
+    logger.debug('Zonation in cell 1, 1, kmin:kmax: {}'
+                 .format(zonation[0, 0, :]))
 
-    try:
-        zoned.move_to_end('all')
-    except KeyError:
-        pass
-    except AttributeError:
-        pass
+    for key, vals in superzoned.items():
+        logger.debug('Superzoned {}  {}'.format(key, vals))
 
     logger.info('The zoned dict: {}'.format(zoned))
+    logger.info('The superzoned dict: {}'.format(superzoned))
 
-    print(zonation[20, 20, 0:12])
+    zmerged = zoned.copy()
+    zmerged.update(superzoned)
 
-    return zonation, zoned
+    zmerged['all'] = None
+
+    logger.info('The merged dict: {}'.format(zmerged))
+
+    return zonation, zmerged

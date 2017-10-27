@@ -2,7 +2,6 @@ import os
 import sys
 import logging
 
-from xtgeo.surface import RegularSurface
 from xtgeo.common import XTGeoDialog
 
 import xtgeo_grid3d_map_apps.grid3d_hc_thickness as xx
@@ -16,24 +15,18 @@ except OSError:
     if not os.path.isdir(path):
         raise
 
+logging.basicConfig(format=xtg.loggingformat, stream=sys.stdout)
+logging.getLogger().setLevel(xtg.logginglevel)
+
+logger = logging.getLogger(__name__)
+
 # =============================================================================
 # Do tests
 # =============================================================================
 
 
-def getlogger(name):
-
-    format = xtg.loggingformat
-
-    logging.basicConfig(format=format, stream=sys.stdout)
-    logging.getLogger().setLevel(xtg.logginglevel)  # root logger!
-
-    return logging.getLogger(name)
-
-
 def test_hc_thickness1():
-    logger = getlogger('test_hc_thickness1')
-
+    """Test HC thickness with YAML config example 1"""
     xx.main(['--config', 'tests/yaml/hc_thickness1.yaml'])
 
     # now read in result and check avg value
@@ -41,3 +34,8 @@ def test_hc_thickness1():
     # avg = float("{:4.3f}".format(float(x.values.mean())))
     # logger.info("AVG is " + str(avg))
     # assert avg == 3.649
+
+
+def test_hc_thickness2():
+    """HC thickness with YAML config example 2; zonation in own YAML file"""
+    xx.main(['--config', 'tests/yaml/hc_thickness2.yaml'])

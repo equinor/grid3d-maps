@@ -36,6 +36,10 @@ def get_hcpfz(config, initd, restartd, dates):
 
     shcintv = config['computesettings']['shc_interval']
 
+    if not dates:
+        xtg.error('Dates er missing. Bug?')
+        raise RuntimeError('Dates er missing. Bug?')
+
     for date in dates:
 
         usehc = restartd['s' + config['computesettings']['mode'] + '_' +
@@ -65,6 +69,9 @@ def get_hcpfz(config, initd, restartd, dates):
         logger.info('HCPFZ maximum is {}'.format(hcpfzd[date].max()))
         logger.debug('HCPFZ REPR is {}'.format(repr(hcpfzd[date])))
 
+    for key, val in hcpfzd.items():
+        logger.info(key, type(val))
+
     # An important issue here is that one may ask for difference dates,
     # not just dates. Hence need to iterate over the dates in the input
     # config and select the right one, and delete those that are not
@@ -76,9 +83,10 @@ def get_hcpfz(config, initd, restartd, dates):
 
     for cdate in cdates:
         cdate = str(cdate)
-        if '--' in cdate:
-            d1 = cdate.split('--')[0]
-            d2 = cdate.split('--')[1]
+        print('DDDD', cdate)
+        if '-' in cdate:
+            d1 = str(cdate.split('-')[0])
+            d2 = str(cdate.split('-')[1])
             hcpfzd[cdate] = hcpfzd[d1] - hcpfzd[d2]
 
     alldates = hcpfzd.keys()

@@ -1,9 +1,26 @@
-xt.PHONY: clean clean-test clean-pyc clean-build docs help
+# =============================================================================
+# Inherit values from ENV _or_ command line or use defaults for:
+# $PYTHON_VERSION e.g. 2.7.13 (use current unless given)
+# $PYTHON_SHORT e.g. 2.7 (optional)
+# $PYTHON_VSHORT e.g. 2  (optional)
+#
+# e.g.
+# > make install PYTHON_SHORT=2.7 PYTHON_VERSIONS=2.7.13
+#
+# or
+# > setenv PYTHON_SHORT 2.7; setenv PYTHON_SHORT 2.7;
+# > make install
+#
+# $TARGET may also be applied explicitly for e.g. install at /project/res
+# > setenv RESTARGET ${SDP_BINDIST_ROOT}/lib/python${PYTHON_SHORT}/site-packages
+# > make siteinstall TARGET=$RESTARGET
+# =============================================================================
+
+xt.PHONY: clean clean-test clean-pyc clean-build docs help pyver
 .DEFAULT_GOAL := help
 
 define PRINT_HELP_PYSCRIPT
 import re, sys
-
 for line in sys.stdin:
 	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
 	if match:
@@ -12,24 +29,38 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
-APPLICATION := xtgeo_grid3d_map_apps
 
-# JRIV override browser
+APPLICATION := xtgeo_grid3d_map_apps
+DOCSINSTALL := /project/sdpdocs/XTGeo/apps
+
+
 BROWSER := firefox
 
-PYVER := $(shell python -c "import sys; print('{0[0]}.{0[1]}'.format(sys.version_info))")
+PYTHON_VERSION ?= $(shell python -c "import sys; print('{0[0]}.{0[1]}.{0[2]}'.format(sys.version_info))")
+PYTHON_SHORT ?= `echo ${PYTHON_VERSION} | cut -d. -f1,2`
+PYTHON_VSHORT ?= `echo ${PYTHON_VERSION} | cut -d. -f1`
 
-RESPYPATH := ${SDP_BINDIST_ROOT}
-RESPYPATHFULL := ${RESPYPATH}/lib/python${PYVER}/site-packages
+# Active python my be e.g. 'python3.4' or 'python3' (depends...)
+ifeq (, python${PYTHON_SHORT})
+PSHORT := ${PYTHON_SHORT}
+else
+PSHORT := ${PYTHON_VSHORT}
+endif
+PYTHON := python${PSHORT}
+PIP := pip${PSHORT}
+
+
+TARGET := ${SDP_BINDIST_ROOT}/lib/python${PYTHON_SHORT}/site-packages
+
+MY_BINDIST ?= $HOME
 
 USRPYPATH := ${MY_BINDIST}/lib/python${PYVER}/site-packages
-
-DOCINSTALL := /project/sdpdocs/Users/jriv/apps
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+
+clean: clean-build clean-pyc clean-test ## remove all build, test, coverage...
 
 
 clean-build: ## remove build artifacts
@@ -37,7 +68,8 @@ clean-build: ## remove build artifacts
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
+	find . -name '*.egg' -exec rm -fr {} +
+
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
@@ -52,14 +84,18 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr TMP/
 
+
 lint: ## check style with flake8
 	flake8 ${APPLICATION} tests
 
-test: ## run tests quickly with the default Python
-	py.test
 
-test-all: ## run tests on every Python version with tox
+test:  ## run tests quickly with the default Python
+	@${PYTHON} setup.py test
+
+
+test-all: ## run tests on every Python version with tox (not active)
 	tox
+
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source ${APPLICATION} -m pytest
@@ -67,40 +103,48 @@ coverage: ## check code coverage quickly with the default Python
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
-docs: clean ## generate Sphinx HTML documentation, including API docs
+
+docsrun: clean ## generate Sphinx HTML documentation, including API docs
+	rm -f docs/${APPLICATION}.rst
+	rm -f docs/modules.rst
+	rm -fr docs/_build
+	sphinx-apidoc -o docs/ ${APPLICATION}
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
+
+
+docs: docsrun ## generate and display Sphinx HTML documentation...
 	$(BROWSER) docs/_build/html/index.html
+
 
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
 
-oldinstall: clean ## install the package to the active Python's site-packages
-	python setup.py install
+dist: clean  ## builds wheel package
+	@echo "Running ${PYTHON} (${PYTHON_VERSION}) bdist_wheel..."
+	@${PYTHON} setup.py bdist_wheel
 
-install: dist ## jriv version to VENV install place
-#	pip uninstall --yes ${APPLICATION}
-	pip install --upgrade ./dist/*
 
-resinstall: dist ## Install in project/res (Trondheim)
-	echo $(HOST)
-	\rm -fr  ${RESPYPATHFULL}/${APPLICATION}*
-	pip install --target ${RESPYPATHFULL} --upgrade  ./dist/*.whl
-	chmod 2775 `find ${RESPYPATHFULL}/${APPLICATION}* -type d`
-	chmod 0664 `find ${RESPYPATHFULL}/${APPLICATION}* -type f`
-#	chmod 0775 `find ${RESPYPATHFULL}/${APPLICATION}* -type f | grep '.so'`
+install: dist ## version to VENV install place
+	@echo "Running ${PIP} (${PYTHON_VERSION}) ..."
+	@${PIP} install --upgrade ./dist/*
+
+
+siteinstall: dist ## Install in project/res (Trondheim) using $TARGET
+	@echo $(HOST)
+	\rm -fr  ${TARGET}/${APPLICATION}
+	\rm -fr  ${TARGET}/${APPLICATION}-*
+	@${PIP} install --target ${TARGET} --upgrade  ./dist/${APPLICATION}*.whl
+	/project/res/bin/res_perm ${TARGET}/${APPLICATION}*
 
 
 userinstall: dist ## Install on user directory (need a MY_BINDIST env variable)
-	\rm -fr  ${USRPYPATH}/${APPLICATION}*
-	pip install --target ${USRPYPATH} --upgrade  ./dist/*.whl
-#	rsync -v -L --chmod=a+rx bin/* ${MY_BINDIST}/bin/.
+	@\rm -fr  ${USRPYPATH}/${APPLICATION}
+	@\rm -fr  ${USRPYPATH}/${APPLICATION}-*
+	@${PIP} install --target ${USRPYPATH} --upgrade  ./dist/*.whl
 
-docinstall:
-	rsync -av --delete --chmod=Dg+s,Do+rx,ug+rw,Fo-w,Fo+r docs/_build/html ${DOCINSTALL}/${APPLICATION}
-	chmod a+rwx ${DOCINSTALL}/${APPLICATION}
+
+docsinstall: docsrun
+	rsync -av --delete docs/_build/html ${DOCSINSTALL}/${APPLICATION}
+	/project/res/bin/res_perm ${DOCSINSTALL}/${APPLICATION}

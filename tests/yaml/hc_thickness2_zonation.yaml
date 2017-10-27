@@ -1,4 +1,6 @@
 zranges:
-  - Heimdal1: [1, 5]
-  - Heimdal2: [6, 9]
-  - Heimdal3: [10, 12]
+  - Z1: [1, 5]
+  - Z2: [6, 10]
+  - Z3: [11, 14]
+superranges:
+  - Z1+3: [Z1, Z3]

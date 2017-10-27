@@ -27,6 +27,29 @@ logging.getLogger().setLevel(xtg.logginglevel)
 logger = logging.getLogger(__name__)
 
 # -----------------------------------------------------------------------------
+# For !include directive (tip from virantha.com)
+# -----------------------------------------------------------------------------
+
+
+def yaml_include(loader, node):
+    """To use !include in the YAML file.
+
+    Example::
+
+        - foo: 123
+        bar: !include otherfile.yaml
+        - baz: 456
+
+    """
+    # Get the path out of the yaml file
+    file_name = os.path.join(os.path.dirname(loader.name), node.value)
+
+    with file(file_name) as inputfile:
+        return yaml.load(inputfile)
+
+    yaml.add_constructor('!include', yaml_include)
+
+# -----------------------------------------------------------------------------
 # Parse command line
 # -----------------------------------------------------------------------------
 
@@ -134,6 +157,8 @@ def yconfig(inputfile):
     out = pp.pformat(config)
     logger.debug('\n{}'.format(out))
 
+    print(config)
+
     return config
 
 
@@ -176,6 +201,9 @@ def yconfig_set_defaults(config, appname):
     if 'plotfile' not in newconfig['output']:
         newconfig['output']['plotfile'] = None
 
+    if 'plotsettings' not in newconfig:
+        newconfig['plotsettings'] = dict()
+
     if 'mapfolder' not in newconfig['output']:
         newconfig['output']['mapfolder'] = '/tmp'
 
@@ -213,6 +241,14 @@ def yconfig_set_defaults(config, appname):
 
         if 'all' not in newconfig['computesettings']:
             newconfig['computesettings']['all'] = True
+
+    # treat dates as strings, not ints
+    if 'dates' in config['input']:
+        dlist = []
+        for date in config['input']['dates']:
+            dlist.append(str(date))
+
+        newconfig['input']['dates'] = dlist
 
     pp = pprint.PrettyPrinter(indent=4)
     out = pp.pformat(newconfig)

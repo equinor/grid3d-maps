@@ -1,8 +1,0 @@
-============================= test session starts ==============================
-platform linux2 -- Python 2.7.13, pytest-3.2.1, py-1.4.34, pluggy-0.4.0
-rootdir: /private/jriv/work/git/xtgeo-grid3d-map-apps, inifile:
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-to show a full traceback on KeyboardInterrupt use --fulltrace
-/prog/sdpsoft/python2.7.13/lib/python2.7/site-packages/matplotlib/_color_data.py:1: KeyboardInterrupt
-========================= no tests ran in 0.75 seconds =========================

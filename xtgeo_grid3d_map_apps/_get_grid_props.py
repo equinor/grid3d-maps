@@ -53,15 +53,16 @@ def files_to_import(config, appname):
         restartlist['SWAT'] = eclroot + '.UNRST'
         restartlist['SGAS'] = eclroot + '.UNRST'
 
-        for idate in config['input']['dates']:
-            date = str(idate)
+        for date in config['input']['dates']:
+            print("DATE", date)
             if len(date) == 8:
                 dates.append(date)
-            elif len(date) == 18:
-                dates.append(date.split('--')[0])
-                dates.append(date.split('--')[1])
+            elif len(date) > 12:
+                dates.append(date.split('-')[0])
+                dates.append(date.split('-')[1])
 
     dates = list(sorted(set(dates)))  # to get a list with unique dates
+
     ppinit = pprint.PrettyPrinter(indent=4)
     pprestart = pprint.PrettyPrinter(indent=4)
     ppdates = pprint.PrettyPrinter(indent=4)
@@ -119,16 +120,20 @@ def import_data(config, appname, gfile, initlist,
         try:
             tmp.from_file(restfile, names=restprops,
                           fformat='unrst', grid=grd, dates=dates)
-            restobjects.append(tmp)
 
         except RuntimeWarning as rwarn:
             xtg.warn(rwarn)
+            restobjects.append(tmp)
+        except:
+            sys.exit(22)
+        else:
+            restobjects.append(tmp)
 
     newdateslist = []
     for rest in restobjects:
-        newdateslist = newdateslist + rest.dates
+        newdateslist += rest.dates
 
-    logger.debug('\n{}'.format(newdateslist))
+    logger.debug('Actual dates to use: {}'.format(newdateslist))
 
     return grd, initobjects, restobjects, newdateslist
 
@@ -189,20 +194,27 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
 
     for date in dates:
         for props in restobjects:
+            nsoil = 0
             pname = 'SWAT' + '_' + str(date)
             if pname in props.names:
                 swat[date] = props.get_prop_by_name(pname).values3d
+                nsoil += 1
 
             pname = 'SGAS' + '_' + str(date)
             if pname in props.names:
                 sgas[date] = props.get_prop_by_name(pname).values3d
+                nsoil += 1
 
-            if swat[date].any() and sgas[date].any():
+            if nsoil == 2:
                 soil[date] = ma.ones(sgas[date].shape, dtype=sgas[date].dtype)
                 soil[date] = soil[date] - swat[date] - sgas[date]
 
                 if crname is not None:
                     soil[date] = soil[date] - soxcr
+
+        logger.debug('Date is {} and  SWAT is {}'.format(date, swat))
+        logger.debug('Date is {} and  SGAS is {}'.format(date, sgas))
+        logger.debug('Date is {} and  SOIL is {}'.format(date, soil))
 
         # numpy operations on the saturations
         for anp in [soil[date], sgas[date]]:
@@ -215,11 +227,11 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
         restartd['soil_' + str(date)] = soil[date]
 
     for key in initd:
-        logger.debug('INITS: Key and object {} {}'.
-                     format(key, type(initd[key])))
+        logger.debug('INITS: Key and object {} {}'
+                     .format(key, type(initd[key])))
 
     for key in restartd:
-        logger.debug('RESTARTS: Key and object {} {}'.
-                     format(key, type(restartd[key])))
+        logger.debug('RESTARTS: Key and object {} {}'
+                     .format(key, type(restartd[key])))
 
     return initd, restartd

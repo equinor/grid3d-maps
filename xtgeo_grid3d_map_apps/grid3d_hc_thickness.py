@@ -60,6 +60,7 @@ def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
 
+    # override with command line args
     config = _configparser.yconfig_override(config, args, appname)
 
     config = _configparser.yconfig_set_defaults(config, appname)
@@ -71,7 +72,7 @@ def yamlconfig(inputfile, args):
 
 
 def get_grid_props_data(config, appname):
-    """Get the relevant Grid and props data."""
+    """Collect the relevant Grid and props data (but not do the import)."""
 
     gfile, initlist, restartlist, dates = (
         _get_grid_props.files_to_import(config, appname))
@@ -99,13 +100,13 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     grd, initobjects, restobjects, dates = (
         _get_grid_props.import_data(config, appname, gfile, initlist,
                                     restartlist, dates))
-
     # get the numpies
     initd, restartd = (
         _get_grid_props.get_numpies_hc_thickness(config, grd, initobjects,
                                                  restobjects, dates))
 
     # returns also dates since dates list may be updated after import
+
     return initd, restartd, dates
 
 
@@ -135,16 +136,6 @@ def compute_hcpfz(config, initd, restartd, dates):
     hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates)
 
     return hcpfzd
-
-
-def formatnames(config, zname, date1, date2=None, option=None):
-    """Format the names of the output to the form:
-
-        zname--oilthickness--2011_01_01.*
-        zname--oilthickness_diff--2011_01_01-2007_01_01.*
-
-    The last is option which may have 'diff'
-    """
 
 
 def plotmap(config, initd, hcpfzd, zonation, zoned):
@@ -183,7 +174,8 @@ def main(args=None):
 
     # Get the zonations
     xtg.say('Get zonation info')
-    zonation, zoned = get_zranges(config, initd['dz'])
+    dzp = initd['dz']
+    zonation, zoned = get_zranges(config, dzp)
 
     xtg.say('Compute HCPFZ property')
     hcpfzd = compute_hcpfz(config, initd, restartd, dates)

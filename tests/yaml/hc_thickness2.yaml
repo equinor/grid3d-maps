@@ -1,13 +1,14 @@
 title: Grane
-
+# Case with a) includefile and b) plotsettings
 
 # just give rootname in case of "eclipserun" model
 # input is what to be made maps of
+
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/gra/ECLIPSE
+  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
   dates:
-    - 20050816
-    - 20050816--19930101  # difference map
+    - 19991201
+    - 20010801-19991201
 
 # zonation from file on YAML format
 zonation:
@@ -17,19 +18,41 @@ computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.001, 1]          # saturation interv
+  shc_interval: [0.001, 1]   # saturation interval
   method: use_poro
   zone: Yes
   all: No
 
-# map definition
+# map definition (not rotated maps only)
 mapsettings:
-  xori: 467510
-  xinc: 50.0
-  yori: 6552965
-  yinc: 50.0
+  xori: 458300
+  xinc: 50
+  yori: 5928800
+  yinc: 50
   ncol: 200
-  nrow: 300
+  nrow: 200
+
+# The plotsettings is optional and only for the PNG/SVG plots,
+# but setting the range etc is quite useful. The settings is
+# hieractical, which means that a general level setting will be
+# overridden by a more spesific setting, e.g. see below
+plotsettings:
+  valuerange: [0, 10]     # value range min/max (values above below
+                          # will be truncated in plot!)
+  diffvaluerange: [-3, 2]     # value range min/max for date diffs
+
+  xlabelrotation: 25      # Rotate the X axis labels (if they may overlap)
+
+  colortable: rainbow     # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
+                          # OR from RMS colour file
+
+  # individual settings will override general plot settings!
+  Z1:
+    valuerange: [0, 8]
+    colortable: gnuplot2
+
+  Z2:
+    valuerange: [0, 5]
 
 output:
   mapfolder: TMP
