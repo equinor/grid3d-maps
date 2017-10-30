@@ -54,7 +54,7 @@ def files_to_import(config, appname):
         restartlist['SGAS'] = eclroot + '.UNRST'
 
         for date in config['input']['dates']:
-            print("DATE", date)
+            logger.debug('DATE {}'.format(date))
             if len(date) == 8:
                 dates.append(date)
             elif len(date) > 12:

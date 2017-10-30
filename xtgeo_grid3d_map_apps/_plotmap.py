@@ -26,6 +26,33 @@ logging.getLogger().setLevel(xtg.logginglevel)
 logger = logging.getLogger(__name__)
 
 
+def check_mapsettings(config, grd):
+    """Check if given map settings looks sane compared with actual grid
+
+    It returns a 'pscore' which is a measure of problems. Everything
+    greater than 0 is a problem, and > 0 is critical
+    """
+
+    ggeom = grd.get_geometrics(return_dict=True, cellcenter=False)
+
+    # Compute the geometrics values from the mapsettings:
+    cfmp = config['mapsettings']
+    xmin = cfmp['xori']  # since unrotated map
+    xmax = xmin + (cfmp['ncol'] - 1) * cfmp['xinc']
+    ymin = cfmp['yori']  # since unrotated map
+    ymax = ymin + (cfmp['nrow'] - 1) * cfmp['yinc']
+
+    # problems score pscore is 0 if all is OK
+    pscore = 0
+    if xmax < ggeom['xmin'] or xmin > ggeom['xmax']:
+        pscore += 10
+
+    if ymax < ggeom['ymin'] or ymin > ggeom['ymax']:
+        pscore += 10
+
+    return pscore
+
+
 def do_mapping(config, initd, hcpfzd, zonation, zoned):
     """Do the actual map gridding, for zones and groups of zones"""
 
@@ -67,7 +94,7 @@ def do_mapping(config, initd, hcpfzd, zonation, zoned):
         mapd = dict()
 
         for date, hcpfz in hcpfzd.items():
-            xtg.say('Mapping <{}> for date <{}> ...'.format(zname, date))
+            logger.info('Mapping <{}> for date <{}> ...'.format(zname, date))
 
             ncol = config['mapsettings'].get('ncol')
             nrow = config['mapsettings'].get('nrow')
@@ -90,6 +117,7 @@ def do_mapping(config, initd, hcpfzd, zonation, zoned):
                                            layer_minmax=layerlist)
 
             filename = _filesettings(config, zname, date)
+            xtg.say('Map file to {}'.format(filename))
             xmap.to_file(filename)
 
             mapd[date] = xmap
@@ -138,13 +166,14 @@ def _filesettings(config, zname, date, mode='map'):
     zname = zname.lower()
     phase = config['computesettings']['mode']
 
-    xfilename = (config['output']['mapfolder'] + '/' + zname + delim +
-                 phase + 'thickness' + delim + str(date) + '.gri')
+    path = config['output']['mapfolder'] + '/'
+    xfil = zname + delim + phase + 'thickness' + delim + str(date) + '.gri'
 
     if mode == 'plot':
-        xfilename = xfilename.replace('gri', 'png')
+        path = config['output']['plotfolder'] + '/'
+        xfil = xfil.replace('gri', 'png')
 
-    return xfilename
+    return path + xfil
 
 
 def _plotsettings(config, zname, date):

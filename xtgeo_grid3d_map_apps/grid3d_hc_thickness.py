@@ -107,7 +107,7 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
 
     # returns also dates since dates list may be updated after import
 
-    return initd, restartd, dates
+    return grd, initd, restartd, dates
 
 
 def get_zranges(config, dz):
@@ -138,7 +138,16 @@ def compute_hcpfz(config, initd, restartd, dates):
     return hcpfzd
 
 
-def plotmap(config, initd, hcpfzd, zonation, zoned):
+def plotmap(config, grd, initd, hcpfzd, zonation, zoned):
+    """Do checks, mapping and plotting"""
+
+    # check if values looks OK. Status flag:
+    # 0: Seems
+    xtg.say('Check map settings vs grid...')
+    status = _plotmap.check_mapsettings(config, grd)
+
+    if status >= 10:
+        xtg.critical('STOP! The mapsettings defined is outside the 3D grid!')
 
     mapzd = _plotmap.do_mapping(config, initd, hcpfzd, zonation, zoned)
 
@@ -169,7 +178,7 @@ def main(args=None):
 
     # import data from files and return releavnt numpies
     xtg.say('Import files...')
-    initd, restartd, dates = (
+    grd, initd, restartd, dates = (
         import_pdata(config, appname, gfile, initlist, restartlist, dates))
 
     # Get the zonations
@@ -181,7 +190,7 @@ def main(args=None):
     hcpfzd = compute_hcpfz(config, initd, restartd, dates)
 
     xtg.say('Do mapping...')
-    plotmap(config, initd, hcpfzd, zonation, zoned)
+    plotmap(config, grd, initd, hcpfzd, zonation, zoned)
 
 
 if __name__ == '__main__':

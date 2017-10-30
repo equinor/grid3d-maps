@@ -3,17 +3,10 @@
 from __future__ import division, print_function, absolute_import
 
 import sys
-import os.path
 import pprint
-from collections import defaultdict
-from collections import OrderedDict
 import logging
-import numpy as np
-import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
-from xtgeo.grid3d import Grid
-from xtgeo.grid3d import GridProperties
 
 xtg = XTGeoDialog()
 
@@ -70,7 +63,7 @@ def get_hcpfz(config, initd, restartd, dates):
         logger.debug('HCPFZ REPR is {}'.format(repr(hcpfzd[date])))
 
     for key, val in hcpfzd.items():
-        logger.info(key, type(val))
+        logger.info('{}   {}'.format(key, type(val)))
 
     # An important issue here is that one may ask for difference dates,
     # not just dates. Hence need to iterate over the dates in the input
@@ -83,7 +76,7 @@ def get_hcpfz(config, initd, restartd, dates):
 
     for cdate in cdates:
         cdate = str(cdate)
-        print('DDDD', cdate)
+        logger.debug('cdate is: '.format(cdate))
         if '-' in cdate:
             d1 = str(cdate.split('-')[0])
             d2 = str(cdate.split('-')[1])

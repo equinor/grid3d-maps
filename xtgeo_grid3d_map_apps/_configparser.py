@@ -157,7 +157,7 @@ def yconfig(inputfile):
     out = pp.pformat(config)
     logger.debug('\n{}'.format(out))
 
-    print(config)
+    logger.info(config)
 
     return config
 
