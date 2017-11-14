@@ -65,7 +65,7 @@ def parse_args(args, appname, appdescr):
                         type=str,
                         help='Name of map output root')
 
-    parser.add_argument('--plotfile',
+    parser.add_argument('--plotfolder',
                         dest='plotfolder',
                         type=str,
                         default=None,
@@ -158,6 +158,11 @@ def yconfig_override(config, args, appname):
             newconfig['input']['eclroot'] = args.eclroot
             xtg.say('YAML config overruled... eclroot is now: <{}>'.
                     format(newconfig['input']['eclroot']))
+
+        if args.zfile:
+            newconfig['zonation']['yamlfile'] = args.zfile
+            xtg.say('YAML config overruled... zfile (yaml) is now: <{}>'.
+                    format(newconfig['zonation']['yamlfile']))
 
     pp = pprint.PrettyPrinter(indent=4)
     out = pp.pformat(newconfig)
