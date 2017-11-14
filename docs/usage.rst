@@ -2,28 +2,23 @@
 Usage
 =====
 
-xtgeo_grid3d_map_apps is a command line script that computes HC thicknesses
-based on Eclipse input.
-
-
--------------------------
-Running from command line
--------------------------
-
-Minimum command line
-^^^^^^^^^^^^^^^^^^^^
+These are two command line scripts; one generates HC thickness maps, the
+other makes average maps
 
 ::
 
- xtgeo_grid3d_map_apps --config myfile.yaml
+   grid3d_hc_thickness --config myfile_hc.yaml
+
+   grid3d_average_map --config myfile_avg.yaml
+
 
 Override the Eclipse root
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Her the Eclipse root in the YAML file is overriden at the command line,
-which can be useful in ERT setups::
+For both scripts, some settings in the YAML file can be overrdien at
+the command line, which can be useful in ERT setups::
 
- xtgeo_grid3d_map_apps --config myfile.yaml --root GULLFAKS
+   grid3d_hc_thickness --config myfile.yaml --eclroot GULLFAKS
 
 Possible command line options
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -32,37 +27,46 @@ Type::
 
   xtgeo_grid3d_map_apps --help
 
----------------------
-Example of YAML setup
----------------------
+---------------------------
+Example of YAML setup files
+---------------------------
 
-Preferred setup
-^^^^^^^^^^^^^^^
+HC thickness
+^^^^^^^^^^^^
 
-.. literalinclude:: ../tests/yaml/002.yaml
+.. literalinclude:: ../tests/yaml/hc_thickness1.yaml
+   :language: yaml
+
+Another example where zonation is in a separate file:
+
+.. literalinclude:: ../tests/yaml/hc_thickness2.yaml
    :language: yaml
 
 The zonation file:
 
-.. literalinclude:: ../tests/yaml/002_x.yaml
+.. literalinclude:: ../tests/yaml/hc_thickness2_zonation.yaml
    :language: yaml
+
+Example with automatic map settings:
+
+.. literalinclude:: ../tests/yaml/hc_thickness3.yaml
+   :language: yaml
+
+
+Average maps
+^^^^^^^^^^^^
+
+.. literalinclude:: ../tests/yaml/avg1.yaml
+   :language: yaml
+
+With zonation file:
+
+.. literalinclude:: ../tests/yaml/avg1_zone.yaml
+   :language: yaml
+
 
 
 Output plots (examples)
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: test_images/tarbert--oilthickness--1985_10_01.png
-
-.. image:: test_images/tarbert--oilthickness--2000_07_01.png
-
-Difference map:
-
-.. image:: test_images/tarbert--oilthickness--2000_07_01-1985_10_01.png
-
-Old setup
-^^^^^^^^^
-
-The old YAML setup is still possible to use, but discouraged.
-
-.. literalinclude:: ../tests/yaml/001.yaml
-   :language: yaml
+Later...

@@ -8,23 +8,25 @@ Installation
 Stable release
 --------------
 
-The stable release is on /project/res, so it can be run as:
+The stable release is on /project/res, so scripts can be run as:
 
 .. code-block:: console
 
-    $ xtgeo_grid3d_map_apps <options>
+    $ grid3d_hc_thickness <options>
+    $ grid3d_average_map <options>
 
 
 From sources
 ------------
 
-The sources for xtgeo_grid3d_map_apps can be downloaded from the `Statoil Git repo`_.
+The sources for xtgeo_grid3d_map_apps can be downloaded from
+the `Statoil Git repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/jriv/xtgeo_grid3d_map_apps
+    $ git clone git@git.statoil.no:xtgeo/xtgeo-grid3d-map-apps
 
 Once you have a copy of the source, and you have a `virtual environment`_,
 you can install it with:
@@ -34,5 +36,5 @@ you can install it with:
     $ make install
 
 
-.. _Statoil Git repo: https://git.statoil.no/jriv/xtgeo_grid3d_map_apps
+.. _Statoil Git repo: https://git.statoil.no/xtgeo/xtgeo_grid3d_map_apps
 .. _virtual environment: http://docs.python-guide.org/en/latest/dev/virtualenvs/

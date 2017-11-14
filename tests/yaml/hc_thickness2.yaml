@@ -1,4 +1,4 @@
-title: Grane
+title: Reek
 # Case with a) includefile and b) plotsettings
 
 # just give rootname in case of "eclipserun" model
@@ -37,9 +37,12 @@ mapsettings:
 # hieractical, which means that a general level setting will be
 # overridden by a more spesific setting, e.g. see below
 plotsettings:
+
+  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.zmap
+
   valuerange: [0, 10]     # value range min/max (values above below
                           # will be truncated in plot!)
-  diffvaluerange: [-3, 2]     # value range min/max for date diffs
+  diffvaluerange: [-3, 0]     # value range min/max for date diffs
 
   xlabelrotation: 25      # Rotate the X axis labels (if they may overlap)
 

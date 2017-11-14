@@ -11,15 +11,14 @@ are equally supported.
 from __future__ import division, print_function, absolute_import
 
 import sys
-import logging
 
 from xtgeo.common import XTGeoDialog
 
 from . import _configparser
 from . import _get_grid_props
 from . import _get_zonation_filters
-from . import _compute_hcpfz
-from . import _plotmap
+from . import _compute_avg
+from . import _mapsettings
 
 from . import _version
 
@@ -33,21 +32,7 @@ xtg = XTGeoDialog()
 
 XTGeoDialog.print_xtgeo_header(appname, __version__)
 
-
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
-format = xtg.loggingformat
-
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(appname)
-
-# -----------------------------------------------------------------------------
-# Parse command line and YAML file
-# -----------------------------------------------------------------------------
+logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
@@ -68,6 +53,11 @@ def yamlconfig(inputfile, args):
 
     # in case of YAML input (e.g. zonation from file)
     config = _configparser.yconfig_addons(config, appname)
+
+    logger.info('Updated config:'.format(config))
+    for name, val in config.items():
+        logger.info('{}'.format(name))
+        logger.info('{}'.format(val))
 
     return config
 
@@ -101,14 +91,12 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     grd, initobjects, restobjects, dates = (
         _get_grid_props.import_data(config, appname, gfile, initlist,
                                     restartlist, dates))
-    # get the numpies
-    initd, restartd = (
-        _get_grid_props.get_numpies_hc_thickness(config, grd, initobjects,
-                                                 restobjects, dates))
+    specd, averaged = (
+        _get_grid_props.get_numpies_avgprops(config, grd, initobjects,
+                                             restobjects, dates))
 
     # returns also dates since dates list may be updated after import
-
-    return initd, restartd, dates
+    return grd, specd, averaged, dates
 
 
 def get_zranges(config, dz):
@@ -125,32 +113,37 @@ def get_zranges(config, dz):
         dz: A numpy.ma for dz
 
     Returns:
-        A numpy zonation 3D array
+        A numpy zonation 3D array (zonation) + a zone dict)
     """
     zonation, zoned = _get_zonation_filters.zonation(config, dz)
+
+    logger.debug('Zonation avg is {}'.format(zonation.mean()))
+    logger.debug('Zoned is {}'.format(zoned))
 
     return zonation, zoned
 
 
-def compute_hcpfz(config, initd, restartd, dates):
+def compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned):
+    """A dict of avg (numpy) maps, with zone name as keys."""
 
-    hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates)
+    if config['mapsettings'] is None:
+        config = _mapsettings.estimate_mapsettings(config, grd)
+    else:
+        xtg.say('Check map settings vs grid...')
+        status = _mapsettings.check_mapsettings(config, grd)
+        if status >= 10:
+            xtg.critical('STOP! Mapsettings defined is outside the 3D grid!')
 
-    return hcpfzd
+    # This is done a bit different here than in the HC thickness. Here the
+    # mapping and plotting is done within _compute_avg.py
 
-
-def plotmap(config, initd, hcpfzd, zonation, zoned):
-
-    mapzd = _plotmap.do_mapping(config, initd, hcpfzd, zonation, zoned)
+    avgd = _compute_avg.get_avg(config, specd, propd, dates, zonation, zoned)
 
     if config['output']['plotfolder'] is not None:
-        _plotmap.do_plotting(config, mapzd)
+        _compute_avg.do_avg_plotting(config, avgd)
 
 
 def main(args=None):
-
-    print('NOT IMPLEMENTED YET!')
-    sys.exit(21)
 
     xtg.say('Parse command line')
     args = do_parse_args(args)
@@ -171,21 +164,22 @@ def main(args=None):
     gfile, initlist, restartlist, dates = (
         get_grid_props_data(config, appname))
 
-    # import data from files and return releavnt numpies
+    # import data from files and return relevant numpies
     xtg.say('Import files...')
-    initd, restartd, dates = (
-        import_pdata(config, appname, gfile, initlist, restartlist, dates))
+
+    grd, specd, propd, dates = import_pdata(config, appname, gfile, initlist,
+                                            restartlist, dates)
+
+    for prop, val in propd.items():
+        logger.info('Key is {}, avg value is {}'.format(prop, val.mean()))
 
     # Get the zonations
     xtg.say('Get zonation info')
-    dzp = initd['dz']
+    dzp = specd['idz']
     zonation, zoned = get_zranges(config, dzp)
 
-    xtg.say('Compute HCPFZ property')
-    hcpfzd = compute_hcpfz(config, initd, restartd, dates)
-
-    xtg.say('Do mapping...')
-    plotmap(config, initd, hcpfzd, zonation, zoned)
+    xtg.say('Compute average properties')
+    compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned)
 
 
 if __name__ == '__main__':

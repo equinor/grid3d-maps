@@ -41,7 +41,8 @@ import xtgeo_grid3d_map_apps
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
+              'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,7 +58,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'xtgeo_grid3d_map_apps'
-copyright = u"Statoil ASA"
+copyright = u"Statoil (contact person: Jan C. Rivenæs, JRIV@statoil.com)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -132,7 +133,7 @@ html_theme = 'sphinx_rtd_theme'
 
 # The name of an image file (relative to this directory) to place at the
 # top of the sidebar.
-#html_logo = None
+html_logo = '_static/statoil_logo.png'
 
 # The name of an image file (within the static path) to use as favicon
 # of the docs.  This file should be a Windows icon file (.ico) being

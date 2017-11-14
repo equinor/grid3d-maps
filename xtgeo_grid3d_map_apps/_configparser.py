@@ -9,26 +9,11 @@ import yaml
 import pprint
 import copy
 
-import logging
-
 from xtgeo.common import XTGeoDialog
 
 xtg = XTGeoDialog()
 
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
-format = xtg.loggingformat
-
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(__name__)
-
-# -----------------------------------------------------------------------------
-# For !include directive (tip from virantha.com)
-# -----------------------------------------------------------------------------
+logger = xtg.functionlogger(__name__)
 
 
 def yaml_include(loader, node):
@@ -48,10 +33,6 @@ def yaml_include(loader, node):
         return yaml.load(inputfile)
 
     yaml.add_constructor('!include', yaml_include)
-
-# -----------------------------------------------------------------------------
-# Parse command line
-# -----------------------------------------------------------------------------
 
 
 def parse_args(args, appname, appdescr):
@@ -149,7 +130,6 @@ def yconfig(inputfile):
     with open(inputfile, 'r') as stream:
         config = yaml.load(stream)
 
-    xtg.say('')
     xtg.say('Input config YAML file <{}> is read...'.format(inputfile))
 
     pp = pprint.PrettyPrinter(indent=4)
@@ -204,11 +184,17 @@ def yconfig_set_defaults(config, appname):
     if 'plotsettings' not in newconfig:
         newconfig['plotsettings'] = dict()
 
+    if 'mapsettings' not in newconfig:
+        newconfig['mapsettings'] = None
+
     if 'mapfolder' not in newconfig['output']:
         newconfig['output']['mapfolder'] = '/tmp'
 
     if 'plotfolder' not in newconfig['output']:
         newconfig['output']['plotfolder'] = None
+
+    if 'tag' not in newconfig['output']:
+        newconfig['output']['tag'] = None
 
     if 'lowercase' not in newconfig['output']:
         newconfig['output']['lowercase'] = True
@@ -268,5 +254,7 @@ def yconfig_addons(config, appname):
         zconfig = yconfig(config['zonation']['yamlfile'])
         if 'zranges' in zconfig:
             newconfig['zonation']['zranges'] = zconfig['zranges']
+        if 'superranges' in zconfig:
+            newconfig['zonation']['superranges'] = zconfig['superranges']
 
     return newconfig

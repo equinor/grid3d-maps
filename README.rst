@@ -1,11 +1,12 @@
-=============================
-The script *xtgeo_grid3d_map_apps*
-=============================
+======================================
+The scripts in *xtgeo_grid3d_map_apps*
+======================================
 
+Two scripts here, one for hc thickness maps and one for average maps.
 
-Make HC thickness maps directly from Eclipse runs using XTGeo Python
-library.
+* grid3d_hc_thickness
 
+* grid3d_average_map
 
 
 Features
@@ -20,13 +21,8 @@ Features
 * Configuration through a YAML file
 * Configuration from YAML can be overriden by command line options
 
-Example of a YAML input file:
-
-.. literalinclude:: ../tests/yaml/004.yaml
-   :language: yaml
-
 
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+The FMU team.

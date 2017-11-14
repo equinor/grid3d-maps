@@ -18,8 +18,8 @@ from . import _configparser
 from . import _get_grid_props
 from . import _get_zonation_filters
 from . import _compute_hcpfz
-from . import _plotmap
-
+from . import _hc_plotmap
+from . import _mapsettings
 from . import _version
 
 appname = 'grid3d_hc_thickness'
@@ -32,21 +32,7 @@ xtg = XTGeoDialog()
 
 XTGeoDialog.print_xtgeo_header(appname, __version__)
 
-
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
-format = xtg.loggingformat
-
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(appname)
-
-# -----------------------------------------------------------------------------
-# Parse command line and YAML file
-# -----------------------------------------------------------------------------
+logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
@@ -67,6 +53,11 @@ def yamlconfig(inputfile, args):
 
     # in case of YAML input (e.g. zonation from file)
     config = _configparser.yconfig_addons(config, appname)
+
+    logger.info('Updated config:'.format(config))
+    for name, val in config.items():
+        logger.info('{}'.format(name))
+        logger.info('{}'.format(val))
 
     return config
 
@@ -143,16 +134,19 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned):
 
     # check if values looks OK. Status flag:
     # 0: Seems
-    xtg.say('Check map settings vs grid...')
-    status = _plotmap.check_mapsettings(config, grd)
 
-    if status >= 10:
-        xtg.critical('STOP! The mapsettings defined is outside the 3D grid!')
+    if config['mapsettings'] is None:
+        config = _mapsettings.estimate_mapsettings(config, grd)
+    else:
+        xtg.say('Check map settings vs grid...')
+        status = _mapsettings.check_mapsettings(config, grd)
+        if status >= 10:
+            xtg.critical('STOP! Mapsettings defined is outside the 3D grid!')
 
-    mapzd = _plotmap.do_mapping(config, initd, hcpfzd, zonation, zoned)
+    mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation, zoned)
 
     if config['output']['plotfolder'] is not None:
-        _plotmap.do_plotting(config, mapzd)
+        _hc_plotmap.do_hc_plotting(config, mapzd)
 
 
 def main(args=None):

@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://git.statoil.no/jriv/xtgeo_grid3d_map_apps/issues.
+Report bugs at https://git.statoil.no/xtge/xtgeo-grid3d-map-apps/issues.
 
 If you are reporting a bug, please include:
 
@@ -46,7 +46,7 @@ Submit Feedback
 ~~~~~~~~~~~~~~~
 
 The best way to send feedback is to file an issue
-at https://git.statoil.no/jriv/xtgeo_grid3d_map_apps/issues.
+at https://git.statoil.no/xtgeo/xtgeo-grid3d-map-apps/issues.
 
 If you are proposing a feature:
 
@@ -60,10 +60,10 @@ Get Started!
 
 Ready to contribute? Here's how to set up `xtgeo_grid3d_map_apps` for local development.
 
-1. Fork the `xtgeo_grid3d_map_apps` repo on Git Statoil
+1. Fork the `xtgeo-grid3d-map-apps` repo on Git Statoil
 2. Clone your fork locally::
 
-    $ git clone git@git.statoil.no:your_name_here/xtgeo_grid3d_map_apps.git
+    $ git clone git@git.statoil.no:your_name_here/xtgeo-grid3d-map-apps.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed,
    this is how you set up your fork for local development::
@@ -101,6 +101,7 @@ Pull Request Guidelines
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
+
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.

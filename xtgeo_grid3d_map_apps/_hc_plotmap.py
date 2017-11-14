@@ -11,19 +11,11 @@ from collections import OrderedDict
 
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
+from xtgeo.xyz import Polygons
 
 xtg = XTGeoDialog()
 
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
-format = xtg.loggingformat
-
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(__name__)
+logger = xtg.functionlogger(__name__)
 
 
 def check_mapsettings(config, grd):
@@ -53,7 +45,7 @@ def check_mapsettings(config, grd):
     return pscore
 
 
-def do_mapping(config, initd, hcpfzd, zonation, zoned):
+def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
     """Do the actual map gridding, for zones and groups of zones"""
 
     layerlist = (1, zonation.shape[2])
@@ -116,7 +108,7 @@ def do_mapping(config, initd, hcpfzd, zonation, zoned):
                                            zone_minmax=(usezrange, usezrange),
                                            layer_minmax=layerlist)
 
-            filename = _filesettings(config, zname, date)
+            filename = _hc_filesettings(config, zname, date)
             xtg.say('Map file to {}'.format(filename))
             xmap.to_file(filename)
 
@@ -131,7 +123,7 @@ def do_mapping(config, initd, hcpfzd, zonation, zoned):
     return mapzd
 
 
-def do_plotting(config, mapzd):
+def do_hc_plotting(config, mapzd):
     """Do plotting via matplotlib to PNG (etc) (if requested)"""
 
     xtg.say('Plotting ...')
@@ -140,9 +132,9 @@ def do_plotting(config, mapzd):
 
         for date, xmap in mapd.items():
 
-            plotfile = _filesettings(config, zname, date, mode='plot')
+            plotfile = _hc_filesettings(config, zname, date, mode='plot')
 
-            pcfg = _plotsettings(config, zname, date)
+            pcfg = _hc_plotsettings(config, zname, date)
 
             xtg.say('Plot to {}'.format(plotfile))
 
@@ -150,24 +142,42 @@ def do_plotting(config, mapzd):
             if len(date) > 10:
                 usevrange = pcfg['diffvaluerange']
 
+            faults = None
+            if pcfg['faultpolygons'] is not None:
+                try:
+                    fau = Polygons(pcfg['faultpolygons'], fformat='zmap')
+                    faults = {'faults': fau}
+                except Exception as e:
+                    xtg.say(e)
+                    faults = None
+
             xmap.quickplot(filename=plotfile,
                            title=pcfg['title'],
                            infotext=pcfg['infotext'],
                            xlabelrotation=pcfg['xlabelrotation'],
                            minmax=usevrange,
-                           colortable=pcfg['colortable'])
+                           colortable=pcfg['colortable'],
+                           faults=faults)
 
 
-def _filesettings(config, zname, date, mode='map'):
+def _hc_filesettings(config, zname, date, mode='map'):
     """Local function for map or plot file name"""
 
     delim = '--'
 
-    zname = zname.lower()
+    if config['output']['lowercase']:
+        zname = zname.lower()
+
     phase = config['computesettings']['mode']
 
+    if config['output']['tag']:
+        tag = config['output']['tag'] + '_'
+    else:
+        tag = ''
+
     path = config['output']['mapfolder'] + '/'
-    xfil = zname + delim + phase + 'thickness' + delim + str(date) + '.gri'
+    xfil = (zname + delim + tag + phase + 'thickness' + tag + delim +
+            str(date) + '.gri')
 
     if mode == 'plot':
         path = config['output']['plotfolder'] + '/'
@@ -176,7 +186,7 @@ def _filesettings(config, zname, date, mode='map'):
     return path + xfil
 
 
-def _plotsettings(config, zname, date):
+def _hc_plotsettings(config, zname, date):
     """Local function for plot additional info."""
 
     phase = config['computesettings']['mode']
@@ -189,12 +199,15 @@ def _plotsettings(config, zname, date):
 
     showtime = strftime("%Y-%m-%d %H:%M:%S", localtime())
     infotext = getpass.getuser() + ' ' + showtime
+    if config['output']['tag']:
+        infotext = infotext + ' (tag: ' + config['output']['tag'] + ')'
 
     xlabelrotation = None
     valuerange = (None, None)
     diffvaluerange = (None, None)
     colortable = 'rainbow'
     xlabelrotation = 0
+    fpolyfile = None
 
     if 'xlabelrotation' in config['plotsettings']:
         xlabelrotation = config['plotsettings']['xlabelrotation']
@@ -204,6 +217,9 @@ def _plotsettings(config, zname, date):
 
     if 'diffvaluerange' in config['plotsettings']:
         diffvaluerange = tuple(config['plotsettings']['diffvaluerange'])
+
+    if 'faultpolygons' in config['plotsettings']:
+        fpolyfile = config['plotsettings']['faultpolygons']
 
     # there may be individual plotsettings for zname
     if zname is not None and zname in config['plotsettings']:
@@ -222,6 +238,9 @@ def _plotsettings(config, zname, date):
         if 'colortable' in zfg:
             colortable = zfg['colortable']
 
+        if 'faultpolygons' in zfg:
+            fpolyfile = zfg['faultpolygons']
+
     # assing settings to a dictionary which is returned
     plotcfg = {}
     plotcfg['title'] = title
@@ -230,5 +249,6 @@ def _plotsettings(config, zname, date):
     plotcfg['diffvaluerange'] = diffvaluerange
     plotcfg['xlabelrotation'] = xlabelrotation
     plotcfg['colortable'] = colortable
+    plotcfg['faultpolygons'] = fpolyfile
 
     return plotcfg

@@ -2,20 +2,13 @@
 
 from __future__ import division, print_function, absolute_import
 
-import sys
 from collections import OrderedDict
-import logging
 import numpy as np
 
 from xtgeo.common import XTGeoDialog
-
 xtg = XTGeoDialog()
-format = xtg.loggingformat
 
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(__name__)
+logger = xtg.functionlogger(__name__)
 
 
 def zonation(config, dz):
@@ -65,6 +58,8 @@ def zonation(config, dz):
                          .format(i + 1, zname, intv))
             for zn in intv:
                 superzoned[zname].append(zoned[zn])
+    else:
+        logger.info('Did not find any superranges...')
 
     for myz, val in zoned.items():
         logger.info('Zonation list: {}: {}'.format(myz, val))

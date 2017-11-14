@@ -3,10 +3,8 @@
 from __future__ import division, print_function, absolute_import
 
 import sys
-import os.path
 import pprint
 from collections import defaultdict
-import logging
 import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
@@ -15,29 +13,22 @@ from xtgeo.grid3d import GridProperties
 
 xtg = XTGeoDialog()
 
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
-format = xtg.loggingformat
-
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(__name__)
+logger = xtg.functionlogger(__name__)
 
 
 def files_to_import(config, appname):
     """Get a list of files to import, based on config"""
 
     eclroot = None
-    if config['input']['eclroot'] is not None:
-        eclroot = config['input']['eclroot']
+    if 'eclroot' in config['input']:
+        if config['input']['eclroot'] is not None:
+            eclroot = config['input']['eclroot']
 
     gfile = ''
     initlist = dict()
     restartlist = dict()
     dates = []
+
     if appname == 'grid3d_hc_thickness':
         gfile = eclroot + '.EGRID'
         initlist['PORO'] = eclroot + '.INIT'
@@ -61,6 +52,49 @@ def files_to_import(config, appname):
                 dates.append(date.split('-')[0])
                 dates.append(date.split('-')[1])
 
+    if appname == 'grid3d_average_map':
+
+        # Put things in initlist or restart list. Only Eclipse
+        # UNRST comes in the restartlist, all other in the initlist.
+        # For instance, a ROFF parameter PRESSURE_20110101 will
+        # technically be an initlist parameter here
+
+        gfile = eclroot + '.EGRID'  # default, if 'grid' is missing
+
+        logger.debug(config['input'])
+
+        for item in config['input']:
+            if item == 'eclroot':
+                continue
+            elif item == 'grid':
+                gfile = config['input']['grid']
+                if '$eclroot' in gfile:
+                    gfile = gfile.replace('$eclroot', eclroot)
+            else:
+                if 'UNRST' in config['input'][item]:
+                    if '--' in item:
+                        param = item.split('--')[0]
+                        date = item.split('--')[1]
+
+                    rfile = config['input'][item]
+                    if '$eclroot' in rfile:
+                        rfile = rfile.replace('$eclroot', eclroot)
+                    restartlist[param] = rfile
+                    # dates:
+                    if len(date) > 10:
+                        dates.append(date.split('-')[0])
+                        dates.append(date.split('-')[1])
+                    else:
+                        dates.append(date)
+
+                else:
+                    ifile = config['input'][item]
+                    if '$eclroot' in ifile:
+                        ifile = ifile.replace('$eclroot', eclroot)
+                    initlist[item] = ifile
+
+        logger.debug(dates)
+
     dates = list(sorted(set(dates)))  # to get a list with unique dates
 
     ppinit = pprint.PrettyPrinter(indent=4)
@@ -68,9 +102,9 @@ def files_to_import(config, appname):
     ppdates = pprint.PrettyPrinter(indent=4)
 
     logger.debug('Grid from {}'.format(gfile))
-    logger.debug('\n{}'.format(ppinit.pformat(initlist)))
-    logger.debug('\n{}'.format(pprestart.pformat(restartlist)))
-    logger.debug('\n{}'.format(ppdates.pformat(dates)))
+    logger.debug('{}'.format(ppinit.pformat(initlist)))
+    logger.debug('{}'.format(pprestart.pformat(restartlist)))
+    logger.debug('{}'.format(ppdates.pformat(dates)))
 
     return gfile, initlist, restartlist, dates
 
@@ -84,6 +118,8 @@ def import_data(config, appname, gfile, initlist,
 
     Will return data on appropriate format...
     """
+
+    logger.info('Import data for {}'.format(appname))
 
     # get the grid data + some geometrics
     grd = Grid(gfile, fformat='egrid')
@@ -124,7 +160,7 @@ def import_data(config, appname, gfile, initlist,
         except RuntimeWarning as rwarn:
             xtg.warn(rwarn)
             restobjects.append(tmp)
-        except:
+        except Exception:
             sys.exit(22)
         else:
             restobjects.append(tmp)
@@ -235,3 +271,80 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
                      .format(key, type(restartd[key])))
 
     return initd, restartd
+
+
+def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
+    """Process for average map; to get the needed numpies"""
+
+    actnum = grd.get_actnum().values3d
+    # mask is False  to get values for all cells, also inactive
+    xc, yc, zc = grd.get_xyz(mask=False)
+    xc = xc.values3d
+    yc = yc.values3d
+    zc = zc.values3d
+    dz = grd.get_dz(mask=False).values3d
+
+    dz[actnum == 0] = 0.0
+
+    # store these in a dict for special data (specd):
+    specd = {'idz': dz, 'ixc': xc, 'iyc': yc, 'izc': zc, 'iactnum': actnum}
+
+    for props in initobjects:
+        for n in props.names:
+            logger.debug('INIT PROP name {}'.format(n))
+
+    for props in restobjects:
+        for n in props.names:
+            logger.debug('REST PROP name {}'.format(n))
+
+    propd = {}
+    for props in initobjects + restobjects:
+
+        for pname in config['input']:
+            usepname = pname
+            if pname == 'eclroot' or pname == 'grid':
+                continue
+
+            # initdata may also contain date if ROFF is input!
+            if '--' in pname:
+                prop = pname.split('--')[0]
+                date = pname.split('--')[1]
+
+                # treating difference values
+                if '-' in date:
+                    date1 = date.split('-')[0]
+                    date2 = date.split('-')[1]
+
+                    usepname1 = prop + '_' + date1
+                    usepname2 = prop + '_' + date2
+
+                    ok1 = False
+                    ok2 = False
+
+                    if usepname1 in props.names:
+                        ptmp1 = props.get_prop_by_name(usepname1).values3d
+                        ok1 = True
+                    if usepname2 in props.names:
+                        ptmp2 = props.get_prop_by_name(usepname2).values3d
+                        ok2 = True
+
+                    if ok1 and ok2:
+                        ptmp = ptmp1 - ptmp2
+                        propd[pname] = ptmp
+
+                # only one date
+                else:
+                    usepname = pname.replace('--', '_')
+                    if usepname in props.names:
+                        ptmp = props.get_prop_by_name(usepname).values3d
+                        propd[pname] = ptmp
+
+            # no dates
+            else:
+                if usepname in props.names:
+                    ptmp = props.get_prop_by_name(usepname).values3d
+                    propd[pname] = ptmp
+
+    logger.info('Return specd from {} is {}'.format(__name__, specd.keys()))
+    logger.info('Return propd from {} is {}'.format(__name__, propd.keys()))
+    return specd, propd

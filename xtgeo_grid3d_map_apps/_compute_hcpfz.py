@@ -30,7 +30,7 @@ def get_hcpfz(config, initd, restartd, dates):
     shcintv = config['computesettings']['shc_interval']
 
     if not dates:
-        xtg.error('Dates er missing. Bug?')
+        xtg.error('Dates are missing. Bug?')
         raise RuntimeError('Dates er missing. Bug?')
 
     for date in dates:

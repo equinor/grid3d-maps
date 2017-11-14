@@ -39,3 +39,8 @@ def test_hc_thickness1():
 def test_hc_thickness2():
     """HC thickness with YAML config example 2; zonation in own YAML file"""
     xx.main(['--config', 'tests/yaml/hc_thickness2.yaml'])
+
+
+def test_hc_thickness3():
+    """HC thickness with YAML config example 3; no map settings"""
+    xx.main(['--config', 'tests/yaml/hc_thickness3.yaml'])
