@@ -175,6 +175,8 @@ def _hc_filesettings(config, zname, date, mode='map'):
     else:
         tag = ''
 
+    date = date.replace('-', '_')
+
     path = config['output']['mapfolder'] + '/'
     xfil = (zname + delim + tag + phase + 'thickness' + tag + delim +
             str(date) + '.gri')

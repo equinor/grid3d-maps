@@ -136,6 +136,11 @@ def _avg_filesettings(config, zname, pname, mode='root'):
         zname = zname.lower()
         pname = pname.lower()
 
+    # pname may have a single '-' if it contains a date; replace with '_'
+    # need to trick a bit by first replacing '--' (if delim = '--')
+    # with '~~', then back again...
+    pname = pname.replace(delim, '~~').replace('-', '_').replace('~~', delim)
+
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'
     else:
