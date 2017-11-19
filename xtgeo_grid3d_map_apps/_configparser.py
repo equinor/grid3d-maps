@@ -25,6 +25,7 @@ def yaml_include(loader, node):
         bar: !include otherfile.yaml
         - baz: 456
 
+    Not sure if useful...
     """
     # Get the path out of the yaml file
     file_name = os.path.join(os.path.dirname(loader.name), node.value)
@@ -70,12 +71,6 @@ def parse_args(args, appname, appdescr):
                         type=str,
                         default=None,
                         help='Name of plot output root')
-
-    parser.add_argument('-z', '--zname',
-                        dest='zname',
-                        type=str,
-                        default='',
-                        help='A zone name or description')
 
     parser.add_argument('--zfile',
                         dest='zfile',
@@ -147,22 +142,32 @@ def yconfig_override(config, args, appname):
 
     newconfig = copy.deepcopy(config)
 
+    if args.eclroot:
+        newconfig['input']['eclroot'] = args.eclroot
+        xtg.say('YAML config overruled... eclroot is now: <{}>'.
+                format(newconfig['input']['eclroot']))
+
+    if args.zfile:
+        newconfig['zonation']['yamlfile'] = args.zfile
+        xtg.say('YAML config overruled... zfile (yaml) is now: <{}>'.
+                format(newconfig['zonation']['yamlfile']))
+
+    if args.mapfolder:
+        newconfig['output']['mapfolder'] = args.mapfolder
+        xtg.say('YAML config overruled... output:mapfolder is now: <{}>'.
+                format(newconfig['output']['mapfolder']))
+
+    if args.plotfolder:
+        newconfig['output']['plotfolder'] = args.plotfolder
+        xtg.say('YAML config overruled... output:plotfolder is now: <{}>'.
+                format(newconfig['output']['plotfolder']))
+
     if appname == 'grid3d_hc_thickness':
 
         if args.dates:
             newconfig['input']['dates'] = args.dates
             logger.debug('YAML config overruled by cmd line: dates are now {}'.
                          format(newconfig['eclinput']['dates']))
-
-        if args.eclroot:
-            newconfig['input']['eclroot'] = args.eclroot
-            xtg.say('YAML config overruled... eclroot is now: <{}>'.
-                    format(newconfig['input']['eclroot']))
-
-        if args.zfile:
-            newconfig['zonation']['yamlfile'] = args.zfile
-            xtg.say('YAML config overruled... zfile (yaml) is now: <{}>'.
-                    format(newconfig['zonation']['yamlfile']))
 
     pp = pprint.PrettyPrinter(indent=4)
     out = pp.pformat(newconfig)

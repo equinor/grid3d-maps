@@ -37,9 +37,11 @@ def zonation(config, dz):
     superzoned = OrderedDict()
 
     if 'zranges' in config['zonation']:
+        zclist = config['zonation']['zranges']
+        logger.info(type(zclist))
         for i, zz in enumerate(config['zonation']['zranges']):
-            zname = zz.keys()[0]
-            intv = zz.values()[0]
+            zname = list(zz.keys())[0]  # zz.keys()[0]
+            intv = list(zz.values())[0]
             k01 = intv[0] - 1
             k02 = intv[1]
 
@@ -51,9 +53,9 @@ def zonation(config, dz):
     if 'superranges' in config['zonation']:
         logger.info('Found superranges keyword...')
         for i, zz in enumerate(config['zonation']['superranges']):
-            zname = zz.keys()[0]
+            zname = list(zz.keys())[0]
             superzoned[zname] = []
-            intv = zz.values()[0]
+            intv = list(zz.values())[0]
             logger.debug('Superzone spec no {}: {}  {}'
                          .format(i + 1, zname, intv))
             for zn in intv:
