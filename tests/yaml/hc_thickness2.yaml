@@ -38,7 +38,7 @@ mapsettings:
 # overridden by a more spesific setting, e.g. see below
 plotsettings:
 
-  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.zmap
+  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.xyz
 
   valuerange: [0, 10]     # value range min/max (values above below
                           # will be truncated in plot!)

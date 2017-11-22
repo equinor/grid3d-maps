@@ -145,7 +145,7 @@ def do_hc_plotting(config, mapzd):
             faults = None
             if pcfg['faultpolygons'] is not None:
                 try:
-                    fau = Polygons(pcfg['faultpolygons'], fformat='zmap')
+                    fau = Polygons(pcfg['faultpolygons'], fformat='guess')
                     faults = {'faults': fau}
                 except Exception as e:
                     xtg.say(e)
