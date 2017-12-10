@@ -2,7 +2,6 @@
 
 from __future__ import division, print_function, absolute_import
 
-import sys
 import pprint
 from collections import defaultdict
 import numpy.ma as ma
@@ -10,6 +9,7 @@ import numpy.ma as ma
 from xtgeo.common import XTGeoDialog
 from xtgeo.grid3d import Grid
 from xtgeo.grid3d import GridProperties
+from xtgeo.grid3d import GridProperty
 
 xtg = XTGeoDialog()
 
@@ -29,28 +29,38 @@ def files_to_import(config, appname):
     restartlist = dict()
     dates = []
 
-    if appname == 'grid3d_hc_thickness':
+    if eclroot:
         gfile = eclroot + '.EGRID'
-        initlist['PORO'] = eclroot + '.INIT'
-        initlist['NTG'] = eclroot + '.INIT'
-        initlist['PORV'] = eclroot + '.INIT'
-        initlist['DX'] = eclroot + '.INIT'
-        initlist['DY'] = eclroot + '.INIT'
-        initlist['DZ'] = eclroot + '.INIT'
-        if config['computesettings']['critmode']:
-            crname = config['computesettings']['critmode'].upper()
-            initlist[crname] = eclroot + '.INIT'
 
-        restartlist['SWAT'] = eclroot + '.UNRST'
-        restartlist['SGAS'] = eclroot + '.UNRST'
+    if 'grid' in config['input']:
+        gfile = config['input']['grid']
 
-        for date in config['input']['dates']:
-            logger.debug('DATE {}'.format(date))
-            if len(date) == 8:
-                dates.append(date)
-            elif len(date) > 12:
-                dates.append(date.split('-')[0])
-                dates.append(date.split('-')[1])
+    if appname == 'grid3d_hc_thickness':
+
+        if 'xhcpv' in config['input']:
+            initlist['xhcpv'] = config['input']['xhcpv']
+
+        else:
+            initlist['PORO'] = eclroot + '.INIT'
+            initlist['NTG'] = eclroot + '.INIT'
+            initlist['PORV'] = eclroot + '.INIT'
+            initlist['DX'] = eclroot + '.INIT'
+            initlist['DY'] = eclroot + '.INIT'
+            initlist['DZ'] = eclroot + '.INIT'
+            if config['computesettings']['critmode']:
+                crname = config['computesettings']['critmode'].upper()
+                initlist[crname] = eclroot + '.INIT'
+
+            restartlist['SWAT'] = eclroot + '.UNRST'
+            restartlist['SGAS'] = eclroot + '.UNRST'
+
+            for date in config['input']['dates']:
+                logger.debug('DATE {}'.format(date))
+                if len(date) == 8:
+                    dates.append(date)
+                elif len(date) > 12:
+                    dates.append(date.split('-')[0])
+                    dates.append(date.split('-')[1])
 
     if appname == 'grid3d_average_map':
 
@@ -58,8 +68,6 @@ def files_to_import(config, appname):
         # UNRST comes in the restartlist, all other in the initlist.
         # For instance, a ROFF parameter PRESSURE_20110101 will
         # technically be an initlist parameter here
-
-        gfile = eclroot + '.EGRID'  # default, if 'grid' is missing
 
         logger.debug(config['input'])
 
@@ -112,24 +120,39 @@ def files_to_import(config, appname):
 def import_data(config, appname, gfile, initlist,
                 restartlist, dates):
     """Get the grid and the props data.
-
     Well get the grid and the propsdata for data to be plotted,
     zonation (if required), filters (if required)
 
     Will return data on appropriate format...
+
+    Args:
+        config(dict): Th configuration dictionary
+        appname(str): Name of application
+
     """
 
     logger.info('Import data for {}'.format(appname))
 
     # get the grid data + some geometrics
-    grd = Grid(gfile, fformat='egrid')
+    grd = Grid(gfile, fformat='guess')
 
     # collect data per initfile etc: make a dict on the form:
-    # {initfilename: [prop1, prop2, ...]} trick is defaultdict!
+    # {initfilename: [[prop1, lookfor1], [prop2, lookfor2], ...]} the
+    # trick is defaultdict!
+    #
+    # The initfile itself may be a file or dictionary itself, e.g. either
+    # SOME.INIT or {Name: somefile.roff}. In the latter, we should lookfor
+    # Name in the file while doing the import.
+
     initdict = defaultdict(list)
     for ipar, ifile in initlist.items():
         logger.info('Parameter INIT: {} \t file is {}'.format(ipar, ifile))
-        initdict[ifile].append(ipar)
+        if isinstance(ifile, dict):
+            print(repr(ifile))
+            lookfor, usefile = list(ifile.keys()), list(ifile.values())
+            initdict[usefile[0]].append([ipar, lookfor[0]])
+        else:
+            initdict[ifile].append([ipar, ipar])
 
     ppinitdict = pprint.PrettyPrinter(indent=4)
     logger.debug('\n{}'.format(ppinitdict.pformat(initdict)))
@@ -144,32 +167,68 @@ def import_data(config, appname, gfile, initlist,
 
     initobjects = []
     for inifile, iniprops in initdict.items():
-        tmp = GridProperties()
-        tmp.from_file(inifile, names=iniprops,
-                      fformat='init', grid=grd)
-        initobjects.append(tmp)
+        if len(iniprops) > 1:
+            tmp = GridProperties()
+            lookfornames = []
+            usenames = []
+            for iniprop in iniprops:
+                usename, lookforname = iniprop
+                lookfornames.append(lookforname)
+                usenames.append(usename)
+
+            tmp.from_file(inifile, names=lookfornames,
+                          fformat='init', grid=grd)
+            for i, name in enumerate(lookfornames):
+                prop = tmp.get_prop_by_name(name)
+                prop.name = usenames[i]  # rename if different
+                initobjects.append(prop)
+
+        else:
+            # single properties, typically ROFF stuff
+            tmp = GridProperty()
+            usename, lookforname = iniprops[0]
+
+            tmp.from_file(inifile, name=lookforname, fformat='guess',
+                          grid=grd)
+            tmp.name = usename
+            initobjects.append(tmp)
 
     # restarts; will issue an warning if one or more dates are not found
+    # assume that this is Eclipse stuff .UNRST
     restobjects = []
     for restfile, restprops in restdict.items():
         tmp = GridProperties()
         try:
+            logger.info('Reading--')
             tmp.from_file(restfile, names=restprops,
                           fformat='unrst', grid=grd, dates=dates)
 
         except RuntimeWarning as rwarn:
+            logger.info('Got warning...')
             xtg.warn(rwarn)
-            restobjects.append(tmp)
+            for prop in tmp.props:
+                logger.info('Append prop: {}'.format(prop))
+                restobjects.append(prop)
         except Exception:
-            sys.exit(22)
+            raise SystemExit('Fatal error')
         else:
-            restobjects.append(tmp)
+            logger.info('Works further...')
+            for prop in tmp.props:
+                logger.info('Append prop: {}'.format(prop))
+                restobjects.append(prop)
 
     newdateslist = []
     for rest in restobjects:
-        newdateslist += rest.dates
+        newdateslist.append(rest.date)
 
-    logger.debug('Actual dates to use: {}'.format(newdateslist))
+    newdateslist = list(set(newdateslist))
+    logger.info('Actual dates to use: {}'.format(newdateslist))
+
+    for obj in initobjects:
+        logger.info('Init object for <{}> is <{}> '.format(obj.name, obj))
+
+    for obj in restobjects:
+        logger.info('Restart object for <{}> is <{}> '.format(obj.name, obj))
 
     return grd, initobjects, restobjects, newdateslist
 
@@ -184,39 +243,61 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     yc = yc.values3d
     zc = zc.values3d
 
+    dz = grd.get_dz(mask=False).values3d
+    dz[actnum == 0] = 0.0
+
+    dx, dy = grd.get_dxdy()
+    dx = dx.values3d
+    dy = dy.values3d
+
+    initd = {'iactnum': actnum, 'xc': xc, 'yc': yc, 'zc': zc, 'dx': dx,
+             'dy': dy, 'dz': dz}
+
     if config['computesettings']['critmode']:
         crname = config['computesettings']['critmode'].upper()
     else:
         crname = None
 
-    for props in initobjects:
-        if 'PORO' in props.names:
-            poro = props.get_prop_by_name('PORO').values3d
-        if 'NTG' in props.names:
-            ntg = props.get_prop_by_name('NTG').values3d
-        if 'PORV' in props.names:
-            porv = props.get_prop_by_name('PORV').values3d
-        if 'DX' in props.names:
-            dx = props.get_prop_by_name('DX').values3d
-        if 'DX' in props.names:
-            dy = props.get_prop_by_name('DY').values3d
-        if 'DZ' in props.names:
-            dz = props.get_prop_by_name('DZ').values3d
-        if crname is not None and crname in props.names:
-            soxcr = props.get_prop_by_name(crname).values3d
+    xmethod = config['computesettings']['method']
+    xinput = config['input']
 
-    porv[actnum == 0] = 0.0
-    poro[actnum == 0] = 0.0
-    ntg[actnum == 0] = 0.0
-    dz[actnum == 0] = 0.0
+    if 'xhcpv' in xinput:
+        xhcpv = initobjects[0].values3d
+        xhcpv[actnum == 0] = 0.0
+        initd.update({'xhcpv': xhcpv})
 
-    initd = {'porv': porv, 'poro': poro, 'ntg': ntg, 'dx': dx, 'dy': dy,
-             'dz': dz, 'xc': xc, 'yc': yc, 'zc': zc}
-
-    if crname is not None:
-        initd['soxcr'] = soxcr
     else:
-        initd['soxcr'] = None
+
+        if xmethod == 'use_poro' or xmethod == 'use_porv':
+            # initobjects is a list of GridProperty objects (single)
+            for prop in initobjects:
+                if prop.name == 'PORO':
+                    poro = prop.values3d
+                if prop.name == 'NTG':
+                    ntg = prop.values3d
+                if prop.name == 'PORV':
+                    porv = prop.values3d
+                if prop.name == 'DX':
+                    dx = prop.values3d
+                if prop.name == 'DY':
+                    dy = prop.values3d
+                if prop.name == 'DZ':
+                    dz = prop.values3d
+                if crname is not None and prop.name == crname:
+                    soxcr = prop.values3d
+
+            porv[actnum == 0] = 0.0
+            poro[actnum == 0] = 0.0
+            ntg[actnum == 0] = 0.0
+            dz[actnum == 0] = 0.0
+
+            initd.update({'porv': porv, 'poro': poro, 'ntg': ntg, 'dx': dx,
+                          'dy': dy, 'dz': dz})
+
+            if crname is not None:
+                initd['soxcr'] = soxcr
+            else:
+                initd['soxcr'] = None
 
     xtg.say('Got relevant INIT numpies, OK ...')
 
@@ -229,16 +310,16 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     soil = dict()
 
     for date in dates:
-        for props in restobjects:
-            nsoil = 0
+        nsoil = 0
+        for prop in restobjects:
             pname = 'SWAT' + '_' + str(date)
-            if pname in props.names:
-                swat[date] = props.get_prop_by_name(pname).values3d
+            if prop.name == pname:
+                swat[date] = prop.values3d
                 nsoil += 1
 
             pname = 'SGAS' + '_' + str(date)
-            if pname in props.names:
-                sgas[date] = props.get_prop_by_name(pname).values3d
+            if prop.name == pname:
+                sgas[date] = prop.values3d
                 nsoil += 1
 
             if nsoil == 2:
@@ -289,60 +370,62 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
     # store these in a dict for special data (specd):
     specd = {'idz': dz, 'ixc': xc, 'iyc': yc, 'izc': zc, 'iactnum': actnum}
 
-    for props in initobjects:
-        for n in props.names:
-            logger.debug('INIT PROP name {}'.format(n))
+    for prop in initobjects:
+        logger.debug('INIT PROP name {}'.format(prop.name))
 
-    for props in restobjects:
-        for n in props.names:
-            logger.debug('REST PROP name {}'.format(n))
+    for prop in restobjects:
+        logger.debug('REST PROP name {}'.format(prop.name))
 
     propd = {}
-    for props in initobjects + restobjects:
 
-        for pname in config['input']:
-            usepname = pname
-            if pname == 'eclroot' or pname == 'grid':
-                continue
+    for pname in config['input']:
+        usepname = pname
+        if pname == 'eclroot' or pname == 'grid':
+            continue
 
-            # initdata may also contain date if ROFF is input!
-            if '--' in pname:
-                prop = pname.split('--')[0]
-                date = pname.split('--')[1]
+        # initdata may also contain date if ROFF is input!
+        if '--' in pname:
+            name = pname.split('--')[0]
+            date = pname.split('--')[1]
 
-                # treating difference values
-                if '-' in date:
-                    date1 = date.split('-')[0]
-                    date2 = date.split('-')[1]
+            # treating difference values
+            if '-' in date:
+                print('DIFF found: {}'.format(date))
+                date1 = date.split('-')[0]
+                date2 = date.split('-')[1]
 
-                    usepname1 = prop + '_' + date1
-                    usepname2 = prop + '_' + date2
+                usepname1 = name + '_' + date1
+                usepname2 = name + '_' + date2
 
-                    ok1 = False
-                    ok2 = False
+                ok1 = False
+                ok2 = False
 
-                    if usepname1 in props.names:
-                        ptmp1 = props.get_prop_by_name(usepname1).values3d
+                for prop in initobjects + restobjects:
+                    if usepname1 == prop.name:
+                        ptmp1 = prop.values3d
                         ok1 = True
-                    if usepname2 in props.names:
-                        ptmp2 = props.get_prop_by_name(usepname2).values3d
+                    if usepname2 == prop.name:
+                        ptmp2 = prop.values3d
                         ok2 = True
 
                     if ok1 and ok2:
                         ptmp = ptmp1 - ptmp2
                         propd[pname] = ptmp
+                        print('DIFF were made: {}'.format(pname))
 
-                # only one date
-                else:
+            # only one date
+            else:
+                for prop in initobjects + restobjects:
                     usepname = pname.replace('--', '_')
-                    if usepname in props.names:
-                        ptmp = props.get_prop_by_name(usepname).values3d
+                    if usepname == prop.name:
+                        ptmp = prop.values3d
                         propd[pname] = ptmp
 
-            # no dates
-            else:
-                if usepname in props.names:
-                    ptmp = props.get_prop_by_name(usepname).values3d
+        # no dates
+        else:
+            for prop in initobjects + restobjects:
+                if usepname == prop.name:
+                    ptmp = prop.values3d
                     propd[pname] = ptmp
 
     logger.info('Return specd from {} is {}'.format(__name__, specd.keys()))

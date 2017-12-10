@@ -170,15 +170,14 @@ def _hc_filesettings(config, zname, date, mode='map'):
 
     phase = config['computesettings']['mode']
 
+    tag = ''
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'
-    else:
-        tag = ''
 
     date = date.replace('-', '_')
 
     path = config['output']['mapfolder'] + '/'
-    xfil = (zname + delim + tag + phase + 'thickness' + tag + delim +
+    xfil = (zname + delim + tag + phase + 'thickness' + delim +
             str(date) + '.gri')
 
     if mode == 'plot':

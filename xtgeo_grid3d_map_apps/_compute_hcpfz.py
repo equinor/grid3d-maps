@@ -10,20 +10,36 @@ from xtgeo.common import XTGeoDialog
 
 xtg = XTGeoDialog()
 
-# -----------------------------------------------------------------------------
-# Logging setup
-# -----------------------------------------------------------------------------
-
-format = xtg.loggingformat
-
-logging.basicConfig(format=format, stream=sys.stdout)
-logging.getLogger().setLevel(xtg.logginglevel)
-
-logger = logging.getLogger(__name__)
+logger = xtg.functionlogger(__name__)
 
 
 def get_hcpfz(config, initd, restartd, dates):
-    """Compute a dictionary with hcpfz numpy per date"""
+    """Compute a dictionary with hcpfz numpy (per date)."""
+    # There may be cases where dates are missing, e.g. if computing
+    # directly from the stoiip parameter.
+
+    hcpfzd = dict()
+
+    # use the given date from config if stoiip, giip, etc as info
+    gdate = config['input']['dates'][0]
+
+    if 'xhcpv' in config['input']:
+        area = initd['dx'] * initd['dy']
+        hcpfzd[gdate] = initd['xhcpv'] / area
+
+    else:
+        hcpfzd = _get_hcpfz_ecl(config, initd, restartd, dates)
+
+    alldates = hcpfzd.keys()
+
+    ppalldates = pprint.PrettyPrinter(indent=4)
+    logger.debug('After cleaning: {}'.format(ppalldates.pformat(alldates)))
+
+    return hcpfzd
+
+
+def _get_hcpfz_ecl(config, initd, restartd, dates):
+    # local function, get data from Eclipse INIT and RESTART
 
     hcpfzd = dict()
 
@@ -88,14 +104,11 @@ def get_hcpfz(config, initd, restartd, dates):
     logger.debug('All dates: {}'.format(ppalldates.pformat(alldates)))
 
     purecdates = [str(cda) for cda in cdates if '--' not in str(cda)]
-    pureadates = [str(adate) for adate in alldates if '--' not in str(adate)]
+    pureadates = [str(adate) for adate in alldates
+                  if '--' not in str(adate)]
 
     for udate in pureadates:
         if udate not in purecdates:
             del hcpfzd[udate]
-
-    alldates = hcpfzd.keys()
-
-    logger.debug('After cleaning: {}'.format(ppalldates.pformat(alldates)))
 
     return hcpfzd

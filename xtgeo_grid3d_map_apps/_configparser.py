@@ -191,6 +191,12 @@ def yconfig_set_defaults(config, appname):
     if 'plotfile' not in newconfig['output']:
         newconfig['output']['plotfile'] = None
 
+    if 'computesettings' not in newconfig:
+        newconfig['computesettings'] = dict()
+
+    if 'mask_zeros' not in newconfig['computesettings']:
+        newconfig['computesettings']['mask_zeros'] = False
+
     if 'plotsettings' not in newconfig:
         newconfig['plotsettings'] = dict()
 
@@ -217,6 +223,10 @@ def yconfig_set_defaults(config, appname):
 
     if appname == 'grid3d_hc_thickness':
 
+        if 'dates' not in newconfig['input']:
+            xtg.warn('Warning: No date given, set date to "unknowndate")')
+            newconfig['input']['dates'] = ['unknowndate']
+
         if 'mode' not in newconfig['computesettings']:
             newconfig['computesettings']['mode'] = 'oil'
 
@@ -237,6 +247,13 @@ def yconfig_set_defaults(config, appname):
 
         if 'all' not in newconfig['computesettings']:
             newconfig['computesettings']['all'] = True
+
+        # be generic if direct calculation is applied
+        xlist = set(['stooip', 'goip', 'hcpv', 'stoiip', 'giip'])
+        for xword in xlist:
+            if xword in newconfig['input']:
+                newconfig['input']['xhcpv'] = newconfig['input'][xword]
+                break
 
     # treat dates as strings, not ints
     if 'dates' in config['input']:

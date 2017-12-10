@@ -20,6 +20,7 @@ zonation:
 computesettings:
   zone: Yes
   all: No
+  mask_zeros: Yes  # means that ouput maps will be set to undef where zero
 
 # map definition (not rotated maps only)
 mapsettings:
@@ -31,7 +32,7 @@ mapsettings:
   nrow: 250
 
 output:
-  tag: case1     # the tag will added to file name as extra info, e.g.
-                 # z1_average_poro_case1.gri
+  tag: case1     # the tag will added to file name as extra info, e.g. as
+                 # z1--case1_average_poro.gri
   mapfolder: TMP
   plotfolder: TMP

@@ -5,6 +5,7 @@ from __future__ import division, print_function, absolute_import
 import getpass
 from time import localtime, strftime
 import numpy as np
+import numpy.ma as ma
 from collections import OrderedDict
 
 from xtgeo.common import XTGeoDialog
@@ -33,6 +34,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
                           yinc=config['mapsettings'].get('yinc'),
                           values=np.zeros((ncol, nrow)))
 
+    logger.debug('Flags of xmap is {}'.format(xmap.values.flags))
     xtg.say('Mapping ...')
 
     for zname, zrange in zoned.items():
@@ -67,6 +69,18 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
                             format(zname))
                 continue
 
+        # first map the ACTNUM; to be used as mask for output
+        logger.debug('np flags before ...{}'.format(xmap.values.flags))
+        xmap.avg_from_3dprop(xprop=specd['ixc'],
+                             yprop=specd['iyc'],
+                             mprop=specd['idz'],
+                             dzprop=specd['idz'],
+                             zoneprop=usezonation,
+                             zone_minmax=[usezrange, usezrange])
+
+        logger.debug('np flags after gridding...{}'.format(xmap.values.flags))
+
+        # raise SystemExit
         for propname, pvalues in propd.items():
 
             xmap.avg_from_3dprop(xprop=specd['ixc'],
@@ -79,7 +93,16 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
             filename = _avg_filesettings(config, zname, propname, mode='map')
             usename = (zname, propname)
 
+            print('MASK: ', config['computesettings']['mask_zeros'])
+            if config['computesettings']['mask_zeros']:
+                xmap.values = ma.masked_inside(xmap.values, -1e-30, 1e-30)
+
+            logger.debug('XMAP updated after mask: \n{}\n'.format(xmap.values))
+            logger.debug('XMAP flags {}'.format(xmap.values.flags))
+
             avgd[usename] = xmap.copy()
+
+            logger.debug('Saved as copy...\n{}\n'.format(avgd[usename].values))
 
             xtg.say('Map file to {}'.format(filename))
             avgd[usename].to_file(filename)
