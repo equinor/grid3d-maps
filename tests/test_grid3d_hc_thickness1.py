@@ -1,13 +1,13 @@
 import os
 import sys
-import logging
+
 import numpy as np
 
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface as RS
 
 import xtgeo_grid3d_map_apps.grid3d_hc_thickness as xx
-from .test_grid3d_hc_thickness2 import assert_equal, assert_almostequal
+from .test_grid3d_hc_thickness2 import assert_almostequal
 
 xtg = XTGeoDialog()
 
@@ -39,8 +39,8 @@ def test_hc_thickness1a():
     val = allz.values1d
 
     # -0.0574 in RMS volumetrics, but within range as different approach
-    assert_almostequal(np.nanmean(val), -0.06269, 0.0001)
-    assert_almostequal(np.nanstd(val), 0.301938, 0.0001)
+    assert_almostequal(np.nanmean(val), -0.06269, 0.001)
+    assert_almostequal(np.nanstd(val), 0.301938, 0.001)
 
 
 def test_hc_thickness1b():
@@ -51,3 +51,31 @@ def test_hc_thickness1b():
 def test_hc_thickness1c():
     """HC thickness with YAML config example 1c; no map settings"""
     xx.main(['--config', 'tests/yaml/hc_thickness1c.yaml'])
+
+
+def test_hc_thickness1d():
+    """HC thickness with YAML config example 1d; as 1c but use_porv instead"""
+    xx.main(['--config', 'tests/yaml/hc_thickness1d.yaml'])
+
+    x1d = RS(os.path.join(td, 'all--t1d_oilthickness--19991201.gri'))
+
+    assert_almostequal(x1d.values.mean(), 0.50951876240061789, 0.0001)
+
+
+def test_hc_thickness1e():
+    """HC thickness with YAML config 1e; as 1d but use ROFF grid input"""
+    xx.main(['--config', 'tests/yaml/hc_thickness1e.yaml'])
+
+    x1e = RS(os.path.join(td, 'all--hc1e_oilthickness--19991201.gri'))
+    print(x1e.values.mean())
+    assert_almostequal(x1e.values.mean(), 0.509518755093, 0.0001)
+
+
+def test_hc_thickness1f():
+    """HC thickness with YAML config 1e; but use rotated template map"""
+    xx.main(['--config', 'tests/yaml/hc_thickness1f.yaml'])
+
+    x1f = RS(os.path.join(td, 'all--hc1f_oilthickness--19991201.gri'))
+    print(x1f.values.mean())
+    # other mean as the map is smaller; checked in RMS
+    assert_almostequal(x1f.values.mean(), 1.0999, 0.0001)

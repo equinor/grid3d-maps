@@ -3,9 +3,9 @@
 from __future__ import division, print_function, absolute_import
 
 import copy
-from xtgeo.common import XTGeoDialog
+import xtgeo
 
-xtg = XTGeoDialog()
+xtg = xtgeo.common.XTGeoDialog()
 
 logger = xtg.functionlogger(__name__)
 
@@ -21,10 +21,18 @@ def check_mapsettings(config, grd):
 
     # Compute the geometrics values from the mapsettings:
     cfmp = config['mapsettings']
-    xmin = cfmp['xori']  # since unrotated map
-    xmax = xmin + (cfmp['ncol'] - 1) * cfmp['xinc']
-    ymin = cfmp['yori']  # since unrotated map
-    ymax = ymin + (cfmp['nrow'] - 1) * cfmp['yinc']
+
+    if 'templatefile' in cfmp:
+        mymap = xtgeo.surface.RegularSurface(cfmp['templatefile'])
+        xmin = mymap.xmin
+        xmax = mymap.xmax
+        ymin = mymap.ymin
+        ymax = mymap.ymax
+    else:
+        xmin = cfmp['xori']  # since unrotated map
+        xmax = xmin + (cfmp['ncol'] - 1) * cfmp['xinc']
+        ymin = cfmp['yori']  # since unrotated map
+        ymax = ymin + (cfmp['nrow'] - 1) * cfmp['yinc']
 
     # problems score pscore is 0 if all is OK
     pscore = 0

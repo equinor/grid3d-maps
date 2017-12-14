@@ -18,31 +18,6 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-def check_mapsettings(config, grd):
-    """Check if given map settings looks sane compared with actual grid
-
-    It returns a 'pscore' which is a measure of problems. Everything
-    greater than 0 is a problem, and > 0 is critical
-    """
-
-    ggeom = grd.get_geometrics(return_dict=True, cellcenter=False)
-
-    # Compute the geometrics values from the mapsettings:
-    cfmp = config['mapsettings']
-    xmin = cfmp['xori']  # since unrotated map
-    xmax = xmin + (cfmp['ncol'] - 1) * cfmp['xinc']
-    ymin = cfmp['yori']  # since unrotated map
-    ymax = ymin + (cfmp['nrow'] - 1) * cfmp['yinc']
-
-    # problems score pscore is 0 if all is OK
-    pscore = 0
-    if xmax < ggeom['xmin'] or xmin > ggeom['xmax']:
-        pscore += 10
-
-    if ymax < ggeom['ymin'] or ymin > ggeom['ymax']:
-        pscore += 10
-
-    return pscore
 
 
 def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
@@ -51,6 +26,23 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
     layerlist = (1, zonation.shape[2])
 
     mapzd = OrderedDict()
+
+    if 'templatefile' in config['mapsettings']:
+        basemap = RegularSurface(config['mapsettings']['templatefile'])
+        basemap.values = 0.0
+    else:
+        ncol = config['mapsettings'].get('ncol')
+        nrow = config['mapsettings'].get('nrow')
+
+        basemap = RegularSurface(
+            xori=config['mapsettings'].get('xori'),
+            yori=config['mapsettings'].get('yori'),
+            ncol=config['mapsettings'].get('ncol'),
+            nrow=config['mapsettings'].get('nrow'),
+            xinc=config['mapsettings'].get('xinc'),
+            yinc=config['mapsettings'].get('yinc'),
+            values=np.zeros((ncol, nrow))
+        )
 
     for zname, zrange in zoned.items():
 
@@ -87,19 +79,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
 
         for date, hcpfz in hcpfzd.items():
             logger.info('Mapping <{}> for date <{}> ...'.format(zname, date))
-
-            ncol = config['mapsettings'].get('ncol')
-            nrow = config['mapsettings'].get('nrow')
-
-            xmap = RegularSurface(
-                xori=config['mapsettings'].get('xori'),
-                yori=config['mapsettings'].get('yori'),
-                ncol=config['mapsettings'].get('ncol'),
-                nrow=config['mapsettings'].get('nrow'),
-                xinc=config['mapsettings'].get('xinc'),
-                yinc=config['mapsettings'].get('yinc'),
-                values=np.zeros((ncol, nrow))
-            )
+            xmap = basemap.copy()
 
             xmap.hc_thickness_from_3dprops(xprop=initd['xc'],
                                            yprop=initd['yc'],

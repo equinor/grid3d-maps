@@ -1,9 +1,6 @@
 title: Reek
 #
-# No map settings here (will be automatically derived from 3D grid)!
-
-# just give rootname in case of "eclipserun" model
-# input is what to be made maps of
+# Using PORV as method
 input:
   eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
   dates:
@@ -25,11 +22,11 @@ computesettings:
   mode: oil
   critmode: No
   shc_interval: [0.1, 1]          # saturation interv
-  method: use_poro
+  method: use_porv
   zone: Yes
   all: Yes
 
 output:
-  tag: hc1c
+  tag: hc1d
   mapfolder: TMP
   plotfolder: TMP

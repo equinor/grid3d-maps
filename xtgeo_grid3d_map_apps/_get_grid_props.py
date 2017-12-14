@@ -390,7 +390,6 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
 
             # treating difference values
             if '-' in date:
-                print('DIFF found: {}'.format(date))
                 date1 = date.split('-')[0]
                 date2 = date.split('-')[1]
 
@@ -411,7 +410,7 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
                     if ok1 and ok2:
                         ptmp = ptmp1 - ptmp2
                         propd[pname] = ptmp
-                        print('DIFF were made: {}'.format(pname))
+                        logger.debug('DIFF were made: {}'.format(pname))
 
             # only one date
             else:

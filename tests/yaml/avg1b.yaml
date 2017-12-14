@@ -1,0 +1,34 @@
+title: Reek
+# Case with includefile
+
+# Use pure ROFF input
+
+input:
+  grid: $eclroot.UNRST
+  PORO:
+  PRESSURE--19991201:
+  PRESSURE--20030101-19991201: $eclroot.UNRST
+
+# zonation from file on YAML format
+zonation:
+  yamlfile: tests/yaml/avg1_zone.yaml
+
+computesettings:
+  zone: Yes
+  all: No
+  mask_zeros: Yes  # means that ouput maps will be set to undef where zero
+
+# map definition (not rotated maps only)
+mapsettings:
+  xori: 457000
+  xinc: 50
+  yori: 5927000
+  yinc: 50
+  ncol: 200
+  nrow: 250
+
+output:
+  tag: avg1b     # the tag will added to file name as extra info, e.g. as
+                 # z1--avg1b_average_poro.gri
+  mapfolder: TMP
+  plotfolder: TMP

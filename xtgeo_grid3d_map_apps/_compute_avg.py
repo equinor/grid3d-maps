@@ -93,7 +93,6 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
             filename = _avg_filesettings(config, zname, propname, mode='map')
             usename = (zname, propname)
 
-            print('MASK: ', config['computesettings']['mask_zeros'])
             if config['computesettings']['mask_zeros']:
                 xmap.values = ma.masked_inside(xmap.values, -1e-30, 1e-30)
 
