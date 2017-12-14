@@ -40,7 +40,7 @@ def test_hc_thickness1a():
 
     # -0.0574 in RMS volumetrics, but within range as different approach
     assert_almostequal(np.nanmean(val), -0.06269, 0.001)
-    assert_almostequal(np.nanstd(val), 0.301938, 0.001)
+    assert_almostequal(np.nanstd(val), 0.303, 0.001)
 
 
 def test_hc_thickness1b():
