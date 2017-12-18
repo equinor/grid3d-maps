@@ -10,7 +10,6 @@ simulation files (or eventually other similators).
 from __future__ import division, print_function, absolute_import
 
 import sys
-import logging
 
 from xtgeo.common import XTGeoDialog
 
@@ -29,8 +28,6 @@ appdescr = 'Make HC thickness maps directly from 3D grids'
 __version__ = _version.get_versions()['version']
 
 xtg = XTGeoDialog()
-
-XTGeoDialog.print_xtgeo_header(appname, __version__)
 
 logger = xtg.basiclogger(__name__)
 
@@ -150,6 +147,8 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned):
 
 
 def main(args=None):
+
+    XTGeoDialog.print_xtgeo_header(appname, __version__)
 
     xtg.say('Parse command line')
     args = do_parse_args(args)

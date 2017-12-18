@@ -56,10 +56,15 @@ def parse_args(args, appname, appdescr):
                         required=True,
                         help='Config file on YAML format (required)')
 
+    parser.add_argument('-f', '--folderroot',
+                        dest='folderroot',
+                        type=str,
+                        help='Folder root name for inputdata')
+
     parser.add_argument('-e', '--eclroot',
                         dest='eclroot',
                         type=str,
-                        help='Eclipse root name')
+                        help='Eclipse root name (includes case name)')
 
     parser.add_argument('--mapfolder',
                         dest='mapfolder',
@@ -146,6 +151,11 @@ def yconfig_override(config, args, appname):
         newconfig['input']['eclroot'] = args.eclroot
         xtg.say('YAML config overruled... eclroot is now: <{}>'.
                 format(newconfig['input']['eclroot']))
+
+    if args.folderroot:
+        newconfig['input']['folderroot'] = args.folderroot
+        xtg.say('YAML config overruled... folderroot is now: <{}>'.
+                format(newconfig['input']['folderroot']))
 
     if args.zfile:
         newconfig['zonation']['yamlfile'] = args.zfile

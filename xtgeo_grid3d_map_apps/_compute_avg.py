@@ -23,16 +23,20 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
 
     avgd = OrderedDict()
 
-    ncol = config['mapsettings'].get('ncol')
-    nrow = config['mapsettings'].get('nrow')
+    if 'templatefile' in config['mapsettings']:
+        xmap = RegularSurface(config['mapsettings']['templatefile'])
+        xmap.values = 0.0
+    else:
+        ncol = config['mapsettings'].get('ncol')
+        nrow = config['mapsettings'].get('nrow')
 
-    xmap = RegularSurface(xori=config['mapsettings'].get('xori'),
-                          yori=config['mapsettings'].get('yori'),
-                          ncol=ncol,
-                          nrow=nrow,
-                          xinc=config['mapsettings'].get('xinc'),
-                          yinc=config['mapsettings'].get('yinc'),
-                          values=np.zeros((ncol, nrow)))
+        xmap = RegularSurface(xori=config['mapsettings'].get('xori'),
+                              yori=config['mapsettings'].get('yori'),
+                              ncol=ncol,
+                              nrow=nrow,
+                              xinc=config['mapsettings'].get('xinc'),
+                              yinc=config['mapsettings'].get('yinc'),
+                              values=np.zeros((ncol, nrow)))
 
     logger.debug('Flags of xmap is {}'.format(xmap.values.flags))
     xtg.say('Mapping ...')
@@ -213,25 +217,46 @@ def _avg_plotsettings(config, zname, pname):
     if 'faultpolygons' in config['plotsettings']:
         fpolyfile = config['plotsettings']['faultpolygons']
 
-    # there may be individual plotsettings for zname
-    if zname is not None and zname in config['plotsettings']:
+    # there may be individual plotsettings per property per zone...
+    if pname is not None and pname in config['plotsettings']:
 
-        zfg = config['plotsettings'][zname]
+        print("FOUND", pname)
 
-        if 'valuerange' in zfg:
-            valuerange = tuple(zfg['valuerange'])
+        pfg = config['plotsettings'][pname]
 
-        if 'diffvaluerange' in zfg:
-            diffvaluerange = tuple(zfg['diffvaluerange'])
+        if 'valuerange' in pfg:
+            valuerange = tuple(pfg['valuerange'])
 
-        if 'xlabelrotation' in zfg:
-            xlabelrotation = zfg['xlabelrotation']
+        if 'diffvaluerange' in pfg:
+            diffvaluerange = tuple(pfg['diffvaluerange'])
 
-        if 'colortable' in zfg:
-            colortable = zfg['colortable']
+        if 'xlabelrotation' in pfg:
+            xlabelrotation = pfg['xlabelrotation']
 
-        if 'faultpolygons' in zfg:
-            fpolyfile = zfg['faultpolygons']
+        if 'colortable' in pfg:
+            colortable = pfg['colortable']
+
+        if 'faultpolygons' in pfg:
+            fpolyfile = pfg['faultpolygons']
+
+        if zname is not None and zname in config['plotsettings'][pname]:
+
+            zfg = config['plotsettings'][pname][zname]
+
+            if 'valuerange' in zfg:
+                valuerange = tuple(zfg['valuerange'])
+
+            if 'diffvaluerange' in zfg:
+                diffvaluerange = tuple(zfg['diffvaluerange'])
+
+            if 'xlabelrotation' in zfg:
+                xlabelrotation = zfg['xlabelrotation']
+
+            if 'colortable' in zfg:
+                colortable = zfg['colortable']
+
+            if 'faultpolygons' in zfg:
+                fpolyfile = zfg['faultpolygons']
 
     # assing settings to a dictionary which is returned
     plotcfg = {}

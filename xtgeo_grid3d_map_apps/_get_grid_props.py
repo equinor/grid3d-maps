@@ -19,6 +19,12 @@ logger = xtg.functionlogger(__name__)
 def files_to_import(config, appname):
     """Get a list of files to import, based on config"""
 
+    folderroot = None
+    if 'folderroot' in config['input']:
+        if config['input']['folderroot'] is not None:
+            folderroot = config['input']['folderroot']
+
+
     eclroot = None
     if 'eclroot' in config['input']:
         if config['input']['eclroot'] is not None:
@@ -72,10 +78,14 @@ def files_to_import(config, appname):
         logger.debug(config['input'])
 
         for item in config['input']:
+            if item == 'folderroot':
+                continue
             if item == 'eclroot':
                 continue
             elif item == 'grid':
                 gfile = config['input']['grid']
+                if '$folderroot' in gfile:
+                    gfile = gfile.replace('$folderroot', folderroot)
                 if '$eclroot' in gfile:
                     gfile = gfile.replace('$eclroot', eclroot)
             else:
@@ -85,6 +95,8 @@ def files_to_import(config, appname):
                         date = item.split('--')[1]
 
                     rfile = config['input'][item]
+                    if '$folderroot' in rfile:
+                        rfile = rfile.replace('$folderroot', folderroot)
                     if '$eclroot' in rfile:
                         rfile = rfile.replace('$eclroot', eclroot)
                     restartlist[param] = rfile
@@ -97,6 +109,8 @@ def files_to_import(config, appname):
 
                 else:
                     ifile = config['input'][item]
+                    if '$folderroot' in ifile:
+                        ifile = ifile.replace('$folderroot', folderroot)
                     if '$eclroot' in ifile:
                         ifile = ifile.replace('$eclroot', eclroot)
                     initlist[item] = ifile
@@ -141,7 +155,7 @@ def import_data(config, appname, gfile, initlist,
     # trick is defaultdict!
     #
     # The initfile itself may be a file or dictionary itself, e.g. either
-    # SOME.INIT or {Name: somefile.roff}. In the latter, we should lookfor
+    # SOME.INIT or {Name: somefile.roff}. In the latter, we should look for
     # Name in the file while doing the import.
 
     initdict = defaultdict(list)
@@ -152,7 +166,16 @@ def import_data(config, appname, gfile, initlist,
             lookfor, usefile = list(ifile.keys()), list(ifile.values())
             initdict[usefile[0]].append([ipar, lookfor[0]])
         else:
-            initdict[ifile].append([ipar, ipar])
+            lookfor = ipar
+
+            # if just a name: file.roff, than the name here and name in
+            # the file may not match. So here it is assumed that "lookfor"
+            # shall be 'unknown'
+
+            if ifile.endswith('.roff'):
+                lookfor = 'unknown'
+
+            initdict[ifile].append([ipar, lookfor])
 
     ppinitdict = pprint.PrettyPrinter(indent=4)
     logger.debug('\n{}'.format(ppinitdict.pformat(initdict)))
@@ -380,7 +403,7 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
 
     for pname in config['input']:
         usepname = pname
-        if pname == 'eclroot' or pname == 'grid':
+        if pname in set(['folderroot', 'eclroot', 'grid']):
             continue
 
         # initdata may also contain date if ROFF is input!

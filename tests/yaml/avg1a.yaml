@@ -1,5 +1,5 @@
 title: Reek
-# Case with a) includefile and b) plotsettings
+# Case with includefile for zoantion
 
 # just give rootname in case of "eclipserun" model
 # input is what to be made maps of
@@ -15,7 +15,7 @@ input:
 
 # zonation from file on YAML format
 zonation:
-  yamlfile: tests/yaml/avg1_zone.yaml
+  yamlfile: tests/yaml/avg1a_zone.yaml
 
 computesettings:
   zone: Yes
@@ -32,7 +32,7 @@ mapsettings:
   nrow: 250
 
 output:
-  tag: case1     # the tag will added to file name as extra info, e.g. as
-                 # z1--case1_average_poro.gri
+  tag: avg1a     # the tag will added to file name as extra info, e.g. as
+                 # z1--avg1a_average_poro.gri
   mapfolder: TMP
   plotfolder: TMP
