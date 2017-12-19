@@ -51,3 +51,8 @@ def test_average_map1c():
 
     z1poro = RS(os.path.join(td, 'all--avg1c_average_por.gri'))
     assert_almostequal(z1poro.values.mean(), 0.1678, 0.001, 'Mean value')
+
+
+def test_average_map1d():
+    """Test HC thickness with YAML config example 1d ROFF based, rotated map"""
+    xx.main(['--config', 'tests/yaml/avg1d.yaml'])

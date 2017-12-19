@@ -208,6 +208,9 @@ def _avg_plotsettings(config, zname, pname):
     if 'xlabelrotation' in config['plotsettings']:
         xlabelrotation = config['plotsettings']['xlabelrotation']
 
+    # better perhaps:
+    # xlabelrotation = config['plotsettings'].get('xlabelrotation', None)
+
     if 'valuerange' in config['plotsettings']:
         valuerange = tuple(config['plotsettings']['valuerange'])
 
@@ -219,8 +222,6 @@ def _avg_plotsettings(config, zname, pname):
 
     # there may be individual plotsettings per property per zone...
     if pname is not None and pname in config['plotsettings']:
-
-        print("FOUND", pname)
 
         pfg = config['plotsettings'][pname]
 
