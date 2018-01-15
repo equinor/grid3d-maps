@@ -40,10 +40,14 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
 
     logger.debug('Flags of xmap is {}'.format(xmap.values.flags))
     xtg.say('Mapping ...')
+    xtg.say('### yes')
+    if len(propd) == 0 or len(zoned) == 0:
+        raise RuntimeError('The dictionary <propd> or <zoned> is zero. Stop')
 
     for zname, zrange in zoned.items():
 
         logger.info('ZNAME and ZRANGE are {}:  {}'.format(zname, zrange))
+        xtg.say('### ZNAME and ZRANGE are {}:  {}'.format(zname, zrange))
         usezonation = zonation
         usezrange = zrange
 
@@ -74,6 +78,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
                 continue
 
         # first map the ACTNUM; to be used as mask for output
+        xtg.say('### Make avgs ...')
         logger.debug('np flags before ...{}'.format(xmap.values.flags))
         xmap.avg_from_3dprop(xprop=specd['ixc'],
                              yprop=specd['iyc'],
@@ -83,9 +88,12 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
                              zone_minmax=[usezrange, usezrange])
 
         logger.debug('np flags after gridding...{}'.format(xmap.values.flags))
+        xtg.say('### Make avgs ... DONE')
 
         # raise SystemExit
         for propname, pvalues in propd.items():
+
+            xtg.say('### propname{}'.format(propname))
 
             xmap.avg_from_3dprop(xprop=specd['ixc'],
                                  yprop=specd['iyc'],
@@ -166,6 +174,8 @@ def _avg_filesettings(config, zname, pname, mode='root'):
     # need to trick a bit by first replacing '--' (if delim = '--')
     # with '~~', then back again...
     pname = pname.replace(delim, '~~').replace('-', '_').replace('~~', delim)
+
+    print('PNAME: ', pname)
 
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'

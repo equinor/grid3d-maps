@@ -13,7 +13,7 @@ from .test_grid3d_hc_thickness2 import assert_almostequal
 xtg = XTGeoDialog()
 logger = xtg.basiclogger(__name__)
 
-if not xtg._testsetup():
+if not xtg.testsetup():
     sys.exit(-9)
 
 td = xtg.tmpdir

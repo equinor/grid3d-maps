@@ -232,8 +232,8 @@ def import_data(config, appname, gfile, initlist,
             for prop in tmp.props:
                 logger.info('Append prop: {}'.format(prop))
                 restobjects.append(prop)
-        except Exception:
-            raise SystemExit('Fatal error')
+        except Exception as message:
+            raise SystemExit(message)
         else:
             logger.info('Works further...')
             for prop in tmp.props:
