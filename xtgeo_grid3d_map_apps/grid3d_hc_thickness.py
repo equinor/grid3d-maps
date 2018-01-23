@@ -21,6 +21,7 @@ from . import _hc_plotmap
 from . import _mapsettings
 from . import _version
 
+
 appname = 'grid3d_hc_thickness'
 
 appdescr = 'Make HC thickness maps directly from 3D grids'

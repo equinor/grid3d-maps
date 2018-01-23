@@ -2,8 +2,6 @@
 
 from __future__ import division, print_function, absolute_import
 
-import sys
-import logging
 import getpass
 from time import localtime, strftime
 import numpy as np
@@ -16,8 +14,6 @@ from xtgeo.xyz import Polygons
 xtg = XTGeoDialog()
 
 logger = xtg.functionlogger(__name__)
-
-
 
 
 def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
@@ -150,6 +146,9 @@ def _hc_filesettings(config, zname, date, mode='map'):
 
     phase = config['computesettings']['mode']
 
+    if phase == 'comb' or phase == 'both':
+        phase = 'hc'
+
     tag = ''
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'
@@ -171,6 +170,10 @@ def _hc_plotsettings(config, zname, date):
     """Local function for plot additional info."""
 
     phase = config['computesettings']['mode']
+
+    if phase == 'comb' or phase == 'both':
+        phase = 'oil + gas'
+
     rock = 'net'
     if config['computesettings']['mode'] == 'dz_only':
         rock = 'bulk'

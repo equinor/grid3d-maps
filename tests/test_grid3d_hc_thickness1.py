@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import glob
+import warnings
 
 import numpy as np
 
@@ -61,6 +62,7 @@ def test_hc_thickness1c():
 
 def test_hc_thickness1d():
     """HC thickness with YAML config example 1d; as 1c but use_porv instead"""
+    warnings.simplefilter('error')
     xx.main(['--config', 'tests/yaml/hc_thickness1d.yaml'])
 
     x1d = RS(os.path.join(td, 'all--hc1d_oilthickness--19991201.gri'))
@@ -78,10 +80,21 @@ def test_hc_thickness1e():
 
 
 def test_hc_thickness1f():
-    """HC thickness with YAML config 1e; but use rotated template map"""
+    """HC thickness with YAML config 1f; use rotated template map"""
     xx.main(['--config', 'tests/yaml/hc_thickness1f.yaml'])
 
     x1f = RS(os.path.join(td, 'all--hc1f_oilthickness--19991201.gri'))
+    logger.info(x1f.values.mean())
+    # other mean as the map is smaller; checked in RMS
+    assert_almostequal(x1f.values.mean(), 1.0999, 0.0001)
+
+
+def test_hc_thickness1g():
+    """HC thickness with YAML config 1g; use rotated template map and both
+    oil and gas"""
+    xx.main(['--config', 'tests/yaml/hc_thickness1g.yaml'])
+
+    x1f = RS(os.path.join(td, 'all--hc1g_hcthickness--19991201.gri'))
     logger.info(x1f.values.mean())
     # other mean as the map is smaller; checked in RMS
     assert_almostequal(x1f.values.mean(), 1.0999, 0.0001)

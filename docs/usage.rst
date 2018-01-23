@@ -101,6 +101,15 @@ Example where a template map is given (can have rotation) in mapsettings
    :language: yaml
 
 
+HC thickness 1g
+"""""""""""""""
+
+Example as 1f, but with both phases (use mode comb or both)
+
+.. literalinclude:: ../tests/yaml/hc_thickness1g.yaml
+   :language: yaml
+
+
 ----------------------------------
 Example of setup for Average maps
 ----------------------------------

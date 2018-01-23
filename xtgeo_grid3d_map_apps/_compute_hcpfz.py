@@ -2,9 +2,7 @@
 
 from __future__ import division, print_function, absolute_import
 
-import sys
 import pprint
-import logging
 
 from xtgeo.common import XTGeoDialog
 
@@ -44,6 +42,8 @@ def _get_hcpfz_ecl(config, initd, restartd, dates):
     hcpfzd = dict()
 
     shcintv = config['computesettings']['shc_interval']
+    hcmode = config['computesettings']['mode']
+    hcmethod = config['computesettings']['method']
 
     if not dates:
         xtg.error('Dates are missing. Bug?')
@@ -51,28 +51,36 @@ def _get_hcpfz_ecl(config, initd, restartd, dates):
 
     for date in dates:
 
-        usehc = restartd['s' + config['computesettings']['mode'] + '_' +
-                         str(date)]
+        if hcmode == 'oil' or hcmode == 'gas':
+            usehc = restartd['s' + hcmode + '_' + str(date)]
+        elif hcmode == 'comb' or hcmode == 'both':
+            usehc1 = restartd['s' + 'oil' + '_' + str(date)]
+            usehc2 = restartd['s' + 'gas' + '_' + str(date)]
+            usehc = usehc1 + usehc2
+        else:
+            raise ValueError('Invalid mode "{}" in "computesettings: method"'
+                             .format(hcmode))
 
-        if config['computesettings']['method'] == 'use_poro':
+        if hcmethod == 'use_poro':
             usehc[usehc < shcintv[0]] = 0.0
             usehc[usehc > shcintv[1]] = 0.0
             hcpfzd[date] = initd['poro'] * initd['ntg'] * usehc * initd['dz']
 
-        elif config['computesettings']['method'] == 'use_porv':
+        elif hcmethod == 'use_porv':
             area = initd['dx'] * initd['dy']
             usehc[usehc < shcintv[0]] = 0.0
             usehc[usehc > shcintv[1]] = 0.0
             hcpfzd[date] = initd['porv'] * usehc / area
 
-        elif config['computesettings']['method'] == 'dz_only':
+        elif hcmethod == 'dz_only':
             usedz = initd['dz'].copy()
             usedz[usehc < shcintv[0]] = 0.0
             usedz[usehc > shcintv[1]] = 0.0
             hcpfzd[date] = usedz
 
         else:
-            raise RuntimeError('Unsupported computesettings: method')
+            raise ValueError('Unsupported method "{}" in "computesettings:'
+                             ' method"'.format(hcmethod))
 
         logger.info('HCPFZ minimum is {}'.format(hcpfzd[date].min()))
         logger.info('HCPFZ maximum is {}'.format(hcpfzd[date].max()))
