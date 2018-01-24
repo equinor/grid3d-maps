@@ -94,7 +94,10 @@ def test_hc_thickness1g():
     oil and gas"""
     xx.main(['--config', 'tests/yaml/hc_thickness1g.yaml'])
 
-    x1f = RS(os.path.join(td, 'all--hc1g_hcthickness--19991201.gri'))
-    logger.info(x1f.values.mean())
-    # other mean as the map is smaller; checked in RMS
-    assert_almostequal(x1f.values.mean(), 1.0999, 0.0001)
+    x1g1 = RS(os.path.join(td, 'all--hc1g_oilthickness--19991201.gri'))
+    logger.info(x1g1.values.mean())
+    assert_almostequal(x1g1.values.mean(), 1.0999, 0.0001)
+
+    x1g2 = RS(os.path.join(td, 'all--hc1g_gasthickness--19991201.gri'))
+    logger.info(x1g1.values.mean())
+    assert_almostequal(x1g2.values.mean(), 0.000, 0.0001)

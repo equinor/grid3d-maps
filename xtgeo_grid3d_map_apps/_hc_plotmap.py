@@ -16,7 +16,7 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
+def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
     """Do the actual map gridding, for zones and groups of zones"""
 
     layerlist = (1, zonation.shape[2])
@@ -84,7 +84,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
                                            zone_minmax=(usezrange, usezrange),
                                            layer_minmax=layerlist)
 
-            filename = _hc_filesettings(config, zname, date)
+            filename = _hc_filesettings(config, zname, date, hcmode)
             xtg.say('Map file to {}'.format(filename))
             xmap.to_file(filename)
 
@@ -99,7 +99,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned):
     return mapzd
 
 
-def do_hc_plotting(config, mapzd):
+def do_hc_plotting(config, mapzd, hcmode):
     """Do plotting via matplotlib to PNG (etc) (if requested)"""
 
     xtg.say('Plotting ...')
@@ -108,9 +108,10 @@ def do_hc_plotting(config, mapzd):
 
         for date, xmap in mapd.items():
 
-            plotfile = _hc_filesettings(config, zname, date, mode='plot')
+            plotfile = _hc_filesettings(config, zname, date,
+                                        hcmode, mode='plot')
 
-            pcfg = _hc_plotsettings(config, zname, date)
+            pcfg = _hc_plotsettings(config, zname, date, hcmode)
 
             xtg.say('Plot to {}'.format(plotfile))
 
@@ -136,7 +137,7 @@ def do_hc_plotting(config, mapzd):
                            faults=faults)
 
 
-def _hc_filesettings(config, zname, date, mode='map'):
+def _hc_filesettings(config, zname, date, hcmode, mode='map'):
     """Local function for map or plot file name"""
 
     delim = '--'
@@ -144,9 +145,9 @@ def _hc_filesettings(config, zname, date, mode='map'):
     if config['output']['lowercase']:
         zname = zname.lower()
 
-    phase = config['computesettings']['mode']
+    phase = hcmode
 
-    if phase == 'comb' or phase == 'both':
+    if phase == 'comb':
         phase = 'hc'
 
     tag = ''
@@ -166,12 +167,12 @@ def _hc_filesettings(config, zname, date, mode='map'):
     return path + xfil
 
 
-def _hc_plotsettings(config, zname, date):
+def _hc_plotsettings(config, zname, date, hcmode):
     """Local function for plot additional info."""
 
     phase = config['computesettings']['mode']
 
-    if phase == 'comb' or phase == 'both':
+    if phase == 'comb':
         phase = 'oil + gas'
 
     rock = 'net'

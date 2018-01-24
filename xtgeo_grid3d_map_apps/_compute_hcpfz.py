@@ -11,7 +11,7 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-def get_hcpfz(config, initd, restartd, dates):
+def get_hcpfz(config, initd, restartd, dates, hcmode):
     """Compute a dictionary with hcpfz numpy (per date)."""
     # There may be cases where dates are missing, e.g. if computing
     # directly from the stoiip parameter.
@@ -26,7 +26,7 @@ def get_hcpfz(config, initd, restartd, dates):
         hcpfzd[gdate] = initd['xhcpv'] / area
 
     else:
-        hcpfzd = _get_hcpfz_ecl(config, initd, restartd, dates)
+        hcpfzd = _get_hcpfz_ecl(config, initd, restartd, dates, hcmode)
 
     alldates = hcpfzd.keys()
 
@@ -36,13 +36,12 @@ def get_hcpfz(config, initd, restartd, dates):
     return hcpfzd
 
 
-def _get_hcpfz_ecl(config, initd, restartd, dates):
+def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode):
     # local function, get data from Eclipse INIT and RESTART
 
     hcpfzd = dict()
 
     shcintv = config['computesettings']['shc_interval']
-    hcmode = config['computesettings']['mode']
     hcmethod = config['computesettings']['method']
 
     if not dates:
@@ -53,7 +52,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates):
 
         if hcmode == 'oil' or hcmode == 'gas':
             usehc = restartd['s' + hcmode + '_' + str(date)]
-        elif hcmode == 'comb' or hcmode == 'both':
+        elif hcmode == 'comb':
             usehc1 = restartd['s' + 'oil' + '_' + str(date)]
             usehc2 = restartd['s' + 'gas' + '_' + str(date)]
             usehc = usehc1 + usehc2

@@ -120,14 +120,14 @@ def get_zranges(config, dz):
     return zonation, zoned
 
 
-def compute_hcpfz(config, initd, restartd, dates):
+def compute_hcpfz(config, initd, restartd, dates, hcmode):
 
-    hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates)
+    hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates, hcmode)
 
     return hcpfzd
 
 
-def plotmap(config, grd, initd, hcpfzd, zonation, zoned):
+def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode):
     """Do checks, mapping and plotting"""
 
     # check if values looks OK. Status flag:
@@ -141,10 +141,11 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned):
         if status >= 10:
             xtg.critical('STOP! Mapsettings defined is outside the 3D grid!')
 
-    mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation, zoned)
+    mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation,
+                                      zoned, hcmode)
 
     if config['output']['plotfolder'] is not None:
-        _hc_plotmap.do_hc_plotting(config, mapzd)
+        _hc_plotmap.do_hc_plotting(config, mapzd, hcmode)
 
 
 def main(args=None):
@@ -180,11 +181,18 @@ def main(args=None):
     dzp = initd['dz']
     zonation, zoned = get_zranges(config, dzp)
 
-    xtg.say('Compute HCPFZ property')
-    hcpfzd = compute_hcpfz(config, initd, restartd, dates)
+    if config['computesettings']['mode'] == 'both':
+        hcmodelist = ['oil', 'gas']
+    else:
+        hcmodelist = [config['computesettings']['mode']]
 
-    xtg.say('Do mapping...')
-    plotmap(config, grd, initd, hcpfzd, zonation, zoned)
+    for hcmode in hcmodelist:
+
+        xtg.say('Compute HCPFZ property for {}'.format(hcmode))
+        hcpfzd = compute_hcpfz(config, initd, restartd, dates, hcmode)
+
+        xtg.say('Do mapping...')
+        plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode)
 
 
 if __name__ == '__main__':
