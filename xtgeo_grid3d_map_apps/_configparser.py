@@ -91,7 +91,6 @@ def parse_args(args, appname, appdescr):
                             default=None,
                             help='A list of dates on YYYYMMDD format')
 
-        logger.debug('DATES')
         parser.add_argument('-m', '--mode',
                             dest='mode',
                             type=str,
@@ -101,7 +100,7 @@ def parse_args(args, appname, appdescr):
     if len(args) < 2:
         parser.print_help()
         print('QUIT')
-        sys.exit(0)
+        raise SystemExit
 
     args = parser.parse_args(args)
 
@@ -137,7 +136,7 @@ def yconfig(inputfile):
     out = pp.pformat(config)
     logger.debug('\n{}'.format(out))
 
-    logger.info(config)
+    logger.info('CONFIG:\n {}'.format(config))
 
     return config
 
@@ -204,6 +203,9 @@ def yconfig_set_defaults(config, appname):
     if 'computesettings' not in newconfig:
         newconfig['computesettings'] = dict()
 
+    if 'tuning' not in newconfig['computesettings']:
+        newconfig['computesettings']['tuning'] = dict()
+
     if 'mask_zeros' not in newconfig['computesettings']:
         newconfig['computesettings']['mask_zeros'] = False
 
@@ -231,6 +233,12 @@ def yconfig_set_defaults(config, appname):
     if 'yamlfile' not in newconfig['zonation']:
         newconfig['zonation']['yamlfile'] = None
 
+    if 'zone_avg' not in newconfig['computesettings']['tuning']:
+        newconfig['computesettings']['tuning']['zone_avg'] = False
+
+    if 'coarsen' not in newconfig['computesettings']['tuning']:
+        newconfig['computesettings']['tuning']['coarsen'] = 1
+
     if appname == 'grid3d_hc_thickness':
 
         if 'dates' not in newconfig['input']:
@@ -242,6 +250,9 @@ def yconfig_set_defaults(config, appname):
 
         if 'method' not in newconfig['computesettings']:
             newconfig['computesettings']['method'] = 'use_poro'
+
+        if 'mask_outside' not in newconfig['computesettings']:
+            newconfig['computesettings']['mask_outside'] = False
 
         if 'shc_interval' not in newconfig['computesettings']:
             newconfig['computesettings']['shc_interval'] = [0.0001, 1.0]

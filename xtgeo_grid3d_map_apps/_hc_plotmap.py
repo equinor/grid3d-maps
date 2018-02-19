@@ -19,8 +19,6 @@ logger = xtg.functionlogger(__name__)
 def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
     """Do the actual map gridding, for zones and groups of zones"""
 
-    layerlist = (1, zonation.shape[2])
-
     mapzd = OrderedDict()
 
     if 'templatefile' in config['mapsettings']:
@@ -39,6 +37,10 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
             yinc=config['mapsettings'].get('yinc'),
             values=np.zeros((ncol, nrow))
         )
+
+    mycoarsen = config['computesettings']['tuning']['coarsen']
+    myavgzon = config['computesettings']['tuning']['zone_avg']
+    mymaskoutside = config['computesettings']['mask_outside']
 
     for zname, zrange in zoned.items():
 
@@ -82,7 +84,10 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
                                            hcpfzprop=hcpfz,
                                            zoneprop=usezonation,
                                            zone_minmax=(usezrange, usezrange),
-                                           layer_minmax=layerlist)
+                                           coarsen=mycoarsen,
+                                           dzprop=initd['dz'],
+                                           zone_avg=myavgzon,
+                                           mask_outside=mymaskoutside)
 
             filename = _hc_filesettings(config, zname, date, hcmode)
             xtg.say('Map file to {}'.format(filename))

@@ -1,5 +1,4 @@
 import os
-import sys
 import shutil
 import glob
 import warnings
@@ -18,7 +17,7 @@ xtg = XTGeoDialog()
 logger = xtg.basiclogger(__name__)
 
 if not xtg.testsetup():
-    sys.exit(-9)
+    raise SystemExit
 
 td = xtg.tmpdir
 testpath = xtg.testpath
@@ -101,3 +100,39 @@ def test_hc_thickness1g():
     x1g2 = RS(os.path.join(td, 'all--hc1g_gasthickness--19991201.gri'))
     logger.info(x1g1.values.mean())
     assert_almostequal(x1g2.values.mean(), 0.000, 0.0001)
+
+
+def test_hc_thickness1h():
+    """Test HC thickness with YAML copy from 1a, with tuning to speed up"""
+    xx.main(['--config', 'tests/yaml/hc_thickness1h.yaml'])
+
+    # now read in result and check avg value
+    # x = RegularSurface('TMP/gull_1985_10_01.gri')
+    # avg = float("{:4.3f}".format(float(x.values.mean())))
+    # logger.info("AVG is " + str(avg))
+    # assert avg == 3.649
+
+    allz = RS(os.path.join(td,
+                           'all--tuning_oilthickness--20010801_19991201.gri'))
+    val = allz.values1d
+
+    # -0.0574 in RMS volumetrics, but within range as different approach
+    assert_almostequal(np.nanmean(val), -0.0588, 0.005)
+    assert_almostequal(np.nanstd(val), 0.262, 0.005)
+
+
+def test_hc_thickness1i():
+    """Test HC thickness with YAML config example 1i, based on 1a"""
+    xx.main(['--config', 'tests/yaml/hc_thickness1i.yaml'])
+
+    # now read in result and check avg value
+    # x = RegularSurface('TMP/gull_1985_10_01.gri')
+    # avg = float("{:4.3f}".format(float(x.values.mean())))
+    # logger.info("AVG is " + str(avg))
+    # assert avg == 3.649
+
+    allz = RS(os.path.join(td, 'all--hc1i_oilthickness--20010801_19991201.gri'))
+    val = allz.values1d
+
+    # -0.0574 in RMS volumetrics, but within range as different approach
+    assert_almostequal(np.nanmean(val), -0.10515, 0.001)

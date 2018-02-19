@@ -68,13 +68,19 @@ def get_grid_props_data(config, appname):
 
     xtg.say('Grid file is {}'.format(gfile))
 
-    xtg.say('Getting INIT file data')
-    for initpar, initfile in initlist.items():
-        logger.info('{} file is {}'.format(initpar, initfile))
+    if len(initlist) > 0:
+        for initpar, initfile in initlist.items():
+            if 'INIT' in initfile:
+                xtg.say('Getting INIT file data')
+            else:
+                xtg.say('Getting ROFF file data')
 
-    xtg.say('Getting RESTART file data')
-    for restpar, restfile in restartlist.items():
-        logger.info('{} file is {}'.format(restpar, restfile))
+            logger.info('{} file is {}'.format(initpar, initfile))
+
+    if len(restartlist) > 0:
+        xtg.say('Getting RESTART file data')
+        for restpar, restfile in restartlist.items():
+            logger.info('{} file is {}'.format(restpar, restfile))
 
     xtg.say('Getting dates')
     for date in dates:

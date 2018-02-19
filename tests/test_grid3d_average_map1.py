@@ -56,3 +56,7 @@ def test_average_map1c():
 def test_average_map1d():
     """Test HC thickness with YAML config example 1d ROFF based, rotated map"""
     xx.main(['--config', 'tests/yaml/avg1d.yaml'])
+
+def test_average_map1e():
+    """Test HC thickness with YAML config example 1e ROFF based, tuning"""
+    xx.main(['--config', 'tests/yaml/avg1e.yaml'])

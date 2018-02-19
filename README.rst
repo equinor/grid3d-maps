@@ -23,9 +23,3 @@ Features
 * Outputs PNG figures and Irap (RMS) binary maps
 * Simple configuration through a YAML file
 * Configuration from YAML can be overriden by command line options
-
-
-Credits
--------
-
-The FMU team.

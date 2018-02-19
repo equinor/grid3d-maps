@@ -3,6 +3,7 @@
 from __future__ import division, print_function, absolute_import
 
 import pprint
+import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
 
@@ -16,6 +17,15 @@ def get_hcpfz(config, initd, restartd, dates, hcmode):
     # There may be cases where dates are missing, e.g. if computing
     # directly from the stoiip parameter.
 
+    # check numpy
+    for key, val in initd.items():
+        if isinstance(val, ma.MaskedArray):
+            raise ValueError('Item {} is masked'.format(key))
+
+    for key, val in restartd.items():
+        if isinstance(val, ma.MaskedArray):
+            raise ValueError('Item {} is masked'.format(key))
+
     hcpfzd = dict()
 
     # use the given date from config if stoiip, giip, etc as info
@@ -23,6 +33,7 @@ def get_hcpfz(config, initd, restartd, dates, hcmode):
 
     if 'xhcpv' in config['input']:
         area = initd['dx'] * initd['dy']
+        area[area < 10.0] = 10.0
         hcpfzd[gdate] = initd['xhcpv'] / area
 
     else:
@@ -67,6 +78,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode):
 
         elif hcmethod == 'use_porv':
             area = initd['dx'] * initd['dy']
+            area[area < 10.0] = 10.0
             usehc[usehc < shcintv[0]] = 0.0
             usehc[usehc > shcintv[1]] = 0.0
             hcpfzd[date] = initd['porv'] * usehc / area
@@ -83,10 +95,9 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode):
 
         logger.info('HCPFZ minimum is {}'.format(hcpfzd[date].min()))
         logger.info('HCPFZ maximum is {}'.format(hcpfzd[date].max()))
-        logger.debug('HCPFZ REPR is {}'.format(repr(hcpfzd[date])))
 
     for key, val in hcpfzd.items():
-        logger.info('{}   {}'.format(key, type(val)))
+        logger.info('hcpfzd.items: {}   {}'.format(key, type(val)))
 
     # An important issue here is that one may ask for difference dates,
     # not just dates. Hence need to iterate over the dates in the input

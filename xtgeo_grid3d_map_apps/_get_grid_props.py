@@ -4,6 +4,7 @@ from __future__ import division, print_function, absolute_import
 
 import pprint
 from collections import defaultdict
+import numpy as np
 import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
@@ -23,7 +24,6 @@ def files_to_import(config, appname):
     if 'folderroot' in config['input']:
         if config['input']['folderroot'] is not None:
             folderroot = config['input']['folderroot']
-
 
     eclroot = None
     if 'eclroot' in config['input']:
@@ -150,6 +150,8 @@ def import_data(config, appname, gfile, initlist,
     # get the grid data + some geometrics
     grd = Grid(gfile, fformat='guess')
 
+    logger.info('Grid is now imported for {}'.format(appname))
+
     # collect data per initfile etc: make a dict on the form:
     # {initfilename: [[prop1, lookfor1], [prop2, lookfor2], ...]} the
     # trick is defaultdict!
@@ -162,7 +164,6 @@ def import_data(config, appname, gfile, initlist,
     for ipar, ifile in initlist.items():
         logger.info('Parameter INIT: {} \t file is {}'.format(ipar, ifile))
         if isinstance(ifile, dict):
-            print(repr(ifile))
             lookfor, usefile = list(ifile.keys()), list(ifile.values())
             initdict[usefile[0]].append([ipar, lookfor[0]])
         else:
@@ -199,6 +200,7 @@ def import_data(config, appname, gfile, initlist,
                 lookfornames.append(lookforname)
                 usenames.append(usename)
 
+            xtg.say('Import <{}> from <{}> ...'.format(lookfornames, inifile))
             tmp.from_file(inifile, names=lookfornames,
                           fformat='init', grid=grd)
             for i, name in enumerate(lookfornames):
@@ -211,10 +213,13 @@ def import_data(config, appname, gfile, initlist,
             tmp = GridProperty()
             usename, lookforname = iniprops[0]
 
+            xtg.say('Import <{}> from <{}> ...'.format(lookforname, inifile))
             tmp.from_file(inifile, name=lookforname, fformat='guess',
                           grid=grd)
             tmp.name = usename
             initobjects.append(tmp)
+
+    logger.info('Init type data is now imported for {}'.format(appname))
 
     # restarts; will issue an warning if one or more dates are not found
     # assume that this is Eclipse stuff .UNRST
@@ -240,6 +245,8 @@ def import_data(config, appname, gfile, initlist,
                 logger.info('Append prop: {}'.format(prop))
                 restobjects.append(prop)
 
+    logger.info('Restart type data is now imported for {}'.format(appname))
+
     newdateslist = []
     for rest in restobjects:
         newdateslist.append(rest.date)
@@ -253,28 +260,45 @@ def import_data(config, appname, gfile, initlist,
     for obj in restobjects:
         logger.info('Restart object for <{}> is <{}> '.format(obj.name, obj))
 
+    logger.info('Routine at end')
+
     return grd, initobjects, restobjects, newdateslist
 
 
 def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     """Process for HC thickness map; to get the needed numpies"""
 
+    logger.info('Getting numpies...')
+
+    logger.info('Getting actnum...')
     actnum = grd.get_actnum().values3d
+    logger.info('Got actnum...')
+    actnum = ma.filled(actnum)
+    logger.info('Ran ma.filled for actnum')
     # mask is False  to get values for all cells, also inactive
+
+    logger.info('Getting xc, yc, zc...')
     xc, yc, zc = grd.get_xyz(mask=False)
-    xc = xc.values3d
-    yc = yc.values3d
-    zc = zc.values3d
+    xc = ma.filled(xc.values3d)
+    yc = ma.filled(yc.values3d)
+    zc = ma.filled(zc.values3d)
 
-    dz = grd.get_dz(mask=False).values3d
+    logger.info('Getting dz...')
+    dz = ma.filled(grd.get_dz(mask=False).values3d)
+    logger.info('Getting dz as ma.filled...')
     dz[actnum == 0] = 0.0
+    logger.info('dz = 0 of actnum is 0 ...')
 
+    logger.info('Getting dx dy...')
     dx, dy = grd.get_dxdy()
-    dx = dx.values3d
-    dy = dy.values3d
+    dx = ma.filled(dx.values3d)
+    dy = ma.filled(dy.values3d)
+    logger.info('ma.filled for dx dy done')
 
     initd = {'iactnum': actnum, 'xc': xc, 'yc': yc, 'zc': zc, 'dx': dx,
              'dy': dy, 'dz': dz}
+
+    logger.info('Got {}'.format(initd.keys()))
 
     if config['computesettings']['critmode']:
         crname = config['computesettings']['critmode'].upper()
@@ -285,7 +309,7 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     xinput = config['input']
 
     if 'xhcpv' in xinput:
-        xhcpv = initobjects[0].values3d
+        xhcpv = ma.filled(initobjects[0].values3d, fill_value=0.0)
         xhcpv[actnum == 0] = 0.0
         initd.update({'xhcpv': xhcpv})
 
@@ -295,19 +319,19 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
             # initobjects is a list of GridProperty objects (single)
             for prop in initobjects:
                 if prop.name == 'PORO':
-                    poro = prop.values3d
+                    poro = ma.filled(prop.values3d, fill_value=0.0)
                 if prop.name == 'NTG':
-                    ntg = prop.values3d
+                    ntg = ma.filled(prop.values3d, fill_value=0.0)
                 if prop.name == 'PORV':
-                    porv = prop.values3d
+                    porv = ma.filled(prop.values3d, fill_value=0.0)
                 if prop.name == 'DX':
-                    dx = prop.values3d
+                    dx = ma.filled(prop.values3d, fill_value=0.0)
                 if prop.name == 'DY':
-                    dy = prop.values3d
+                    dy = ma.filled(prop.values3d, fill_value=0.0)
                 if prop.name == 'DZ':
-                    dz = prop.values3d
+                    dz = ma.filled(prop.values3d, fill_value=0.0)
                 if crname is not None and prop.name == crname:
-                    soxcr = prop.values3d
+                    soxcr = ma.filled(prop.values3d, fill_value=0.0)
 
             porv[actnum == 0] = 0.0
             poro[actnum == 0] = 0.0
@@ -337,16 +361,16 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
         for prop in restobjects:
             pname = 'SWAT' + '_' + str(date)
             if prop.name == pname:
-                swat[date] = prop.values3d
+                swat[date] = ma.filled(prop.values3d, fill_value=1)
                 nsoil += 1
 
             pname = 'SGAS' + '_' + str(date)
             if prop.name == pname:
-                sgas[date] = prop.values3d
+                sgas[date] = ma.filled(prop.values3d, fill_value=1)
                 nsoil += 1
 
             if nsoil == 2:
-                soil[date] = ma.ones(sgas[date].shape, dtype=sgas[date].dtype)
+                soil[date] = np.ones(sgas[date].shape, dtype=sgas[date].dtype)
                 soil[date] = soil[date] - swat[date] - sgas[date]
 
                 if crname is not None:
@@ -380,13 +404,13 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
 def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
     """Process for average map; to get the needed numpies"""
 
-    actnum = grd.get_actnum().values3d
+    actnum = grd.get_actnum().get_npvalues3d(fill_value=0)
     # mask is False  to get values for all cells, also inactive
     xc, yc, zc = grd.get_xyz(mask=False)
-    xc = xc.values3d
-    yc = yc.values3d
-    zc = zc.values3d
-    dz = grd.get_dz(mask=False).values3d
+    xc = xc.get_npvalues3d()
+    yc = yc.get_npvalues3d()
+    zc = zc.get_npvalues3d()
+    dz = grd.get_dz(mask=False).get_npvalues3d()
 
     dz[actnum == 0] = 0.0
 
@@ -424,10 +448,10 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
 
                 for prop in initobjects + restobjects:
                     if usepname1 == prop.name:
-                        ptmp1 = prop.values3d
+                        ptmp1 = prop.get_npvalues3d()
                         ok1 = True
                     if usepname2 == prop.name:
-                        ptmp2 = prop.values3d
+                        ptmp2 = prop.get_npvalues3d()
                         ok2 = True
 
                     if ok1 and ok2:
@@ -440,14 +464,14 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
                 for prop in initobjects + restobjects:
                     usepname = pname.replace('--', '_')
                     if usepname == prop.name:
-                        ptmp = prop.values3d
+                        ptmp = prop.get_npvalues3d()
                         propd[pname] = ptmp
 
         # no dates
         else:
             for prop in initobjects + restobjects:
                 if usepname == prop.name:
-                    ptmp = prop.values3d
+                    ptmp = prop.get_npvalues3d()
                     propd[pname] = ptmp
 
     logger.info('Return specd from {} is {}'.format(__name__, specd.keys()))

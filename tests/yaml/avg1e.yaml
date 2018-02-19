@@ -1,5 +1,5 @@
 title: Reek
-# Case with no mapsettings; will then estimate from grid
+# As 1d, but speed up with tuning
 
 input:
   # folderroot is a short form to a folder
@@ -13,8 +13,11 @@ zonation:
 
 
 computesettings:
-  zone: No  # if compute for all indivual zones
-  all: Yes  # if compute for all zones total
+  zone: No
+  all: Yes
+  tuning:
+    zone_avg: Yes    # will average, weighted per zone first -> faster
+    coarsen: 2       # sample every 2'nd cell -> faster
 
 plotsettings:
   faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.xyz
@@ -23,7 +26,7 @@ plotsettings:
     valuerange: [-1, 1]
 
 output:
-  tag: avg1d     # the tag will added to file name as extra info, e.g. as
-                 # z1--avg1b_average_por.gri
+  tag: avg1e
+
   mapfolder: TMP
   plotfolder: TMP

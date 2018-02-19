@@ -31,6 +31,41 @@ Type::
 
   grid3d_average_map --help
 
+-----------------------------
+Tuning speed of the script
+-----------------------------
+In cases with large grids and many layers, computing can take a lot of time
+as the internal griddata routine is not as fast as wished. The workaround
+here is to use the tuning option in computesettings, e.g::
+
+ computesettings:
+   tuning:
+     zone_avg: Yes
+     coarsen: 3
+
+Here, "zone_avg" means that a weighted average is done per zone, prior to the
+2D mapping. Then, only the zone averages are gridded, which can speed up
+the computing a lot.
+
+Another option is "coarsen". If set to 3 as above, only every 3'rd grid cell
+will be applied in the gridding.
+
+Note however, that both options will inevitably reduce the *quality* of the
+result, so there is a trade-off here. Se example :ref:`HC thickness 1i`.
+
+-----------------------------------------
+Inactive map outide grid for HC thickness
+-----------------------------------------
+
+With the average script, the resulting map will be inactive where the thickness
+is zero. For the HC sum script, you need to active a setting in order to get
+this::
+
+ computesettings:
+   mask_outside: Yes
+
+
+
 --------------------------------------------
 Example of YAML setup files for HC thickness
 --------------------------------------------
@@ -110,6 +145,16 @@ Example as 1f, but with both phases (use mode comb or both)
    :language: yaml
 
 
+HC thickness 1i
+"""""""""""""""
+
+Example as 1a, but use tuning to speed yp and truncate map with mask_outside
+keyword (which will mask the map wher the sum of DZ is zero)
+
+.. literalinclude:: ../tests/yaml/hc_thickness1i.yaml
+   :language: yaml
+
+
 ----------------------------------
 Example of setup for Average maps
 ----------------------------------
@@ -143,4 +188,18 @@ AVG example 1c
 With rotated map template and more plotsettings:
 
 .. literalinclude:: ../tests/yaml/avg1c.yaml
+   :language: yaml
+
+
+AVG example 1d
+""""""""""""""
+
+.. literalinclude:: ../tests/yaml/avg1d.yaml
+   :language: yaml
+
+
+AVG example 1e
+""""""""""""""
+
+.. literalinclude:: ../tests/yaml/avg1e.yaml
    :language: yaml
