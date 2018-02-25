@@ -11,7 +11,7 @@ input:
     - 19991201
     - 20021101
     - 20021111   # this does not exist but script will ignore with warning
-    - 20010801-19991201  # difference map
+    - 20010101-19991201  # difference map
     # - 20030101--19991201  # difference map
 
 # Zonation gives what zones to compute over, and typically is similar

@@ -78,17 +78,17 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
                             format(zname))
                 continue
 
-        logger.debug('np flags before ...{}'.format(xmap.values.flags))
-        xmap.avg_from_3dprop(xprop=specd['ixc'],
-                             yprop=specd['iyc'],
-                             mprop=specd['idz'],
-                             dzprop=specd['idz'],
-                             zoneprop=usezonation,
-                             zone_minmax=[usezrange, usezrange],
-                             zone_avg=myavgzon,
-                             coarsen=mycoarsen)
+        # logger.debug('np flags before ...{}'.format(xmap.values.flags))
+        # xmap.avg_from_3dprop(xprop=specd['ixc'],
+        #                      yprop=specd['iyc'],
+        #                      mprop=specd['idz'],
+        #                      dzprop=specd['idz'],
+        #                      zoneprop=usezonation,
+        #                      zone_minmax=[usezrange, usezrange],
+        #                      zone_avg=myavgzon,
+        #                      coarsen=mycoarsen)
 
-        logger.debug('np flags after gridding...{}'.format(xmap.values.flags))
+        # logger.debug('np flags after gridding...{}'.format(xmap.values.flags))
 
         # raise SystemExit
         for propname, pvalues in propd.items():

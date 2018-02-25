@@ -8,7 +8,7 @@ input:
   eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
   dates:
     - 19991201
-    - 20010801-19991201
+    - 20010101-19991201
 
 # zonation from file on YAML format
 zonation:
