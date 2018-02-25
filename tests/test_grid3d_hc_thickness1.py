@@ -135,4 +135,4 @@ def test_hc_thickness1i():
     val = allz.values1d
 
     # -0.0574 in RMS volumetrics, but within range as different approach
-    assert_almostequal(np.nanmean(val), -0.10515, 0.001)
+    assert_almostequal(np.nanmean(val), -0.10, 0.05)
