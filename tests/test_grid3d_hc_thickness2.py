@@ -6,7 +6,7 @@ import numpy as np
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface as RS
 
-import xtgeo_grid3d_map_apps.grid3d_hc_thickness as xx
+import xtgeo_utils2.avghc.grid3d_hc_thickness as xx
 
 xtg = XTGeoDialog()
 
