@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for xtgeo_grid3d_map_apps"""
+"""Package for grid3d_average_map and grid3d_hc_thickness"""
 
 __author__ = """Jan C. Rivenaes"""
 __email__ = 'jriv@statoil.'
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
