@@ -20,7 +20,7 @@ from . import _get_zonation_filters
 from . import _compute_avg
 from . import _mapsettings
 
-from . import _version
+from .. import _version
 
 appname = 'grid3d_average_map'
 

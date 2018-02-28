@@ -19,7 +19,7 @@ from . import _get_zonation_filters
 from . import _compute_hcpfz
 from . import _hc_plotmap
 from . import _mapsettings
-from . import _version
+from .. import _version
 
 
 appname = 'grid3d_hc_thickness'
@@ -71,12 +71,9 @@ def get_grid_props_data(config, appname):
     xtg.say('Grid file is {}'.format(gfile))
 
     if len(initlist) > 0:
-        for initpar, initfile in initlist.items():
-            if 'INIT' in initfile:
-                xtg.say('Getting INIT file data')
-            else:
-                xtg.say('Getting ROFF file data')
+        xtg.say('Getting INITIAL file data (as INIT or ROFF)')
 
+        for initpar, initfile in initlist.items():
             logger.info('{} file is {}'.format(initpar, initfile))
 
     if len(restartlist) > 0:
