@@ -32,7 +32,7 @@ Type::
   grid3d_average_map --help
 
 -----------------------------
-Tuning speed of the script
+Tuning speed of the scripts
 -----------------------------
 In cases with large grids and many layers, computing can take a lot of time
 as the internal griddata routine is not as fast as wished. The workaround
@@ -66,9 +66,9 @@ this::
 
 
 
---------------------------------------------
-Example of YAML setup files for HC thickness
---------------------------------------------
+---------------------------------------------
+Examples of YAML setup files for HC thickness
+---------------------------------------------
 
 HC thickness 1a
 """""""""""""""
@@ -98,7 +98,7 @@ Zone 1+3 oilthickness in 19991201:
 
 Difference oil column in Zone3:
 
-.. image:: test_images/z3--hc1b_oilthickness--20010801_19991201.png
+.. image:: test_images/z3--hc1b_oilthickness--20010101_19991201.png
 
 HC thickness 1c
 """""""""""""""
@@ -155,9 +155,9 @@ keyword (which will mask the map wher the sum of DZ is zero)
    :language: yaml
 
 
-----------------------------------
-Example of setup for Average maps
-----------------------------------
+---------------------------------------
+Examples of YAML setup for Average maps
+---------------------------------------
 
 AVG example 1a
 """"""""""""""

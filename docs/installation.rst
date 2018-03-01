@@ -22,19 +22,21 @@ From sources
 The sources for xtgeo_utils2 can be downloaded from
 the `Statoil Git repo`_.
 
-You can either clone the public repository:
+You can then clone the repository:
 
 .. code-block:: console
 
     $ git clone git@github.com:Statoil/xtgeo-utils2
 
 Once you have a copy of the source, and you have a `virtual environment`_,
-you can install locally (for development) it with:
+you can install locally (for development and testing) it with:
 
 .. code-block:: console
 
     $ pip install -e .
 
+However, if you will like to contribute, making a personal fork is strongly
+recommended, see :ref:`Contributing`.
 
 .. _Statoil Git repo: https://github.com/Statoil/xtgeo-utils2
 .. _virtual environment: http://docs.python-guide.org/en/latest/dev/virtualenvs/
