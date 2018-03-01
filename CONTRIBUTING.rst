@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://git.statoil.no/xtge/xtgeo-grid3d-map-apps/issues.
+Report bugs at https://github.com/Statoil/xtgeo-utils2/issues.
 
 If you are reporting a bug, please include:
 
@@ -38,15 +38,15 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-xtgeo_grid3d_map_apps could always use more documentation, whether as part of the
-official xtgeo_grid3d_map_apps docs, in docstrings, or even on the web in blog posts,
+xtgeo_utils2 could always use more documentation, whether as part of the
+official xtgeo_utils2 docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
 The best way to send feedback is to file an issue
-at https://git.statoil.no/xtgeo/xtgeo-grid3d-map-apps/issues.
+at https://github.com/Statoil/xtgeo-utils2/issues.
 
 If you are proposing a feature:
 
@@ -58,18 +58,18 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `xtgeo_grid3d_map_apps` for local development.
+Ready to contribute? Here's how to set up `xtgeo_utils2` for local development.
 
-1. Fork the `xtgeo-grid3d-map-apps` repo on Git Statoil
+1. Fork the `xtgeo-utils2` repo on Github Statoil
 2. Clone your fork locally::
 
-    $ git clone git@git.statoil.no:your_name_here/xtgeo-grid3d-map-apps.git
+    $ git clone git@github.com:your_name_here/xtgeo-utils2.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed,
    this is how you set up your fork for local development::
 
-    $ mkvirtualenv xtgeo_grid3d_map_apps
-    $ cd xtgeo_grid3d_map_apps/
+    $ mkvirtualenv xtgeo_utils2
+    $ cd xtgeo_utils2/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -81,7 +81,7 @@ Ready to contribute? Here's how to set up `xtgeo_grid3d_map_apps` for local deve
 5. When you're done making changes, check that your changes pass flake8 and the tests,
    including testing other Python versions with tox::
 
-    $ flake8 xtgeo_grid3d_map_apps tests
+    $ flake8 xtgeo_utils2 tests
     $ python setup.py test or py.test
     $ tox ...?
 
@@ -107,7 +107,7 @@ Before you submit a pull request, check that it meets these guidelines:
    feature to the list in README.rst.
 
 .. 3. The pull request should work for Python 2.7, 3.4, and for PyPy(?). Check
-..   https://travis-ci.org/jriv/xtgeo_grid3d_map_apps/pull_requests (INACTIVE)
+..   https://travis-ci.org/xxx/xtgeo-utils2/pull_requests (INACTIVE)
 ..   and make sure that the tests pass for all supported Python versions.
 
 Tips

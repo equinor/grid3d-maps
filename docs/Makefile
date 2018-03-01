@@ -86,17 +86,17 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/xtgeo_grid3d_map_apps.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/xtgeo_utils2.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/xtgeo_grid3d_map_apps.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/xtgeo_utils2.qhc"
 
 devhelp:
 	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/xtgeo_grid3d_map_apps"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/xtgeo_grid3d_map_apps"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/xtgeo_utils2"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/xtgeo_utils2"
 	@echo "# devhelp"
 
 epub:

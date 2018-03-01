@@ -1,13 +1,18 @@
 ======================================
-The scripts in *xtgeo_grid3d_map_apps*
+The scripts in *xtgeo_utils2*
 ======================================
 
 Two scripts here, one for hc thickness maps and one for average maps.
 
-* grid3d_hc_thickness
+Script grid3d_hc_thickness
+--------------------------
 
-* grid3d_average_map
+Make Hydrocarbon thickness maps from Eclipse and/or Roff input
 
+Script grid3d_average_map
+-------------------------
+
+Make average maps from a 3D grid parameter, Eclipse or Roff input
 
 Features
 --------

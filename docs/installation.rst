@@ -19,22 +19,22 @@ The stable release is on /project/res, so scripts can be run as:
 From sources
 ------------
 
-The sources for xtgeo_grid3d_map_apps can be downloaded from
+The sources for xtgeo_utils2 can be downloaded from
 the `Statoil Git repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git@git.statoil.no:xtgeo/xtgeo-grid3d-map-apps
+    $ git clone git@github.com:Statoil/xtgeo-utils2
 
 Once you have a copy of the source, and you have a `virtual environment`_,
-you can install it with:
+you can install locally (for development) it with:
 
 .. code-block:: console
 
-    $ make install
+    $ pip install -e .
 
 
-.. _Statoil Git repo: https://git.statoil.no/xtgeo/xtgeo_grid3d_map_apps
+.. _Statoil Git repo: https://github.com/Statoil/xtgeo-utils2
 .. _virtual environment: http://docs.python-guide.org/en/latest/dev/virtualenvs/

@@ -1,21 +1,21 @@
-xtgeo_grid3d_map_apps package
+xtgeo_utils2 package
 =============================
 
 Submodules
 ----------
 
-xtgeo_grid3d_map_apps.grid3d_average_map module
+xtgeo_utils2.grid3d_average_map module
 -----------------------------------------------
 
-.. automodule:: xtgeo_grid3d_map_apps.grid3d_average_map
+.. automodule:: xtgeo_utils2.grid3d_average_map
     :members:
     :undoc-members:
     :show-inheritance:
 
-xtgeo_grid3d_map_apps.grid3d_hc_thickness module
+xtgeo_utils2.grid3d_hc_thickness module
 ------------------------------------------------
 
-.. automodule:: xtgeo_grid3d_map_apps.grid3d_hc_thickness
+.. automodule:: xtgeo_utils2.grid3d_hc_thickness
     :members:
     :undoc-members:
     :show-inheritance:
@@ -24,7 +24,7 @@ xtgeo_grid3d_map_apps.grid3d_hc_thickness module
 Module contents
 ---------------
 
-.. automodule:: xtgeo_grid3d_map_apps
+.. automodule:: xtgeo_utils2
     :members:
     :undoc-members:
     :show-inheritance:

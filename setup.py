@@ -43,7 +43,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author="Jan C. Rivenaes",
     author_email='jriv@statoil.com',
-    url='https://git.statoil.no/xtgeo/xtgeo-utils2',
+    url='https://github.com/Statoil/xtgeo-utils2',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
