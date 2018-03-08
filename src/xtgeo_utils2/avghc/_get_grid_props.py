@@ -7,8 +7,11 @@ from collections import defaultdict
 import numpy as np
 import numpy.ma as ma
 
+import xtgeo
+from xtgeo.common.exceptions import DateNotFoundError
+# from xtgeo.common.exceptions import KeywordFoundNoDateError
+# from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
-from xtgeo.grid3d import Grid
 from xtgeo.grid3d import GridProperties
 from xtgeo.grid3d import GridProperty
 
@@ -148,7 +151,7 @@ def import_data(config, appname, gfile, initlist,
     logger.info('Import data for {}'.format(appname))
 
     # get the grid data + some geometrics
-    grd = Grid(gfile, fformat='guess')
+    grd = xtgeo.grid3d.Grid(gfile, fformat='guess')
 
     logger.info('Grid is now imported for {}'.format(appname))
 
@@ -231,7 +234,7 @@ def import_data(config, appname, gfile, initlist,
             tmp.from_file(restfile, names=restprops,
                           fformat='unrst', grid=grd, dates=dates)
 
-        except RuntimeWarning as rwarn:
+        except DateNotFoundError as rwarn:
             logger.info('Got warning...')
             xtg.warn(rwarn)
             for prop in tmp.props:
