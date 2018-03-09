@@ -9,7 +9,7 @@ import numpy.ma as ma
 
 import xtgeo
 from xtgeo.common.exceptions import DateNotFoundError
-# from xtgeo.common.exceptions import KeywordFoundNoDateError
+from xtgeo.common.exceptions import KeywordFoundNoDateError
 # from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
 from xtgeo.grid3d import GridProperties
@@ -236,10 +236,12 @@ def import_data(config, appname, gfile, initlist,
 
         except DateNotFoundError as rwarn:
             logger.info('Got warning...')
-            xtg.warn(rwarn)
             for prop in tmp.props:
                 logger.info('Append prop: {}'.format(prop))
                 restobjects.append(prop)
+        except KeywordFoundNoDateError as rwarn:
+            logger.info('Keyword found but not for this date')
+            raise SystemExit('STOP')
         except Exception as message:
             raise SystemExit(message)
         else:
