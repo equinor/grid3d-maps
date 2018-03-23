@@ -30,9 +30,11 @@ test_requirements = [
 ]
 
 hc_function = ('grid3d_hc_thickness='
-                'xtgeo_utils2.avghc.grid3d_hc_thickness:main')
+               'xtgeo_utils2.avghc.grid3d_hc_thickness:main')
 avg_function = ('grid3d_average_map='
                 'xtgeo_utils2.avghc.grid3d_average_map:main')
+con_function = ('grid3d_contact_map='
+                'xtgeo_utils2.contact.grd3d_contact_map:main')
 
 
 setup(
@@ -49,7 +51,7 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     entry_points={
         'console_scripts':
-        [hc_function, avg_function]
+        [hc_function, avg_function, con_function]
     },
 
     include_package_data=True,
