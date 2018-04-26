@@ -155,6 +155,15 @@ keyword (which will mask the map wher the sum of DZ is zero)
    :language: yaml
 
 
+HC thickness 2a
+"""""""""""""""
+
+Use an RMS STOIIP (or similar) parameter instead of Eclipse stuff:
+
+.. literalinclude:: ../tests/yaml/hc_thickness2a.yaml
+   :language: yaml
+
+
 ---------------------------------------
 Examples of YAML setup for Average maps
 ---------------------------------------

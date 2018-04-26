@@ -5,6 +5,7 @@ from __future__ import division, print_function, absolute_import
 from collections import OrderedDict
 import numpy as np
 
+import xtgeo
 from xtgeo.common import XTGeoDialog
 xtg = XTGeoDialog()
 
@@ -26,7 +27,7 @@ def zonation(config, dz):
         superzoned (dict): Super zonation dictionary (name: [zone range])
     """
 
-    zonation = np.zeros((dz.shape), dtype=np.int32, order='F')
+    zonation = np.zeros((dz.shape), dtype=np.int32)
 
     # make azonation dictionary on the form
     # 'Tarbert: [1, 1]  # CHECK! note, inclusive?
@@ -35,6 +36,13 @@ def zonation(config, dz):
 
     zoned = OrderedDict()
     superzoned = OrderedDict()
+
+    if config['zonation']['zonefile'] is not None:
+        # must be on ROFF format
+        zon = xtgeo.grid3d.GridProperty()
+        zon.from_file(config['zonation']['zonefile'])
+        zonation = zon.values
+        zoned = zon.codes
 
     if 'zranges' in config['zonation']:
         zclist = config['zonation']['zranges']

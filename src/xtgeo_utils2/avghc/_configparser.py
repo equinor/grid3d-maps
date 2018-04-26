@@ -233,6 +233,9 @@ def yconfig_set_defaults(config, appname):
     if 'yamlfile' not in newconfig['zonation']:
         newconfig['zonation']['yamlfile'] = None
 
+    if 'zonefile' not in newconfig['zonation']:
+        newconfig['zonation']['zonefile'] = None
+
     if 'zone_avg' not in newconfig['computesettings']['tuning']:
         newconfig['computesettings']['tuning']['zone_avg'] = False
 
