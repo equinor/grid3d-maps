@@ -7,9 +7,9 @@ other makes average maps
 
 ::
 
-   grid3d_hc_thickness --config myfile_hc.yaml
+   grid3d_hc_thickness --config myfile_hc.yml
 
-   grid3d_average_map --config myfile_avg.yaml
+   grid3d_average_map --config myfile_avg.yml
 
 
 -------------------------
@@ -19,7 +19,7 @@ Override the Eclipse root
 For both scripts, some settings in the YAML file can be overridden by
 the command line, which can be useful in ERT setups::
 
-   grid3d_hc_thickness --config myfile.yaml --eclroot GULLFAKS
+   grid3d_hc_thickness --config myfile.yml --eclroot GULLFAKS
 
 -----------------------------
 Possible command line options
