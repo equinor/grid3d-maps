@@ -41,6 +41,10 @@ def test_hc_thickness1a():
     assert_almostequal(np.nanmean(val), -0.03653, 0.001)
     assert_almostequal(np.nanstd(val), 0.199886, 0.001)
 
+    # # legacy date format:
+    # xx.main(['--legacydateformat', '--config',
+    #          'tests/yaml/hc_thickness1a.yaml'])
+
 
 def test_hc_thickness1b():
     """HC thickness with YAML config example 1b; zonation in own YAML file"""

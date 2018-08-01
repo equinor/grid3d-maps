@@ -150,6 +150,9 @@ def _hc_filesettings(config, zname, date, hcmode, mode='map'):
     if config['output']['lowercase']:
         zname = zname.lower()
 
+    if config['output']['legacydateformat']:
+        date = _dates_oldformat(date)
+
     phase = hcmode
 
     if phase == 'comb':
@@ -170,6 +173,28 @@ def _hc_filesettings(config, zname, date, hcmode, mode='map'):
         xfil = xfil.replace('gri', 'png')
 
     return path + xfil
+
+
+def _dates_oldformat(date):
+    """Get dates on legacy format with underscore, 19910101 --> 1991_01_01."""
+
+    date = str(date)
+    newdate = date
+
+    if len(date) == 8:
+        year, month, day = (date[0:4], date[4:6], date[6:8])
+        newdate = year + '_' + month + '_' + day
+    elif len(date) == 17:
+        year1, month1, day1, year2, month2, day2 = (
+            date[0:4], date[4:6], date[6:8],
+            date[9:13], date[13:15], date[15:17])
+
+        newdate = year1 + '_' + month1 + '_' + day1 + '_' + \
+            year2 + '_' + month2 + '_' + day2
+    else:
+        raise ValueError('Could not convert date to "old format"')
+
+    return newdate
 
 
 def _hc_plotsettings(config, zname, date, hcmode):

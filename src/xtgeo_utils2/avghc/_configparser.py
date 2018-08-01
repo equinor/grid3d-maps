@@ -97,6 +97,12 @@ def parse_args(args, appname, appdescr):
                             default=None,
                             help='oil, gas or comb')
 
+        parser.add_argument('--legacydateformat',
+                            dest='legacydateformat',
+                            action='store_true',
+                            help='Flag for legacy dateformat in output file '
+                            'names, such as 1991_01_01 instead of 19910101')
+
     if len(args) < 2:
         parser.print_help()
         print('QUIT')
@@ -171,6 +177,9 @@ def yconfig_override(config, args, appname):
         xtg.say('YAML config overruled... output:plotfolder is now: <{}>'.
                 format(newconfig['output']['plotfolder']))
 
+    if args.legacydateformat:
+        newconfig['output']['legacydateformat'] = args.legacydateformat
+
     if appname == 'grid3d_hc_thickness':
 
         if args.dates:
@@ -199,6 +208,9 @@ def yconfig_set_defaults(config, appname):
 
     if 'plotfile' not in newconfig['output']:
         newconfig['output']['plotfile'] = None
+
+    if 'legacydateformat' not in newconfig['output']:
+        newconfig['output']['legacydateformat'] = False
 
     if 'computesettings' not in newconfig:
         newconfig['computesettings'] = dict()
