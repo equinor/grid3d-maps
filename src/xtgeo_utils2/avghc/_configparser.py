@@ -82,6 +82,12 @@ def parse_args(args, appname, appdescr):
                         type=str,
                         help='Explicit file (YAML) for zonation')
 
+    parser.add_argument('--legacydateformat',
+                        dest='legacydateformat',
+                        action='store_true',
+                        help='Flag for legacy dateformat in output file '
+                        'names, such as 1991_01_01 instead of 19910101')
+
     if appname == 'grid3d_hc_thickness':
 
         parser.add_argument('-d', '--dates',
@@ -96,12 +102,6 @@ def parse_args(args, appname, appdescr):
                             type=str,
                             default=None,
                             help='oil, gas or comb')
-
-        parser.add_argument('--legacydateformat',
-                            dest='legacydateformat',
-                            action='store_true',
-                            help='Flag for legacy dateformat in output file '
-                            'names, such as 1991_01_01 instead of 19910101')
 
     if len(args) < 2:
         parser.print_help()
