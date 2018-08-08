@@ -114,7 +114,12 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode):
         if '-' in cdate:
             d1 = str(cdate.split('-')[0])
             d2 = str(cdate.split('-')[1])
-            hcpfzd[cdate] = hcpfzd[d1] - hcpfzd[d2]
+
+            if d1 in hcpfzd and d2 in hcpfzd:
+                hcpfzd[cdate] = hcpfzd[d1] - hcpfzd[d2]
+            else:
+                xtg.warn('Cannot retrieve data for date {} and/or {}. '
+                         'Some TSTEPs failed?'.format(d1, d2))
 
     alldates = hcpfzd.keys()
 
