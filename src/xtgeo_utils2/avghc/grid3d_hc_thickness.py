@@ -59,6 +59,9 @@ def yamlconfig(inputfile, args):
         logger.info('{}'.format(name))
         logger.info('{}'.format(val))
 
+    if args.dumpfile:
+        _configparser.yconfigdump(config, args.dumpfile)
+
     return config
 
 

@@ -1,0 +1,9 @@
+
+global:
+
+  DATES: &mydates
+    - 2017-01-01
+    - 2013-12-01
+
+  DIFFDATES: &mydiffdates
+    - [2017-01-01, 2013-12-01]

@@ -82,6 +82,11 @@ def parse_args(args, appname, appdescr):
                         type=str,
                         help='Explicit file (YAML) for zonation')
 
+    parser.add_argument('--dump',
+                        dest='dumpfile',
+                        type=str,
+                        help='Dump the parsed config to a file (for qc)')
+
     parser.add_argument('--legacydateformat',
                         dest='legacydateformat',
                         action='store_true',
@@ -115,6 +120,17 @@ def parse_args(args, appname, appdescr):
         logger.debug('{}  {}'.format(arg, getattr(args, arg)))
 
     return args
+
+
+# =============================================================================
+# Write YAML config (optional, for QC)
+# =============================================================================
+
+def yconfigdump(cfg, outfile):
+    """Write a dictionary (config) to YAML file."""
+
+    with open(outfile, 'w') as stream:
+        yaml.dump(cfg, stream, default_flow_style=False)
 
 # =============================================================================
 # Read YAML input file
@@ -245,6 +261,9 @@ def yconfig_set_defaults(config, appname):
     if 'yamlfile' not in newconfig['zonation']:
         newconfig['zonation']['yamlfile'] = None
 
+    if 'externalfiles' not in newconfig:
+        newconfig['externalfiles'] = None
+
     if 'zonefile' not in newconfig['zonation']:
         newconfig['zonation']['zonefile'] = None
 
@@ -319,5 +338,15 @@ def yconfig_addons(config, appname):
             newconfig['zonation']['zranges'] = zconfig['zranges']
         if 'superranges' in zconfig:
             newconfig['zonation']['superranges'] = zconfig['superranges']
+
+    if config['externalfiles'] is not None:
+
+        # include stuff from externalfiles; the will always have a
+        # cfg[econfig*] category to avoid name mixing:
+        extfiles = config['externalfiles']
+        for enum, extfile in enumerate(extfiles):
+            cfg = yconfig(extfile)
+            key = 'econfig' + str(enum)
+            newconfig[key] = cfg
 
     return newconfig

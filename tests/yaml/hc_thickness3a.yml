@@ -1,14 +1,16 @@
 title: Reek
-# Case with a) includefile and b) plotsettings
+# Case with external config files, e.g. a global config!
+# Reuse dates data from global config via the *xx mechanism
 
-# just give rootname in case of "eclipserun" model
-# input is what to be made maps of
+# external configfiles can be read, but to reuse elements you need to
+# use the YAML anchor mechanism
+ext1: !include tests/yaml/global_config3a.yml
+
 
 input:
   eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
   dates:
     - 19991201
-    - 20010101-19991201
 
 # zonation from file on YAML format
 zonation:
