@@ -45,6 +45,7 @@ def do_parse_args(args):
 def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
+    config = _configparser.dateformatting(config)
 
     # override with command line args
     config = _configparser.yconfig_override(config, args, appname)

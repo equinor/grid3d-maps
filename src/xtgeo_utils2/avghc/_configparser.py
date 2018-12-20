@@ -8,32 +8,34 @@ import os.path
 import yaml
 import pprint
 import copy
+import datetime
 
 from xtgeo.common import XTGeoDialog
+from xtgeo_utils2.avghc._loader import YamlXLoader, ConstructorError
 
 xtg = XTGeoDialog()
 
 logger = xtg.functionlogger(__name__)
 
 
-def yaml_include(loader, node):
-    """To use !include in the YAML file.
+# def yaml_include(loader, node):
+#     """To use !include in the YAML file.
 
-    Example::
+#     Example::
 
-        - foo: 123
-        bar: !include otherfile.yaml
-        - baz: 456
+#         - foo: 123
+#         bar: !include otherfile.yaml
+#         - baz: 456
 
-    Not sure if useful...
-    """
-    # Get the path out of the yaml file
-    file_name = os.path.join(os.path.dirname(loader.name), node.value)
+#     Not sure if useful...
+#     """
+#     # Get the path out of the yaml file
+#     file_name = os.path.join(os.path.dirname(loader.name), node.value)
 
-    with file(file_name) as inputfile:
-        return yaml.load(inputfile)
+#     with file(file_name) as inputfile:
+#         return yaml.load(inputfile)
 
-    yaml.add_constructor('!include', yaml_include)
+#     yaml.add_constructor('!include', yaml_include)
 
 
 def parse_args(args, appname, appdescr):
@@ -123,8 +125,42 @@ def parse_args(args, appname, appdescr):
 
 
 # =============================================================================
-# Write YAML config (optional, for QC)
+# YAML config
 # =============================================================================
+
+def yconfig(inputfile, tmp=False, standard=False):
+    """Read from YAML file, returns a dictionary."""
+
+    if not os.path.isfile(inputfile):
+        logger.critical(
+            'STOP! No such config file exists: {}'.format(inputfile))
+        raise SystemExit
+
+    with open(inputfile, 'r') as stream:
+        if standard:
+            config = yaml.load(stream)
+        else:
+            try:
+                config = yaml.load(stream, Loader=YamlXLoader)
+            except ConstructorError as errmsg:
+                xtg.error(errmsg)
+                raise SystemExit
+
+    xtg.say('Input config YAML file <{}> is read...'.format(inputfile))
+
+    pp = pprint.PrettyPrinter(indent=4)
+
+    out = pp.pformat(config)
+    logger.info('\n%s', out)
+
+    logger.info('CONFIG:\n {}'.format(config))
+
+    # if the file is a temporary file, delete:
+    if tmp:
+        os.remove(inputfile)
+
+    return config
+
 
 def yconfigdump(cfg, outfile):
     """Write a dictionary (config) to YAML file."""
@@ -132,35 +168,62 @@ def yconfigdump(cfg, outfile):
     with open(outfile, 'w') as stream:
         yaml.dump(cfg, stream, default_flow_style=False)
 
-# =============================================================================
-# Read YAML input file
-# Note if both config and other command line options, the present
-# command line option will win over the config setting. This makes the
-# system quite flexible.
-# =============================================================================
 
+def dateformatting(config):
+    """Special processing of dates.
 
-def yconfig(inputfile):
-    """Read from YAML file."""
+    The issue is to treat dates both flexible and backward compatible.
 
-    if not os.path.isfile(inputfile):
-        logger.critical(
-            'STOP! No such config file exists: {}'.format(inputfile))
-        sys.exit(1)
+    Example on the 'implemented' format:
+        dates:
+          - 19991201
+          - 20010101-19991201
 
-    with open(inputfile, 'r') as stream:
-        config = yaml.load(stream)
+    The 'alternative' format; implicit the case if include from master YAML:
+        dates:
+          - 1999-02-01  # as datetime.date object!
+        diffdates:
+          - [2001-01-01, 1999-02-01]  # as list with 2 datetime.date objects!
 
-    xtg.say('Input config YAML file <{}> is read...'.format(inputfile))
+    The 'alternative' form will be converted to the 'implemented' form here.
 
-    pp = pprint.PrettyPrinter(indent=4)
+    """
 
-    out = pp.pformat(config)
-    logger.debug('\n{}'.format(out))
+    newconfig = copy.deepcopy(config)
 
-    logger.info('CONFIG:\n {}'.format(config))
+    if 'input' not in config:
+        return newconfig
 
-    return config
+    newdates = list()
+    update = False
+
+    if 'dates' in config['input']:
+        update = True
+        for entry in config['input']['dates']:
+            if isinstance(entry, datetime.date):
+                newdates.append(entry.strftime('%Y%m%d'))
+            else:
+                newdates.append(entry)
+
+        del newconfig['input']['dates']
+
+    if 'diffdates' in config['input']:
+        update = True
+        for entry in config['input']['diffdates']:
+            if isinstance(entry, list) and len(entry) == 2:
+                dd1, dd2 = entry
+                if isinstance(dd1, datetime.date):
+                    dd1 = dd1.strftime('%Y%m%d')
+                if isinstance(dd2, datetime.date):
+                    dd2 = dd2.strftime('%Y%m%d')
+                newdates.append(dd1 + '-' + dd2)
+        del newconfig['input']['diffdates']
+
+    if update:
+        newconfig['input']['dates'] = []
+        newconfig['input']['dates'].extend(newdates)
+
+    return newconfig
 
 
 def yconfig_override(config, args, appname):
@@ -261,9 +324,6 @@ def yconfig_set_defaults(config, appname):
     if 'yamlfile' not in newconfig['zonation']:
         newconfig['zonation']['yamlfile'] = None
 
-    if 'externalfiles' not in newconfig:
-        newconfig['externalfiles'] = None
-
     if 'zonefile' not in newconfig['zonation']:
         newconfig['zonation']['zonefile'] = None
 
@@ -338,15 +398,5 @@ def yconfig_addons(config, appname):
             newconfig['zonation']['zranges'] = zconfig['zranges']
         if 'superranges' in zconfig:
             newconfig['zonation']['superranges'] = zconfig['superranges']
-
-    if config['externalfiles'] is not None:
-
-        # include stuff from externalfiles; the will always have a
-        # cfg[econfig*] category to avoid name mixing:
-        extfiles = config['externalfiles']
-        for enum, extfile in enumerate(extfiles):
-            cfg = yconfig(extfile)
-            key = 'econfig' + str(enum)
-            newconfig[key] = cfg
 
     return newconfig

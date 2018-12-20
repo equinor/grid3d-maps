@@ -1,20 +1,16 @@
 title: Reek
 # Case with external config files, e.g. a global config!
-# Reuse dates data from global config via the *xx mechanism
-
-# external configfiles can be read, but to reuse elements you need to
-# use the YAML anchor mechanism
-ext1: !include tests/yaml/global_config3a.yml
-
+# Reuse dates data from global config
 
 input:
   eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
-  dates:
-    - 19991201
+  dates: !include_from /private/jriv/tmp/global_config3a.yml::global.DATES
+  diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
 
 # zonation from file on YAML format
-zonation:
-  yamlfile: tests/yaml/hc_thickness1b_zonation.yaml
+# zonation:
+  #yamlfile: tests/yaml/hc_thickness1b_zonation.yaml
+zonation: !include hc_thickness1b_zonation.yaml
 
 
 computesettings:
