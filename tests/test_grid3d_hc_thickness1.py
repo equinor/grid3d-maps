@@ -30,7 +30,8 @@ ojoin = os.path.join
 
 def test_hc_thickness1a():
     """Test HC thickness with YAML config example 1a"""
-    xx.main(['--config', 'tests/yaml/hc_thickness1a.yaml'])
+    dmp = ojoin(td, 'hc1a_dump.yml')
+    xx.main(['--config', 'tests/yaml/hc_thickness1a.yaml', '--dump', dmp])
 
     allz = RS(ojoin(td, 'all--oilthickness--20010101_19991201.gri'))
     val = allz.values1d
