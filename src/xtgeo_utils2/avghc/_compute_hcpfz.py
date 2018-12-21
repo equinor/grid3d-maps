@@ -12,7 +12,7 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-def get_hcpfz(config, initd, restartd, dates, hcmode):
+def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
     """Compute a dictionary with hcpfz numpy (per date)."""
     # There may be cases where dates are missing, e.g. if computing
     # directly from the stoiip parameter.
@@ -34,10 +34,11 @@ def get_hcpfz(config, initd, restartd, dates, hcmode):
     if 'xhcpv' in config['input']:
         area = initd['dx'] * initd['dy']
         area[area < 10.0] = 10.0
-        hcpfzd[gdate] = initd['xhcpv'] / area
+        hcpfzd[gdate] = initd['xhcpv'] * filterarray / area
 
     else:
-        hcpfzd = _get_hcpfz_ecl(config, initd, restartd, dates, hcmode)
+        hcpfzd = _get_hcpfz_ecl(config, initd, restartd, dates, hcmode,
+                                filterarray)
 
     alldates = hcpfzd.keys()
 
@@ -47,7 +48,7 @@ def get_hcpfz(config, initd, restartd, dates, hcmode):
     return hcpfzd
 
 
-def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode):
+def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
     # local function, get data from Eclipse INIT and RESTART
 
     hcpfzd = dict()
@@ -74,20 +75,21 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode):
         if hcmethod == 'use_poro':
             usehc[usehc < shcintv[0]] = 0.0
             usehc[usehc > shcintv[1]] = 0.0
-            hcpfzd[date] = initd['poro'] * initd['ntg'] * usehc * initd['dz']
+            hcpfzd[date] = (initd['poro'] * initd['ntg'] * usehc *
+                            initd['dz'] * filterarray)
 
         elif hcmethod == 'use_porv':
             area = initd['dx'] * initd['dy']
             area[area < 10.0] = 10.0
             usehc[usehc < shcintv[0]] = 0.0
             usehc[usehc > shcintv[1]] = 0.0
-            hcpfzd[date] = initd['porv'] * usehc / area
+            hcpfzd[date] = initd['porv'] * usehc * filterarray / area
 
         elif hcmethod == 'dz_only':
             usedz = initd['dz'].copy()
             usedz[usehc < shcintv[0]] = 0.0
             usedz[usehc > shcintv[1]] = 0.0
-            hcpfzd[date] = usedz
+            hcpfzd[date] = usedz * filterarray
 
         else:
             raise ValueError('Unsupported method "{}" in "computesettings:'

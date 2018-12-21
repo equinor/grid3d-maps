@@ -270,6 +270,74 @@ def import_data(config, appname, gfile, initlist,
     return grd, initobjects, restobjects, newdateslist
 
 
+def import_filters(config, appname, grd):
+    """Get the filterdata, and process them, return a filterarray
+
+    If no filters are active, the filterarray will be 1 for all cells.
+
+    Args:
+        config(dict): Th configuration dictionary
+        appname(str): Name of application
+        grd (Grid): The XTGeo Grid obejct
+
+    Returns:
+        filterarray (ndarray): A 3D numpy array with 0 and 1 to be used as
+            a multiplier.
+
+    """
+
+    eclroot = config['input'].get('eclroot')
+
+    logger.info('Import filter data for %s', appname)
+
+    filterarray = np.ones(grd.dimensions, dtype='int')
+
+    filterinfo = ''
+
+    if 'filters' in config and isinstance(config['filters'], list):
+
+        for flist in config['filters']:
+            name = flist['name']
+            logger.info('Filter name: %s', name)
+            source = flist['source']
+            drange = flist.get('discrange', None)
+            irange = flist.get('intvrange', None)
+            discrete = flist.get('discrete', False)
+            filterinfo = filterinfo + ' ' + name
+
+            source = source.replace('$eclroot', eclroot)
+            gprop = GridProperty(source, grid=grd, name=name)
+            pval = gprop.values
+
+            if not discrete:
+                filterarray[(pval < irange[0]) | (pval > irange[1])] = 0
+                filterinfo = filterinfo + ':' + str(irange)
+            else:
+                # discrete variables can both be a range and discrete choice
+                # i.e. intvrange vs discrange
+                invarray = np.zeros(grd.dimensions, dtype='int')
+                if drange and irange is None:
+                    filterinfo = filterinfo + ':' + str(drange)
+                    for ival in drange:
+                        if ival not in gprop.codes.keys():
+                            xtg.warn('Filter codevalue {} is not present in '
+                                     'discrete property {}'
+                                     .format(ival, gprop.name))
+
+                        invarray[pval == ival] = 1
+                elif drange is None and irange:
+                    filterinfo = filterinfo + ':' + str(irange)
+                    invarray[(pval >= irange[0]) & (pval <= irange[1])] = 1
+                else:
+                    raise ValueError('Either "discrange" OR "intvrange" must ',
+                                     'be defined in input (not both)')
+
+                filterarray[invarray == 0] = 0
+
+    config['_filterinfo'] = filterinfo  # perhaps not best practice...
+    return filterarray
+
+
 def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     """Process for HC thickness map; to get the needed numpies"""
 

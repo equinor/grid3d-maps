@@ -4,13 +4,25 @@ title: Reek
 
 input:
   eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
-  dates: !include_from /private/jriv/tmp/global_config3a.yml::global.DATES
+  dates: !include_from tests/yaml/global_config3a.yml::global.DATES
   diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
 
 # zonation from file on YAML format
-# zonation:
-  #yamlfile: tests/yaml/hc_thickness1b_zonation.yaml
 zonation: !include hc_thickness1b_zonation.yaml
+
+
+# For filters, there are properties defined at the same grid layout as the grid read in input
+# If several filters, the will be cumulative
+filters:
+  -
+    name: PORO
+    source: $eclroot.INIT
+    intvrange: [0.2, 1.0]  # Filter for a continuous will be an interval
+  -
+    name: FACIES
+    discrete: Yes
+    source: ../xtgeo-testdata/3dgrids/reek/reek_sim_facies.roff
+    discrange: [1]  # Filter for a discrete will be spesic number (or codename?)
 
 
 computesettings:
