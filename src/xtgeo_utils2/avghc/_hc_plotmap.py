@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Private module for HC thickness functions."""
 
 from __future__ import division, print_function, absolute_import
 
@@ -104,7 +105,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
     return mapzd
 
 
-def do_hc_plotting(config, mapzd, hcmode):
+def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
     """Do plotting via matplotlib to PNG (etc) (if requested)"""
 
     xtg.say('Plotting ...')
@@ -116,7 +117,7 @@ def do_hc_plotting(config, mapzd, hcmode):
             plotfile = _hc_filesettings(config, zname, date,
                                         hcmode, mode='plot')
 
-            pcfg = _hc_plotsettings(config, zname, date, hcmode)
+            pcfg = _hc_plotsettings(config, zname, date, hcmode, filtermean)
 
             xtg.say('Plot to {}'.format(plotfile))
 
@@ -135,6 +136,7 @@ def do_hc_plotting(config, mapzd, hcmode):
 
             xmap.quickplot(filename=plotfile,
                            title=pcfg['title'],
+                           subtitle=pcfg['subtitle'],
                            infotext=pcfg['infotext'],
                            xlabelrotation=pcfg['xlabelrotation'],
                            minmax=usevrange,
@@ -197,7 +199,7 @@ def _dates_oldformat(date):
     return newdate
 
 
-def _hc_plotsettings(config, zname, date, hcmode):
+def _hc_plotsettings(config, zname, date, hcmode, filtermean):
     """Local function for plot additional info."""
 
     phase = config['computesettings']['mode']
@@ -216,6 +218,10 @@ def _hc_plotsettings(config, zname, date, hcmode):
     infotext = getpass.getuser() + ' ' + showtime
     if config['output']['tag']:
         infotext = infotext + ' (tag: ' + config['output']['tag'] + ')'
+
+    subtitle = None
+    if filtermean < 1.0:
+        subtitle = 'Property filter: ' + config['_filterinfo']
 
     xlabelrotation = None
     valuerange = (None, None)
@@ -259,6 +265,7 @@ def _hc_plotsettings(config, zname, date, hcmode):
     # assing settings to a dictionary which is returned
     plotcfg = {}
     plotcfg['title'] = title
+    plotcfg['subtitle'] = subtitle
     plotcfg['infotext'] = infotext
     plotcfg['valuerange'] = valuerange
     plotcfg['diffvaluerange'] = diffvaluerange

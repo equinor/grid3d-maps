@@ -108,6 +108,14 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     return grd, initd, restartd, dates
 
 
+def import_filters(config, appname, grd):
+    """Import the filter data properties, process and return a filter mask"""
+
+    filter_mask = _get_grid_props.import_filters(config, appname, grd)
+
+    return filter_mask
+
+
 def get_zranges(config, dz):
     """Get the zonation names and ranges based on the config file.
 
@@ -129,14 +137,16 @@ def get_zranges(config, dz):
     return zonation, zoned
 
 
-def compute_hcpfz(config, initd, restartd, dates, hcmode):
+def compute_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
 
-    hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates, hcmode)
+    hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates,
+                                      hcmode, filterarray)
 
     return hcpfzd
 
 
-def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode):
+def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode,
+            filtermean=None):
     """Do checks, mapping and plotting"""
 
     # check if values looks OK. Status flag:
@@ -154,7 +164,8 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode):
                                       zoned, hcmode)
 
     if config['output']['plotfolder'] is not None:
-        _hc_plotmap.do_hc_plotting(config, mapzd, hcmode)
+        _hc_plotmap.do_hc_plotting(config, mapzd, hcmode,
+                                   filtermean=filtermean)
 
 
 def main(args=None):
@@ -180,10 +191,16 @@ def main(args=None):
     gfile, initlist, restartlist, dates = (
         get_grid_props_data(config, appname))
 
-    # import data from files and return releavnt numpies
+    # import data from files and return relevant numpies
     xtg.say('Import files...')
     grd, initd, restartd, dates = (
         import_pdata(config, appname, gfile, initlist, restartlist, dates))
+
+    # get the filter array
+    filterarray = import_filters(config, appname, grd)
+    logger.info('Filter mean value: %s', filterarray.mean())
+    if filterarray.mean() < 1.0:
+        xtg.say('Property filters are active')
 
     # Get the zonations
     xtg.say('Get zonation info')
@@ -198,10 +215,12 @@ def main(args=None):
     for hcmode in hcmodelist:
 
         xtg.say('Compute HCPFZ property for {}'.format(hcmode))
-        hcpfzd = compute_hcpfz(config, initd, restartd, dates, hcmode)
+        hcpfzd = compute_hcpfz(config, initd, restartd, dates, hcmode,
+                               filterarray)
 
         xtg.say('Do mapping...')
-        plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode)
+        plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode,
+                filtermean=filterarray.mean())
 
 
 if __name__ == '__main__':
