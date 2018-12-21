@@ -292,9 +292,11 @@ def import_filters(config, appname, grd):
 
     filterarray = np.ones(grd.dimensions, dtype='int')
 
-    filterinfo = ''
+    filterinfo = None
 
     if 'filters' in config and isinstance(config['filters'], list):
+
+        filterinfo = ''
 
         for flist in config['filters']:
             name = flist['name']
@@ -335,6 +337,7 @@ def import_filters(config, appname, grd):
                 filterarray[invarray == 0] = 0
 
     config['_filterinfo'] = filterinfo  # perhaps not best practice...
+
     return filterarray
 
 
