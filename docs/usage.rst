@@ -59,12 +59,31 @@ Inactive map outide grid for HC thickness
 
 With the average script, the resulting map will be inactive where the thickness
 is zero. For the HC sum script, you need to active a setting in order to get
-this::
+this:
 
- computesettings:
-   mask_outside: Yes
+.. code-block:: yaml
+
+   computesettings:
+     mask_outside: Yes
 
 
+---------------------------------------
+Using dates directly from global_config
+---------------------------------------
+
+From version 0.4 (experimental!)
+
+For the thickness script, dates can now be loaded from the global_variables.yml
+file, e.g. as:
+
+.. code-block:: yaml
+
+   input:
+     eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+     dates: !include_from ../../share/fmuconfig/output/global_variables.yml::global.DATES
+     diffdates: !include_from  ../../share/fmuconfig/output/global_variables.yml::global.DIFFDATES
+
+Note that dates and diffdates are two separate lists
 
 ---------------------------------------------
 Examples of YAML setup files for HC thickness
@@ -161,6 +180,20 @@ HC thickness 2a
 Use an RMS STOIIP (or similar) parameter instead of Eclipse stuff:
 
 .. literalinclude:: ../tests/yaml/hc_thickness2a.yaml
+   :language: yaml
+
+
+HC thickness 3a
+"""""""""""""""
+
+In this example two new features (from version 0.4) are demonstrated.
+First is the option to use !include_from to load dates from the
+global_variables.yml, and then the option to use property filters is shown.
+
+Also for zones, !include can be used instead of the "yamlfile" appproach
+shown in example 1b.
+
+.. literalinclude:: ../tests/yaml/hc_thickness3a.yml
    :language: yaml
 
 
