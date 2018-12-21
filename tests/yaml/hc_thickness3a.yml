@@ -21,7 +21,7 @@ filters:
   -
     name: FACIES
     discrete: Yes
-    source: ../xtgeo-testdata/3dgrids/reek/reek_sim_facies.roff
+    source: ../xtgeo-testdata/3dgrids/reek/reek_sim_facies2.roff
     discrange: [1]  # Filter for a discrete will be spesic number (or codename?)
 
 
