@@ -45,6 +45,7 @@ def do_parse_args(args):
 def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
+    config = _configparser.propformatting(config)
 
     # override with command line args
     config = _configparser.yconfig_override(config, args, appname)
@@ -58,6 +59,9 @@ def yamlconfig(inputfile, args):
     for name, val in config.items():
         logger.info('{}'.format(name))
         logger.info('{}'.format(val))
+
+    if args.dumpfile:
+        _configparser.yconfigdump(config, args.dumpfile)
 
     return config
 
@@ -99,6 +103,14 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     return grd, specd, averaged, dates
 
 
+def import_filters(config, appname, grd):
+    """Import the filter data properties, process and return a filter mask"""
+
+    filter_mask = _get_grid_props.import_filters(config, appname, grd)
+
+    return filter_mask
+
+
 def get_zranges(config, dz):
     """Get the zonation names and ranges based on the config file.
 
@@ -123,7 +135,8 @@ def get_zranges(config, dz):
     return zonation, zoned
 
 
-def compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned):
+def compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned,
+                         filterarray):
     """A dict of avg (numpy) maps, with zone name as keys."""
 
     if config['mapsettings'] is None:
@@ -137,7 +150,8 @@ def compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned):
     # This is done a bit different here than in the HC thickness. Here the
     # mapping and plotting is done within _compute_avg.py
 
-    avgd = _compute_avg.get_avg(config, specd, propd, dates, zonation, zoned)
+    avgd = _compute_avg.get_avg(config, specd, propd, dates, zonation,
+                                zoned, filterarray)
 
     if config['output']['plotfolder'] is not None:
         _compute_avg.do_avg_plotting(config, avgd)
@@ -172,6 +186,12 @@ def main(args=None):
     grd, specd, propd, dates = import_pdata(config, appname, gfile, initlist,
                                             restartlist, dates)
 
+    # get the filter array
+    filterarray = import_filters(config, appname, grd)
+    logger.info('Filter mean value: %s', filterarray.mean())
+    if filterarray.mean() < 1.0:
+        xtg.say('Property filters are active')
+
     for prop, val in propd.items():
         logger.info('Key is {}, avg value is {}'.format(prop, val.mean()))
 
@@ -181,7 +201,8 @@ def main(args=None):
     zonation, zoned = get_zranges(config, dzp)
 
     xtg.say('Compute average properties')
-    compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned)
+    compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned,
+                         filterarray)
 
 
 if __name__ == '__main__':

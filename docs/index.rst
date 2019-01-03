@@ -9,7 +9,10 @@ Contents:
    readme
    installation
    howitworks
+   config-hc
+   config-avg
    usage
+   examples
    contributing
    authors
    history

@@ -34,6 +34,12 @@ def assert_almostequal(this, that, tol, txt=''):
 
 
 def test_hc_thickness3a():
-    """HC thickness with external configfiles"""
+    """HC thickness with external configfiles, HC 3a"""
     dump = os.path.join(td, 'hc3a.yml')
     xxx.main(['--config', 'tests/yaml/hc_thickness3a.yml', '--dump', dump])
+
+
+def test_hc_thickness3b():
+    """HC thickness with external configfiles, HC 3b"""
+    dump = os.path.join(td, 'hc3b.yml')
+    xxx.main(['--config', 'tests/yaml/hc_thickness3b.yml', '--dump', dump])

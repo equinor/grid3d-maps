@@ -164,10 +164,14 @@ def _hc_filesettings(config, zname, date, hcmode, mode='map'):
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'
 
+    prefix = zname
+    if config['output']['prefix']:
+        prefix = config['output']['prefix']
+
     date = date.replace('-', '_')
 
     path = config['output']['mapfolder'] + '/'
-    xfil = (zname + delim + tag + phase + 'thickness' + delim +
+    xfil = (prefix + delim + tag + phase + 'thickness' + delim +
             str(date) + '.gri')
 
     if mode == 'plot':

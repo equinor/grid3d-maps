@@ -1,5 +1,5 @@
 title: Reek
-# as 1a but with mask outside and tuning active
+
 
 # just give rootname in case of "eclipserun" model
 # input is what to be made maps of
@@ -8,13 +8,14 @@ input:
   dates:
     - 19991201
     - 20021101
+    - 20021111   # this does not exist but script will ignore with warning
     - 20010101-19991201  # difference map
     # - 20030101--19991201  # difference map
 
 # Zonation gives what zones to compute over, and typically is similar
 # to the zonation in RMS. Note that it is possible to read the zonation
 # from an extrernal YAML file, via:
-#   yamlfile: 'name_of_file.yaml'
+#   yamlfile: 'name_of_file.yml'
 zonation:
   # zranges will normally be the Zone parameter, defined as K range cells
   zranges:
@@ -35,10 +36,6 @@ computesettings:
   method: use_poro
   zone: Yes
   all: Yes
-  mask_outside: Yes
-  tuning:
-    zone_avg: Yes
-    coarsen: 3
 
 # map definition
 mapsettings:
@@ -50,6 +47,5 @@ mapsettings:
   nrow: 200
 
 output:
-  tag: hc1i
   mapfolder: TMP
   plotfolder: TMP

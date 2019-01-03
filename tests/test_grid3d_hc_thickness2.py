@@ -38,7 +38,7 @@ def assert_almostequal(this, that, tol, txt=''):
 
 def test_hc_thickness2a():
     """HC thickness with YAML config example 2a; use STOOIP prop from RMS"""
-    xx.main(['--config', 'tests/yaml/hc_thickness2a.yaml'])
+    xx.main(['--config', 'tests/yaml/hc_thickness2a.yml'])
 
     # read in result and check statistical values
 

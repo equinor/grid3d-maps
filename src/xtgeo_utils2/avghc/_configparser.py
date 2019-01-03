@@ -18,26 +18,6 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-# def yaml_include(loader, node):
-#     """To use !include in the YAML file.
-
-#     Example::
-
-#         - foo: 123
-#         bar: !include otherfile.yaml
-#         - baz: 456
-
-#     Not sure if useful...
-#     """
-#     # Get the path out of the yaml file
-#     file_name = os.path.join(os.path.dirname(loader.name), node.value)
-
-#     with file(file_name) as inputfile:
-#         return yaml.load(inputfile)
-
-#     yaml.add_constructor('!include', yaml_include)
-
-
 def parse_args(args, appname, appdescr):
 
     if args is None:
@@ -226,6 +206,74 @@ def dateformatting(config):
     return newconfig
 
 
+def propformatting(config):
+    """Special processing of 'properties' list if present in input.
+
+    This applies to the average script.
+
+    Example on the 'implemented' format::
+
+       PORO: $eclroot.INIT
+       PRESSURE--19991201: $eclroot.UNRST
+       PRESSURE--20030101-19991201: $eclroot.UNRST
+
+    The 'alternative' format; implicit the case if include from master YAML::
+
+       properties:
+         -
+           name: PORO
+           source: $eclroot.INIT
+         -
+           name: PRESSURE
+           source: $eclroot.UNRST
+           dates: !include_from global_config3a.yml::global.DATES
+           diffdates: !include_from global_config3a.yml::global.DIFFDATES
+
+    The 'alternative' form will be converted to the 'implemented' form here.
+
+    """
+
+    newconfig = copy.deepcopy(config)
+
+    if 'input' not in config or 'properties' not in config['input']:
+        return newconfig
+
+    for prop in config['input']['properties']:
+        if 'name' not in prop:
+            raise KeyError('The "name" key is required in "properties"')
+        if 'source' not in prop:
+            raise KeyError('The "source" key is required in "properties"')
+
+        newdates = list()
+        if 'dates' in prop:
+            for entry in prop['dates']:
+                if isinstance(entry, datetime.date):
+                    newdates.append(entry.strftime('%Y%m%d'))
+                else:
+                    newdates.append(entry)
+
+        if 'diffdates' in prop:
+            for entry in prop['diffdates']:
+                if isinstance(entry, list) and len(entry) == 2:
+                    dd1, dd2 = entry
+                    if isinstance(dd1, datetime.date):
+                        dd1 = dd1.strftime('%Y%m%d')
+                    if isinstance(dd2, datetime.date):
+                        dd2 = dd2.strftime('%Y%m%d')
+                    newdates.append(dd1 + '-' + dd2)
+
+        if newdates:
+            for mydate in newdates:
+                newkey = prop['name'] + '--' + mydate
+                newconfig['input'][newkey] = prop['source']
+        else:
+            newconfig['input'][prop['name']] = prop['source']
+
+    del newconfig['input']['properties']
+
+    return newconfig
+
+
 def yconfig_override(config, args, appname):
     """Override the YAML config with command line options"""
 
@@ -282,6 +330,18 @@ def yconfig_set_defaults(config, appname):
     if 'title' not in newconfig:
         newconfig['title'] = 'SomeField'
 
+    if 'computesettings' not in newconfig:
+        newconfig['computesettings'] = dict()
+
+    if 'plotsettings' not in newconfig:
+        newconfig['plotsettings'] = dict()
+
+    if 'zonation' not in newconfig:
+        newconfig['zonation'] = dict()
+
+    if 'mapsettings' not in newconfig:
+        newconfig['mapsettings'] = None
+
     if 'mapfile' not in newconfig['output']:
         newconfig['output']['mapfile'] = 'hc_thickness'
 
@@ -291,20 +351,11 @@ def yconfig_set_defaults(config, appname):
     if 'legacydateformat' not in newconfig['output']:
         newconfig['output']['legacydateformat'] = False
 
-    if 'computesettings' not in newconfig:
-        newconfig['computesettings'] = dict()
-
     if 'tuning' not in newconfig['computesettings']:
         newconfig['computesettings']['tuning'] = dict()
 
     if 'mask_zeros' not in newconfig['computesettings']:
         newconfig['computesettings']['mask_zeros'] = False
-
-    if 'plotsettings' not in newconfig:
-        newconfig['plotsettings'] = dict()
-
-    if 'mapsettings' not in newconfig:
-        newconfig['mapsettings'] = None
 
     if 'mapfolder' not in newconfig['output']:
         newconfig['output']['mapfolder'] = '/tmp'
@@ -314,6 +365,9 @@ def yconfig_set_defaults(config, appname):
 
     if 'tag' not in newconfig['output']:
         newconfig['output']['tag'] = None
+
+    if 'prefix' not in newconfig['output']:
+        newconfig['output']['prefix'] = None
 
     if 'lowercase' not in newconfig['output']:
         newconfig['output']['lowercase'] = True

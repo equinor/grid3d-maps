@@ -24,6 +24,6 @@ ojoin = os.path.join
 # =============================================================================
 
 
-def test_hc_thickness1a():
+def test_contact1a():
     """Test HC contacts with YAML config example 1a"""
-    xx.main(['--config', 'tests/yaml/contact1a.yaml'])
+    xx.main(['--config', 'tests/yaml/contact1a.yml'])

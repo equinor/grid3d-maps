@@ -29,12 +29,12 @@ skiplargetest = pytest.mark.skipif(xtg.bigtest is False,
 
 def test_average_map1a():
     """Test HC thickness with YAML config example 1a ECL based"""
-    xx.main(['--config', 'tests/yaml/avg1a.yaml'])
+    xx.main(['--config', 'tests/yaml/avg1a.yml'])
 
 
 def test_average_map1b():
     """Test HC thickness with YAML config example 1b ROFF based"""
-    xx.main(['--config', 'tests/yaml/avg1b.yaml'])
+    xx.main(['--config', 'tests/yaml/avg1b.yml'])
 
     z1poro = RS(os.path.join(td, 'z1--avg1b_average_por.gri'))
     assert_almostequal(z1poro.values.mean(), 0.1598, 0.001, 'Mean value')
@@ -47,7 +47,7 @@ def test_average_map1b():
 
 def test_average_map1c():
     """Test HC thickness with YAML config example 1c ROFF based, rotated map"""
-    xx.main(['--config', 'tests/yaml/avg1c.yaml'])
+    xx.main(['--config', 'tests/yaml/avg1c.yml'])
 
     z1poro = RS(os.path.join(td, 'all--avg1c_average_por.gri'))
     assert_almostequal(z1poro.values.mean(), 0.1678, 0.001, 'Mean value')
@@ -55,14 +55,14 @@ def test_average_map1c():
 
 def test_average_map1d():
     """Test HC thickness with YAML config example 1d ROFF based, rotated map"""
-    xx.main(['--config', 'tests/yaml/avg1d.yaml'])
+    xx.main(['--config', 'tests/yaml/avg1d.yml'])
 
 
 def test_average_map1e():
     """Test HC thickness with YAML config example 1e ROFF based, tuning"""
-    xx.main(['--config', 'tests/yaml/avg1e.yaml'])
+    xx.main(['--config', 'tests/yaml/avg1e.yml'])
 
 
 def test_average_map1f():
     """Test HC thickness with YAML config example 1f ROFF based, zero layer"""
-    xx.main(['--config', 'tests/yaml/avg1f.yaml'])
+    xx.main(['--config', 'tests/yaml/avg1f.yml'])

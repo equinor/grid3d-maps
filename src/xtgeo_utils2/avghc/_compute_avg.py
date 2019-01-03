@@ -16,7 +16,7 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-def get_avg(config, specd, propd, dates, zonation, zoned):
+def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
     """Compute a dictionary with average numpy per date
 
     It will return a dictionary per parameter and eventually dates"""
@@ -78,25 +78,15 @@ def get_avg(config, specd, propd, dates, zonation, zoned):
                             format(zname))
                 continue
 
-        # logger.debug('np flags before ...{}'.format(xmap.values.flags))
-        # xmap.avg_from_3dprop(xprop=specd['ixc'],
-        #                      yprop=specd['iyc'],
-        #                      mprop=specd['idz'],
-        #                      dzprop=specd['idz'],
-        #                      zoneprop=usezonation,
-        #                      zone_minmax=[usezrange, usezrange],
-        #                      zone_avg=myavgzon,
-        #                      coarsen=mycoarsen)
-
-        # logger.debug('np flags after gridding...{}'.format(xmap.values.flags))
-
-        # raise SystemExit
         for propname, pvalues in propd.items():
+
+            # filters get into effect by multyplying with DZ weight
+            usedz = specd['idz'] * filterarray
 
             xmap.avg_from_3dprop(xprop=specd['ixc'],
                                  yprop=specd['iyc'],
                                  mprop=pvalues,
-                                 dzprop=specd['idz'],
+                                 dzprop=usedz,
                                  zoneprop=usezonation,
                                  zone_minmax=[usezrange, usezrange],
                                  zone_avg=myavgzon,
@@ -154,6 +144,7 @@ def do_avg_plotting(config, avgd):
 
         xmap.quickplot(filename=plotfile,
                        title=pcfg['title'],
+                       subtitle=pcfg['subtitle'],
                        infotext=pcfg['infotext'],
                        xlabelrotation=pcfg['xlabelrotation'],
                        minmax=usevrange,
@@ -175,12 +166,15 @@ def _avg_filesettings(config, zname, pname, mode='root'):
     # with '~~', then back again...
     pname = pname.replace(delim, '~~').replace('-', '_').replace('~~', delim)
 
+    tag = ''
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'
-    else:
-        tag = ''
 
-    xfil = zname + delim + tag + 'average' + '_' + pname
+    prefix = config['output'].get('prefix', zname)
+    if prefix is None:
+        prefix = zname
+
+    xfil = prefix + delim + tag + 'average' + '_' + pname
 
     if mode == 'root':
         return xfil
@@ -267,9 +261,14 @@ def _avg_plotsettings(config, zname, pname):
             if 'faultpolygons' in zfg:
                 fpolyfile = zfg['faultpolygons']
 
+    subtitle = None
+    if '_filterinfo' in config:
+        subtitle = config['_filterinfo']
+
     # assing settings to a dictionary which is returned
     plotcfg = {}
     plotcfg['title'] = title
+    plotcfg['subtitle'] = subtitle
     plotcfg['infotext'] = infotext
     plotcfg['valuerange'] = valuerange
     plotcfg['diffvaluerange'] = diffvaluerange
