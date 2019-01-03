@@ -1,3 +1,6 @@
+---
+# As 3a, but no zonation entry, instead zonation is a filter
+
 title: Reek
 # Case with external config files, e.g. a global config!
 # Reuse dates data from global config
@@ -7,12 +10,8 @@ input:
   dates: !include_from tests/yaml/global_config3a.yml::global.DATES
   diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
 
-# zonation from file on YAML format
-zonation: !include hc_thickness1b_zonation.yml
-
-
 # For filters, there are properties defined at the same grid layout as the grid read in input
-# If several filters, the will be cumulative
+# If several filters, they will be cumulative
 filters:
   -
     name: PORO
@@ -23,6 +22,11 @@ filters:
     discrete: Yes
     source: ../xtgeo-testdata/3dgrids/reek/reek_sim_facies2.roff
     discrange: [1]  # Filter for a discrete will be spesic number (or codename?)
+  -
+    name: Zone
+    discrete: Yes
+    source: ../xtgeo-testdata/3dgrids/reek/reek_sim_zone.roff
+    discrange: [1, 3]  # Filter for a discrete will be spesic number
 
 
 computesettings:
@@ -31,8 +35,8 @@ computesettings:
   critmode: No
   shc_interval: [0.001, 1]   # saturation interval
   method: use_poro
-  zone: Yes
-  all: No
+  zone: no
+  all: yes
 
 # map definition (not rotated maps only)
 mapsettings:
@@ -72,3 +76,4 @@ output:
   mapfolder: TMP
   plotfolder: TMP
   tag: hc1b
+  prefix: myzone1+3

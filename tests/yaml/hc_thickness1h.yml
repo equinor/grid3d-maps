@@ -1,3 +1,5 @@
+# as 1a, but speed up via tuning
+
 title: Reek
 
 
@@ -15,7 +17,7 @@ input:
 # Zonation gives what zones to compute over, and typically is similar
 # to the zonation in RMS. Note that it is possible to read the zonation
 # from an extrernal YAML file, via:
-#   yamlfile: 'name_of_file.yaml'
+#   yamlfile: 'name_of_file.yml'
 zonation:
   # zranges will normally be the Zone parameter, defined as K range cells
   zranges:
@@ -36,6 +38,9 @@ computesettings:
   method: use_poro
   zone: Yes
   all: Yes
+  tuning:
+    zone_avg: Yes
+    coarsen: 2
 
 # map definition
 mapsettings:
@@ -47,5 +52,6 @@ mapsettings:
   nrow: 200
 
 output:
+  tag: tuning
   mapfolder: TMP
   plotfolder: TMP

@@ -166,12 +166,15 @@ def _avg_filesettings(config, zname, pname, mode='root'):
     # with '~~', then back again...
     pname = pname.replace(delim, '~~').replace('-', '_').replace('~~', delim)
 
+    tag = ''
     if config['output']['tag']:
         tag = config['output']['tag'] + '_'
-    else:
-        tag = ''
 
-    xfil = zname + delim + tag + 'average' + '_' + pname
+    prefix = config['output'].get('prefix', zname)
+    if prefix is None:
+        prefix = zname
+
+    xfil = prefix + delim + tag + 'average' + '_' + pname
 
     if mode == 'root':
         return xfil

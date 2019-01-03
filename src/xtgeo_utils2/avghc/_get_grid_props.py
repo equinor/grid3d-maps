@@ -310,6 +310,7 @@ def import_filters(config, appname, grd):
             source = source.replace('$eclroot', eclroot)
             gprop = GridProperty(source, grid=grd, name=name)
             pval = gprop.values
+            xtg.say('Filter, import <{}> from <{}> ...'.format(name, source))
 
             if not discrete:
                 filterarray[(pval < irange[0]) | (pval > irange[1])] = 0

@@ -18,16 +18,21 @@ import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
+from xtgeo.common import XTGeoDialog
+
+xtg = XTGeoDialog()
+logger = xtg.functionlogger(__name__)
+
 
 class YamlXLoader(yaml.Loader):
     """Class for making it possible to use nested YAML files.
 
-    Code is borrowed from David Hall (extended later):
+    Code is borrowed from David Hall (but extended later):
     https://davidchall.github.io/yaml-includes.html
     """
     # pylint: disable=too-many-ancestors
 
-    def __init__(self, stream, ordered=True):
+    def __init__(self, stream, ordered=False):
         self._ordered = ordered  # for OrderedDict
         self._root = os.path.split(stream.name)[0]
         super(YamlXLoader, self).__init__(stream)
@@ -90,10 +95,15 @@ class YamlXLoader(yaml.Loader):
             self._root = oldroot
 
             fields = val.strip().split('.')
-            for field in fields:
+            for ilev, field in enumerate(fields):
                 if field in set(result.keys()):
-                    print('Field found', field)
+                    logger.info('Level %s key, field name is %s',
+                                ilev + 1, field)
                     result = result[field]
+                else:
+                    logger.critical('Level %s key, field name not found %s',
+                                    ilev + 1, field)
+                    raise yaml.constructor.ConstructorError
             return result
 
         else:
