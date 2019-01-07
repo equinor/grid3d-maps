@@ -97,7 +97,7 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     return grd, initd, restartd, dates
 
 
-def get_zranges(config, dz):
+def get_zranges(config, grd):
     """Get the zonation names and ranges based on the config file.
 
     The zonation input has several variants; this is processed
@@ -108,12 +108,12 @@ def get_zranges(config, dz):
 
     Args:
         config: The configuration dictionary
-        dz: A numpy.ma for dz
+        grd (Grid): grid instance
 
     Returns:
         A numpy zonation 3D array
     """
-    zonation, zoned = _get_zonation_filters.zonation(config, dz)
+    zonation, zoned = _get_zonation_filters.zonation(config, grd)
 
     return zonation, zoned
 
@@ -175,9 +175,7 @@ def main(args=None):
         import_pdata(config, appname, gfile, initlist, restartlist, dates))
 
     # Get the zonations
-    xtg.say('Get zonation info')
-    dzp = initd['dz']
-    zonation, zoned = get_zranges(config, dzp)
+    zonation, zoned = get_zranges(config, grd)
 
     xtg.say('Grid contact map...')
     contact = compute_contact(config, initd, restartd, dates)

@@ -116,7 +116,7 @@ def import_filters(config, appname, grd):
     return filter_mask
 
 
-def get_zranges(config, dz):
+def get_zranges(config, grd):
     """Get the zonation names and ranges based on the config file.
 
     The zonation input has several variants; this is processed
@@ -126,13 +126,13 @@ def get_zranges(config, dz):
         - Ness: [11,13]
 
     Args:
-        config: The configuration dictionary
-        dz: A numpy.ma for dz
+        config (dict): The configuration dictionary
+        grd (Grid): The XTGeo grid object
 
     Returns:
         A numpy zonation 3D array
     """
-    zonation, zoned = _get_zonation_filters.zonation(config, dz)
+    zonation, zoned = _get_zonation_filters.zonation(config, grd)
 
     return zonation, zoned
 
@@ -204,8 +204,8 @@ def main(args=None):
 
     # Get the zonations
     xtg.say('Get zonation info')
-    dzp = initd['dz']
-    zonation, zoned = get_zranges(config, dzp)
+
+    zonation, zoned = get_zranges(config, grd)
 
     if config['computesettings']['mode'] == 'both':
         hcmodelist = ['oil', 'gas']

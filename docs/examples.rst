@@ -122,6 +122,25 @@ The actual config:
 .. literalinclude:: ../tests/yaml/hc_thickness3a.yml
    :language: yaml
 
+HC thickness 3b
+"""""""""""""""
+
+As 3a, but no zonation entry. Zonation from filter
+
+.. literalinclude:: ../tests/yaml/hc_thickness3b.yml
+   :language: yaml
+
+
+HC thickness 3c
+"""""""""""""""
+
+Base a zonation on a 3D grid property! Ie. that makes it possible
+to make "irregular zonations", e.g. base it on a FIPNUM or EQLNUM
+or whatever. Both Eclipse and ROFF input should be possible.
+
+.. literalinclude:: ../tests/yaml/hc_thickness3c.yml
+   :language: yaml
+
 
 ---------------------------------------
 Examples of YAML setup for Average maps
@@ -191,4 +210,15 @@ The global_variables example (stub):
 The configuration:
 
 .. literalinclude:: ../tests/yaml/avg2a.yml
+   :language: yaml
+
+
+AVG example 2b
+""""""""""""""
+
+Base a zonation on a 3D grid property! Ie. that makes it possible
+to make "irregular zonations", e.g. base it on a FIPNUM or EQLNUM
+or whatever. Both Eclipse and ROFF input should be possible.
+
+.. literalinclude:: ../tests/yaml/avg2b.yml
    :language: yaml

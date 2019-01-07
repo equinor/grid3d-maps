@@ -2,6 +2,7 @@ import os
 import pytest
 
 from xtgeo.common import XTGeoDialog
+from xtgeo.surface import RegularSurface
 
 import xtgeo_utils2.avghc.grid3d_average_map as xxx
 
@@ -23,6 +24,17 @@ skiplargetest = pytest.mark.skipif(xtg.bigtest is False,
 
 
 def test_average_map2a():
-    """Test HC thickness with YAML config example 2a ECL based with filters"""
+    """Test AVG with YAML config example 2a ECL based with filters"""
     dump = os.path.join(td, 'avg2a.yml')
     xxx.main(['--config', 'tests/yaml/avg2a.yml', '--dump', dump])
+
+
+def test_average_map2b():
+    """Test AVG with YAML config example 2b, filters, zonation from prop"""
+    dump = os.path.join(td, 'avg2b.yml')
+    xxx.main(['--config', 'tests/yaml/avg2b.yml', '--dump', dump])
+
+    pfile = os.path.join(td, 'myzone1--avg2b_average_pressure--20010101.gri')
+    pres = RegularSurface(pfile)
+
+    assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.000001)
