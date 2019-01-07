@@ -12,14 +12,17 @@ xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
 
-def zonation(config, dz):
-    """Get the zonations, by either a file (TODO) or a config spec
+def zonation(config, grd):
+    """Get the zonations, by either a file or a config spec.
+
+    It must be zranges OR zproperty.
 
     The super zonation is a collection of zones, whcih do not need to be
     in sequence.
 
     Args:
-        The config dict, the dz property object (just as a proxy)
+        config (dict): The config dict,
+        grd (Grid): the grid property object
 
     Returns:
         zonation (np): zonation, 3D numpy
@@ -27,24 +30,43 @@ def zonation(config, dz):
         superzoned (dict): Super zonation dictionary (name: [zone range])
     """
 
-    zonation = np.zeros((dz.shape), dtype=np.int32)
+    if 'zproperty' in config['zonation'] and 'zranges' in config['zonation']:
+        raise ValueError('Cannot have both "zproperty" and "zranges" in '
+                         '"zonation"')
 
-    # make azonation dictionary on the form
-    # 'Tarbert: [1, 1]  # CHECK! note, inclusive?
-    # 'Etive: [3, 4]
-    # 'all': [1, 17]
-
+    zonation = np.zeros(grd.dimensions, dtype=np.int32)
     zoned = OrderedDict()
     superzoned = OrderedDict()
 
-    if config['zonation']['zonefile'] is not None:
-        # must be on ROFF format
-        zon = xtgeo.grid3d.GridProperty()
-        zon.from_file(config['zonation']['zonefile'])
-        zonation = zon.values
-        zoned = zon.codes
+    eclroot = None
+    if 'eclroot' in config['input']:
+        if config['input']['eclroot'] is not None:
+            eclroot = config['input']['eclroot']
 
-    if 'zranges' in config['zonation']:
+    if 'zproperty' in config['zonation']:
+        zcfg = config['zonation']['zproperty']
+        zon = xtgeo.grid3d.GridProperty()
+
+        mysource = zcfg['source']
+        if '$eclroot' in mysource:
+            mysource = mysource.replace('$eclroot', eclroot)
+
+        zon.from_file(mysource, fformat='guess', name=zcfg['name'],
+                      grid=grd)
+        myzonation = zon.values.astype(np.int32)
+        # myzonation = np.ma.filled(zonation, fill_value=0)
+        for izn, zns in enumerate(zcfg['zones']):
+            zname = list(zns.keys())[0]  # zz.keys()[0]
+            iranges = list(zns.values())[0]
+            for ira in iranges:
+                zonation[myzonation == ira] = izn + 1
+            zoned[zname] = izn + 1
+
+        zon.values = zonation
+        zon.name = 'NEW'
+        zon.to_file('TMP/debug.roff')
+
+    elif 'zranges' in config['zonation']:
         zclist = config['zonation']['zranges']
         logger.info(type(zclist))
         for i, zz in enumerate(config['zonation']['zranges']):

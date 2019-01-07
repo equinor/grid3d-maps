@@ -45,7 +45,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
 
     for zname, zrange in zoned.items():
 
-        usezonation = zonation
+        usezonation = zonation.copy()
         usezrange = zrange
 
         # in case of super zones:
