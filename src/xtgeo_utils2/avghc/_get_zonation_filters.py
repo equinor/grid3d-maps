@@ -62,10 +62,6 @@ def zonation(config, grd):
                 zonation[myzonation == ira] = izn + 1
             zoned[zname] = izn + 1
 
-        zon.values = zonation
-        zon.name = 'NEW'
-        zon.to_file('TMP/debug.roff')
-
     elif 'zranges' in config['zonation']:
         zclist = config['zonation']['zranges']
         logger.info(type(zclist))
