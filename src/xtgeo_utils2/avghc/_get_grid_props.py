@@ -46,6 +46,9 @@ def files_to_import(config, appname):
 
     if appname == 'grid3d_hc_thickness':
 
+        if config['computesettings']['mode'] == 'rock':
+            return gfile, initlist, restartlist, dates
+
         if 'xhcpv' in config['input']:
             initlist['xhcpv'] = config['input']['xhcpv']
 
@@ -154,6 +157,12 @@ def import_data(config, appname, gfile, initlist,
     grd = xtgeo.grid3d.Grid(gfile, fformat='guess')
 
     logger.info('Grid is now imported for {}'.format(appname))
+
+    # For rock thickness only model, the initlist and restartlist will be
+    # empty dicts, and just return at this point
+
+    if not initlist:
+        return grd, None, None, None
 
     # collect data per initfile etc: make a dict on the form:
     # {initfilename: [[prop1, lookfor1], [prop2, lookfor2], ...]} the
@@ -292,22 +301,33 @@ def import_filters(config, appname, grd):
 
     filterarray = np.ones(grd.dimensions, dtype='int')
 
-    filterinfo = None
+    filterinfo = ''
 
-    if 'filters' in config and isinstance(config['filters'], list):
+    if 'filters' not in config or not isinstance(config['filters'], list):
+        config['_filterinfo'] = filterinfo  # perhaps not best practice...
+        return filterarray
 
-        filterinfo = ''
+    for flist in config['filters']:
 
-        for flist in config['filters']:
+        if 'name' in flist:
             name = flist['name']
             logger.info('Filter name: %s', name)
             source = flist['source']
             drange = flist.get('discrange', None)
+
+            # drange may either be a list or a dict (or None):
+            if isinstance(drange, dict):
+                drangetxt = list(drange.values())
+                drange = list(drange.keys())
+            elif isinstance(drange, list):
+                drangetxt = [val for val in drange]
+
             irange = flist.get('intvrange', None)
             discrete = flist.get('discrete', False)
-            filterinfo = filterinfo + ' ' + name
+            filterinfo = filterinfo + '  ' + name
 
-            source = source.replace('$eclroot', eclroot)
+            if '$eclroot' in source:
+                source = source.replace('$eclroot', eclroot)
             gprop = GridProperty(source, grid=grd, name=name)
             pval = gprop.values
             xtg.say('Filter, import <{}> from <{}> ...'.format(name, source))
@@ -320,7 +340,7 @@ def import_filters(config, appname, grd):
                 # i.e. intvrange vs discrange
                 invarray = np.zeros(grd.dimensions, dtype='int')
                 if drange and irange is None:
-                    filterinfo = filterinfo + ':' + str(drange)
+                    filterinfo = filterinfo + ':' + str(drangetxt)
                     for ival in drange:
                         if ival not in gprop.codes.keys():
                             xtg.warn('Filter codevalue {} is not present in '
@@ -336,6 +356,16 @@ def import_filters(config, appname, grd):
                                      'be defined in input (not both)')
 
                 filterarray[invarray == 0] = 0
+
+        if 'tvdrange' in flist:
+            tvdrange = flist['tvdrange']
+            _xc, _yc, zc = grd.get_xyz(mask=False)
+            filterinfo = filterinfo + '  ' + 'tvdrange: {}'.format(tvdrange)
+
+            filterarray[zc.values < tvdrange[0]] = 0
+            filterarray[zc.values > tvdrange[1]] = 0
+            xtg.say('Filter on tdvrange {} (rough; based on cell center)'
+                    .format(tvdrange))
 
     config['_filterinfo'] = filterinfo  # perhaps not best practice...
 
@@ -382,8 +412,12 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     else:
         crname = None
 
+    xmode = config['computesettings']['mode']
     xmethod = config['computesettings']['method']
     xinput = config['input']
+
+    if 'rock' in xmode:
+        return initd, None
 
     if 'xhcpv' in xinput:
         xhcpv = ma.filled(initobjects[0].values3d, fill_value=0.0)

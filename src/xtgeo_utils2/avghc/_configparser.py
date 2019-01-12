@@ -390,7 +390,11 @@ def yconfig_set_defaults(config, appname):
     if appname == 'grid3d_hc_thickness':
 
         if 'dates' not in newconfig['input']:
-            xtg.warn('Warning: No date given, set date to "unknowndate")')
+            if newconfig['computesettings']['mode'] in ('rock'):
+                xtg.say('No date give, probably OK since "rock" mode)')
+            else:
+                xtg.warn('Warning: No date given, set date to "unknowndate")')
+
             newconfig['input']['dates'] = ['unknowndate']
 
         if 'mode' not in newconfig['computesettings']:
