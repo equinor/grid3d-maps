@@ -141,6 +141,15 @@ or whatever. Both Eclipse and ROFF input should be possible.
 .. literalinclude:: ../tests/yaml/hc_thickness3c.yml
    :language: yaml
 
+HC thickness 4a
+"""""""""""""""
+
+Find a pure rock thickness (no saturations involved). Can by useful for e.g.
+a cumulative facies thickness when filter is activated, as in this example.
+
+.. literalinclude:: ../tests/yaml/hc_thickness4a.yml
+   :language: yaml
+
 
 ---------------------------------------
 Examples of YAML setup for Average maps

@@ -152,6 +152,8 @@ def _hc_filesettings(config, zname, date, hcmode, mode='map'):
     if config['output']['lowercase']:
         zname = zname.lower()
 
+    date = date.replace('unknowndate', '')
+
     if config['output']['legacydateformat']:
         date = _dates_oldformat(date)
 
@@ -171,8 +173,11 @@ def _hc_filesettings(config, zname, date, hcmode, mode='map'):
     date = date.replace('-', '_')
 
     path = config['output']['mapfolder'] + '/'
-    xfil = (prefix + delim + tag + phase + 'thickness' + delim +
-            str(date) + '.gri')
+    if not date:
+        xfil = (prefix + delim + tag + phase + 'thickness' + '.gri')
+    else:
+        xfil = (prefix + delim + tag + phase + 'thickness' + delim +
+                str(date) + '.gri')
 
     if mode == 'plot':
         path = config['output']['plotfolder'] + '/'
@@ -183,6 +188,9 @@ def _hc_filesettings(config, zname, date, hcmode, mode='map'):
 
 def _dates_oldformat(date):
     """Get dates on legacy format with underscore, 19910101 --> 1991_01_01."""
+
+    if not date:  # empty string or None
+        return ''
 
     date = str(date)
     newdate = date
@@ -212,16 +220,20 @@ def _hc_plotsettings(config, zname, date, hcmode, filtermean):
         phase = 'oil + gas'
 
     rock = 'net'
-    if config['computesettings']['mode'] == 'dz_only':
+    modecfg = config['computesettings']['mode']
+    if modecfg == 'dz_only' or modecfg == 'rock':
         rock = 'bulk'
 
     title = (phase.capitalize() + ' ' + rock + ' thickness for ' +
-             zname + ' ' + date)
+             zname)
+    if date and date != 'unknowndate':
+        title = title + ' ' + date
 
     showtime = strftime("%Y-%m-%d %H:%M:%S", localtime())
-    infotext = getpass.getuser() + ' ' + showtime
+    infotext = config['title'] + ' - '
+    infotext += ' ' + getpass.getuser() + ' ' + showtime
     if config['output']['tag']:
-        infotext = infotext + ' (tag: ' + config['output']['tag'] + ')'
+        infotext += ' (tag: ' + config['output']['tag'] + ')'
 
     subtitle = None
     if filtermean < 1.0:

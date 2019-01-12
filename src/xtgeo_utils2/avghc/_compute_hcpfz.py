@@ -22,16 +22,20 @@ def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
         if isinstance(val, ma.MaskedArray):
             raise ValueError('Item {} is masked'.format(key))
 
-    for key, val in restartd.items():
-        if isinstance(val, ma.MaskedArray):
-            raise ValueError('Item {} is masked'.format(key))
+    if restartd is not None:
+        for key, val in restartd.items():
+            if isinstance(val, ma.MaskedArray):
+                raise ValueError('Item {} is masked'.format(key))
 
     hcpfzd = dict()
 
     # use the given date from config if stoiip, giip, etc as info
-    gdate = config['input']['dates'][0]
+    gdate = config['input']['dates'][0]  # will give 'unknowndate' if unset
 
-    if 'xhcpv' in config['input']:
+    if 'rock' in hcmode:
+        hcpfzd[gdate] = initd['dz'] * filterarray
+
+    elif 'xhcpv' in config['input']:
         area = initd['dx'] * initd['dy']
         area[area < 10.0] = 10.0
         hcpfzd[gdate] = initd['xhcpv'] * filterarray / area
@@ -89,6 +93,10 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
             usedz = initd['dz'].copy()
             usedz[usehc < shcintv[0]] = 0.0
             usedz[usehc > shcintv[1]] = 0.0
+            hcpfzd[date] = usedz * filterarray
+
+        elif hcmethod == 'rock':
+            usedz = initd['dz'].copy()
             hcpfzd[date] = usedz * filterarray
 
         else:

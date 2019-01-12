@@ -196,9 +196,10 @@ def _avg_plotsettings(config, zname, pname):
     title = 'Weighted average for ' + pname + ', zone ' + zname
 
     showtime = strftime("%Y-%m-%d %H:%M:%S", localtime())
-    infotext = getpass.getuser() + ' ' + showtime
+    infotext = config['title'] + ' - '
+    infotext += getpass.getuser() + ' ' + showtime
     if config['output']['tag']:
-        infotext = infotext + ' (tag: ' + config['output']['tag'] + ')'
+        infotext += ' (tag: ' + config['output']['tag'] + ')'
 
     xlabelrotation = None
     valuerange = (None, None)
@@ -262,7 +263,7 @@ def _avg_plotsettings(config, zname, pname):
                 fpolyfile = zfg['faultpolygons']
 
     subtitle = None
-    if '_filterinfo' in config:
+    if '_filterinfo' in config and config['_filterinfo']:
         subtitle = config['_filterinfo']
 
     # assing settings to a dictionary which is returned
