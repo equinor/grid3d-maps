@@ -140,7 +140,7 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
                            infotext=pcfg['infotext'],
                            xlabelrotation=pcfg['xlabelrotation'],
                            minmax=usevrange,
-                           colortable=pcfg['colortable'],
+                           colormap=pcfg['colortable'],
                            faults=faults)
 
 
@@ -257,6 +257,9 @@ def _hc_plotsettings(config, zname, date, hcmode, filtermean):
 
     if 'faultpolygons' in config['plotsettings']:
         fpolyfile = config['plotsettings']['faultpolygons']
+
+    if 'colortable' in config['plotsettings']:
+        colortable = config['plotsettings']['colortable']
 
     # there may be individual plotsettings for zname
     if zname is not None and zname in config['plotsettings']:

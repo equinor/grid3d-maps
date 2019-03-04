@@ -161,7 +161,7 @@ def import_data(config, appname, gfile, initlist,
     # For rock thickness only model, the initlist and restartlist will be
     # empty dicts, and just return at this point
 
-    if not initlist:
+    if not initlist and not restartlist:
         return grd, None, None, None
 
     # collect data per initfile etc: make a dict on the form:
@@ -276,6 +276,9 @@ def import_data(config, appname, gfile, initlist,
 
     logger.info('Routine at end')
 
+    logger.debug('The initiobjects and restobjects: %s %s',
+                 initobjects, restobjects)
+
     return grd, initobjects, restobjects, newdateslist
 
 
@@ -359,7 +362,7 @@ def import_filters(config, appname, grd):
 
         if 'tvdrange' in flist:
             tvdrange = flist['tvdrange']
-            _xc, _yc, zc = grd.get_xyz(mask=False)
+            _xc, _yc, zc = grd.get_xyz(asmasked=False)
             filterinfo = filterinfo + '  ' + 'tvdrange: {}'.format(tvdrange)
 
             filterarray[zc.values < tvdrange[0]] = 0
@@ -385,13 +388,13 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     # mask is False  to get values for all cells, also inactive
 
     logger.info('Getting xc, yc, zc...')
-    xc, yc, zc = grd.get_xyz(mask=False)
+    xc, yc, zc = grd.get_xyz(asmasked=False)
     xc = ma.filled(xc.values3d)
     yc = ma.filled(yc.values3d)
     zc = ma.filled(zc.values3d)
 
     logger.info('Getting dz...')
-    dz = ma.filled(grd.get_dz(mask=False).values3d)
+    dz = ma.filled(grd.get_dz(asmasked=False).values3d)
     logger.info('Getting dz as ma.filled...')
     dz[actnum == 0] = 0.0
     logger.info('dz = 0 of actnum is 0 ...')
@@ -517,22 +520,33 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
 
     actnum = grd.get_actnum().get_npvalues3d(fill_value=0)
     # mask is False  to get values for all cells, also inactive
-    xc, yc, zc = grd.get_xyz(mask=False)
+    xc, yc, zc = grd.get_xyz(asmasked=False)
     xc = xc.get_npvalues3d()
     yc = yc.get_npvalues3d()
     zc = zc.get_npvalues3d()
-    dz = grd.get_dz(mask=False).get_npvalues3d()
+    dz = grd.get_dz(asmasked=False).get_npvalues3d()
 
     dz[actnum == 0] = 0.0
 
     # store these in a dict for special data (specd):
     specd = {'idz': dz, 'ixc': xc, 'iyc': yc, 'izc': zc, 'iactnum': actnum}
 
-    for prop in initobjects:
-        logger.debug('INIT PROP name {}'.format(prop.name))
+    if initobjects is not None:
+        for prop in initobjects:
+            logger.debug('INIT PROP name {}'.format(prop.name))
 
-    for prop in restobjects:
-        logger.debug('REST PROP name {}'.format(prop.name))
+    if restobjects is not None:
+        for prop in restobjects:
+            logger.debug('REST PROP name {}'.format(prop.name))
+
+    if initobjects is not None and restobjects is not None:
+        groupobjects = initobjects + restobjects
+    elif initobjects is None and restobjects is not None:
+        groupobjects = restobjects
+    elif initobjects is not None and restobjects is None:
+        groupobjects = initobjects
+    else:
+        raise ValueError('Both initiobjects and restobjects are None')
 
     propd = {}
 
@@ -557,7 +571,7 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
                 ok1 = False
                 ok2 = False
 
-                for prop in initobjects + restobjects:
+                for prop in groupobjects:
                     if usepname1 == prop.name:
                         ptmp1 = prop.get_npvalues3d()
                         ok1 = True
@@ -572,7 +586,7 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
 
             # only one date
             else:
-                for prop in initobjects + restobjects:
+                for prop in groupobjects:
                     usepname = pname.replace('--', '_')
                     if usepname == prop.name:
                         ptmp = prop.get_npvalues3d()
@@ -580,7 +594,7 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
 
         # no dates
         else:
-            for prop in initobjects + restobjects:
+            for prop in groupobjects:
                 if usepname == prop.name:
                     ptmp = prop.get_npvalues3d()
                     propd[pname] = ptmp
