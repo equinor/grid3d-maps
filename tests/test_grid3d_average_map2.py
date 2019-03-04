@@ -38,3 +38,14 @@ def test_average_map2b():
     pres = RegularSurface(pfile)
 
     assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.000001)
+
+
+def test_average_map2c():
+    """Test AVG with YAML config example 2c, filters, zonation from prop"""
+    dump = os.path.join(td, 'avg2c.yml')
+    xxx.main(['--config', 'tests/yaml/avg2c.yml', '--dump', dump])
+
+    pfile = os.path.join(td, 'myzone1--avg2c_average_pressure--20010101.gri')
+    pres = RegularSurface(pfile)
+
+    assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.000001)

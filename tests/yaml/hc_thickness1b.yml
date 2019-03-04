@@ -47,13 +47,13 @@ plotsettings:
 
   xlabelrotation: 25      # Rotate the X axis labels (if they may overlap)
 
-  colortable: rainbow     # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
+  colortable: seismic     # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
                           # OR from RMS colour file
 
   # individual settings will override general plot settings!
   Z1:
     valuerange: [0, 8]
-    colortable: gnuplot2
+    colortable: seismic
 
   Z2:
     valuerange: [0, 5]
