@@ -86,6 +86,8 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr TMP/
 
+develop:  ## make develop mode (for pure python only)
+	${PIP} install -e .
 
 lint: ## check style with flake8
 	flake8 ${APPLICATION} tests
