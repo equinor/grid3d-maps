@@ -21,8 +21,8 @@ computesettings:
   critmode: No
   shc_interval: [0.001, 1]   # saturation interval
   method: use_poro
-  zone: Yes
-  all: No
+  zone: No
+  all: Yes
 
 # map definition (not rotated maps only)
 mapsettings:
@@ -62,3 +62,4 @@ output:
   mapfolder: TMP
   plotfolder: TMP
   tag: hc1b
+  prefix: replace_all_with_x
