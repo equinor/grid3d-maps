@@ -19,7 +19,7 @@ zonation:
 
 computesettings:
   zone: Yes
-  all: No
+  all: Yes
   mask_zeros: Yes  # means that ouput maps will be set to undef where zero
 
 # map definition (not rotated maps only)
@@ -36,3 +36,4 @@ output:
                  # z1--avg1a_average_poro.gri
   mapfolder: TMP
   plotfolder: TMP
+  prefix: xxx
