@@ -91,7 +91,7 @@ class YamlXLoader(yaml.Loader):
 
         if isinstance(node, yaml.ScalarNode):
             filename, val = self.construct_scalar(node).split('::')
-            result = yaml.full_load(open(filename, 'r'))
+            result = yaml.safe_load(open(filename, 'r'))
             self._root = oldroot
 
             fields = val.strip().split('.')
