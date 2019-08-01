@@ -20,13 +20,13 @@ From sources
 ------------
 
 The sources for xtgeo_utils2 can be downloaded from
-the `Statoil Git repo`_.
+the `equinor Git repo`_.
 
 You can then clone the repository:
 
 .. code-block:: console
 
-    $ git clone git@github.com:Statoil/xtgeo-utils2
+    $ git clone git@github.com:equinor/xtgeoapp-grd3dmaps
 
 Once you have a copy of the source, and you have a `virtual environment`_,
 you can install locally (for development and testing) it with:
@@ -38,5 +38,5 @@ you can install locally (for development and testing) it with:
 However, if you will like to contribute, making a personal fork is strongly
 recommended, see :ref:`Contributing`.
 
-.. _Statoil Git repo: https://github.com/Statoil/xtgeo-utils2
+.. _equinor Git repo: https://github.com/equinor/xtgeoapp-grd3dmaps
 .. _virtual environment: http://docs.python-guide.org/en/latest/dev/virtualenvs/

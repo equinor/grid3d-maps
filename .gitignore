@@ -3,9 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 env/
@@ -46,6 +43,7 @@ coverage.xml
 *,cover
 .hypothesis/
 TMP/
+src/xtgeoapp_grd3dmaps/_theversion.py
 
 # Translations
 *.mo

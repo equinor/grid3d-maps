@@ -1,5 +1,5 @@
 ======================================
-The scripts in *xtgeo_utils2*
+The scripts in *xtgeoapp_grd3dmaps*
 ======================================
 
 Two scripts here, one for hc thickness maps and one for average maps.

@@ -131,8 +131,7 @@ dist: clean  ## builds wheel package
 
 install: dist ## version to VENV install place
 	@echo "Running ${PIP} (${PYTHON_VERSION}) ..."
-	@${PIP} install --upgrade ./dist/*
-	@rsync -av --delete bin/grid3d* ${VIRTUAL_ENV}/bin/.
+	@${PIP} install --upgrade --global-option=build --global-option='--executable=/usr/bin/env python' .
 
 
 siteinstall: dist ## Install in project/res (Trondheim) using $TARGET
