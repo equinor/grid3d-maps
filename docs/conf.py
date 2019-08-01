@@ -57,7 +57,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'xtgeo_utils2'
-copyright = u"Statoil (contact person: Jan C. Rivenæs, JRIV@statoil.com)"
+copyright = u"equinor (contact person: Jan C. Rivenæs, JRIV@statoil.com)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout

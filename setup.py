@@ -34,16 +34,10 @@ requirements = parse_requirements("requirements.txt")
 
 setup_requirements = ["pytest-runner", "wheel", "setuptools_scm>=3.2.0"]
 
-test_requirements = [
-    "pytest",
-    # TODO: put package test requirements here
-]
+test_requirements = ["pytest"]
 
-hc_function = "grid3d_hc_thickness=" "xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
-avg_function = "grid3d_average_map=" "xtgeoapp_grd3maps.avghc.grid3d_average_map:main"
-con_function = (
-    "grid3dapp_contact_map=" "xtgeoapp_grd3dmaps.contact.grd3d_contact_map:main"
-)
+hc_function = "grid3d_hc_thickness=" "xtgeoapp_grd3dmaps.grid3d_hc_thickness:main"
+avg_function = "grid3d_average_map=" "xtgeoapp_grd3dmaps.grid3d_average_map:main"
 
 
 setup(
@@ -54,17 +48,17 @@ setup(
     },
     description="Make HC thickness, avg maps, etc directly from 3D props",
     long_description=readme + "\n\n" + history,
-    author="Jan C. Rivenaes",
-    author_email="jriv@statoil.com",
+    author="Equinor R&T",
+    author_email="jriv@equinor.com",
     url="https://github.com/equinor/xtgeoapp_grd3dmaps",
     packages=find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
-    entry_points={"console_scripts": [hc_function, avg_function, con_function]},
+    entry_points={"console_scripts": [hc_function, avg_function]},
     include_package_data=True,
     install_requires=requirements,
     zip_safe=False,
-    keywords="xtgeo_utils2",
+    keywords="xtgeo",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -74,6 +68,9 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
     ],
     test_suite="tests",
     tests_require=test_requirements,
