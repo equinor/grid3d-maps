@@ -30,9 +30,8 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 
-APPLICATION := xtgeo_utils2
+APPLICATION := xtgeoapp_grd3dmaps
 DOCSINSTALL := /project/sdpdocs/XTGeo/apps
-
 
 BROWSER := firefox
 
@@ -50,13 +49,8 @@ PYTHON := python${PSHORT}
 PIP := pip${PSHORT}
 
 
-TARGET := ${SDP_BINDIST_ROOT}/lib/python${PYTHON_SHORT}/site-packages
+TARGET := ${SDP_BINDIST_ROOT}
 
-BININSTALL := /project/res/x86_64_RH_6/bin
-
-MY_BINDIST ?= $HOME
-
-USRPYPATH := ${MY_BINDIST}/lib/python${PYVER}/site-packages
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -96,11 +90,6 @@ lint: ## check style with flake8
 test:  ## run tests quickly with the default Python
 	@${PYTHON} setup.py test
 
-
-test-all: ## run tests on every Python version with tox (not active)
-	tox
-
-
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source ${APPLICATION} -m pytest
 	coverage report -m
@@ -120,34 +109,26 @@ docs: docsrun ## generate and display Sphinx HTML documentation...
 	$(BROWSER) docs/_build/html/index.html
 
 
-servedocs: docs ## compile the docs watching for changes
-	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
-
-
 dist: clean  ## builds wheel package
 	@echo "Running ${PYTHON} (${PYTHON_VERSION}) bdist_wheel..."
 	@${PYTHON} setup.py bdist_wheel
 
 
-install: dist ## version to VENV install place
+install: dist
 	@echo "Running ${PIP} (${PYTHON_VERSION}) ..."
-	@${PIP} install --upgrade --global-option=build --global-option='--executable=/usr/bin/env python' .
+	@${PIP} install --upgrade --global-option=build \
+	--global-option='--executable=/usr/bin/env python' .
 
 
 siteinstall: dist ## Install in project/res (Trondheim) using $TARGET
 	@echo $(HOST)
-	\rm -fr  ${TARGET}/${APPLICATION}
-	\rm -fr  ${TARGET}/${APPLICATION}-*
-	@${PIP} install --target ${TARGET} --upgrade  ./dist/${APPLICATION}*.whl
-	/project/res/bin/res_perm ${TARGET}/${APPLICATION}*
-	@rsync -av --delete bin/grid3d* ${BININSTALL}/.
-	/project/res/bin/res_perm ${BININSTALL}/grid3d_*
+	PYTHONUSERBASE=${TARGET} ${PIP} install . --user --upgrade \
+	--global-option=build --global-option='--executable=/usr/bin/env python'
 
-userinstall: dist ## Install on user directory (need a MY_BINDIST env variable)
-	@\rm -fr  ${USRPYPATH}/${APPLICATION}
-	@\rm -fr  ${USRPYPATH}/${APPLICATION}-*
-	@${PIP} install --target ${USRPYPATH} --upgrade  ./dist/*.whl
-	@rsync -av --delete bin/grid3d* ${MYBINDIST}/bin/.
+userinstall: dist
+	@echo $(HOST)
+	PYTHONUSERBASE=${HOME} ${PIP} install . --user --upgrade --global-option=build \
+	--global-option='--executable=/usr/bin/env python'
 
 
 docsinstall: docsrun
