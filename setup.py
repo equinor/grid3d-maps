@@ -2,18 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """The setup script."""
+import fileinput
 import os
+import sys
+import sysconfig
 from glob import glob
 from os.path import basename
 from os.path import splitext
 
 from setuptools import setup, find_packages
 
-with open("README.rst") as readme_file:
-    readme = readme_file.read()
-
-with open("HISTORY.rst") as history_file:
-    history = history_file.read()
+APPS = ("grid3d_hc_thickness", "grid3d_average_map")
 
 
 def parse_requirements(filename):
@@ -28,6 +27,26 @@ def parse_requirements(filename):
 def src(x):
     root = os.path.dirname(__file__)
     return os.path.abspath(os.path.join(root, x))
+
+
+def _post_install():
+    """Replace the shebang line of console script fra  spesific to a general"""
+    print("POST INSTALL")
+    spath = sysconfig.get_paths()["scripts"]
+    xapps = []
+    for app in APPS:
+        xapps.append(os.path.join(spath, app))
+    print(xapps)
+    for line in fileinput.input(xapps, inplace=1):
+        line = line.replace(spath + "/python", "/usr/bin/env python")
+        sys.stdout.write(line)
+
+
+with open("README.rst") as readme_file:
+    readme = readme_file.read()
+
+with open("HISTORY.rst") as history_file:
+    history = history_file.read()
 
 
 requirements = parse_requirements("requirements.txt")
