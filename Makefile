@@ -116,19 +116,18 @@ dist: clean  ## builds wheel package
 
 install: dist
 	@echo "Running ${PIP} (${PYTHON_VERSION}) ..."
-	@${PIP} install --upgrade --global-option=build \
-	--global-option='--executable=/usr/bin/env python' .
+	${PIP} install . --upgrade
+	#@${PIP} install --upgrade --global-option=build \
+	#--global-option='--executable=/usr/bin/env python' .
 
 
 siteinstall: dist ## Install in project/res (Trondheim) using $TARGET
 	@echo $(HOST)
-	PYTHONUSERBASE=${TARGET} ${PIP} install . --user --upgrade \
-	--global-option=build --global-option='--executable=/usr/bin/env python'
+	PYTHONUSERBASE=${TARGET} ${PIP} install . --user --upgrade
 
 userinstall: dist
 	@echo $(HOST)
-	PYTHONUSERBASE=${HOME} ${PIP} install . --user --upgrade --global-option=build \
-	--global-option='--executable=/usr/bin/env python'
+	PYTHONUSERBASE=${HOME} ${PIP} install . --user --upgrade
 
 
 docsinstall: docsrun
