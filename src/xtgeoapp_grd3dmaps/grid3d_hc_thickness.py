@@ -19,14 +19,15 @@ from . import _get_zonation_filters
 from . import _compute_hcpfz
 from . import _hc_plotmap
 from . import _mapsettings
+
 try:
-    from ._theversion import version
+    from ._theversion import version as __version__
 except ImportError:
-    version = "0.0.0"
+    __version__ = "0.0.0"
 
-appname = "grid3d_hc_thickness (xtgeoapp_grd3dmaps)"
+APPNAME = "grid3d_hc_thickness"
 
-appdescr = (
+APPDESCR = (
     "Make HC thickness maps directly from 3D grids. Docs:\n"
     + "https://sdp.statoil.no/wikidocs/XTGeo/apps/"
     + "xtgeoapp_grd3dmaps/html/"
@@ -39,7 +40,7 @@ logger = xtg.basiclogger(__name__)
 
 def do_parse_args(args):
 
-    args = _configparser.parse_args(args, appname, appdescr)
+    args = _configparser.parse_args(args, APPNAME, APPDESCR)
 
     return args
 
@@ -50,17 +51,17 @@ def yamlconfig(inputfile, args):
     config = _configparser.dateformatting(config)
 
     # override with command line args
-    config = _configparser.yconfig_override(config, args, appname)
+    config = _configparser.yconfig_override(config, args, APPNAME)
 
-    config = _configparser.yconfig_set_defaults(config, appname)
+    config = _configparser.yconfig_set_defaults(config, APPNAME)
 
     # in case of YAML input (e.g. zonation from file)
-    config = _configparser.yconfig_addons(config, appname)
+    config = _configparser.yconfig_addons(config, APPNAME)
 
-    logger.info("Updated config:".format(config))
+    logger.info("Updated config: %s", config)
     for name, val in config.items():
-        logger.info("{}".format(name))
-        logger.info("{}".format(val))
+        logger.info("%s", name)
+        logger.info("%s", val)
 
     if args.dumpfile:
         _configparser.yconfigdump(config, args.dumpfile)
@@ -68,38 +69,38 @@ def yamlconfig(inputfile, args):
     return config
 
 
-def get_grid_props_data(config, appname):
+def get_grid_props_data(config):
     """Collect the relevant Grid and props data (but not do the import)."""
 
     gfile, initlist, restartlist, dates = _get_grid_props.files_to_import(
-        config, appname
+        config, APPNAME
     )
 
     xtg.say("Grid file is {}".format(gfile))
 
-    if len(initlist) > 0:
+    if initlist:  # if len(initlist) > 0:
         xtg.say("Getting INITIAL file data (as INIT or ROFF)")
 
         for initpar, initfile in initlist.items():
-            logger.info("{} file is {}".format(initpar, initfile))
+            logger.info("%s file is %s", initpar, initfile)
 
-    if len(restartlist) > 0:
+    if restartlist:  # if len(restartlist) > 0:
         xtg.say("Getting RESTART file data")
         for restpar, restfile in restartlist.items():
-            logger.info("{} file is {}".format(restpar, restfile))
+            logger.info("%s file is %s", restpar, restfile)
 
     xtg.say("Getting dates")
     for date in dates:
-        logger.info("Date is {}".format(date))
+        logger.info("Date is %s", date)
 
     return gfile, initlist, restartlist, dates
 
 
-def import_pdata(config, appname, gfile, initlist, restartlist, dates):
+def import_pdata(config, gfile, initlist, restartlist, dates):
     """Import the data, and represent datas as numpies"""
 
     grd, initobjects, restobjects, dates = _get_grid_props.import_data(
-        config, appname, gfile, initlist, restartlist, dates
+        config, APPNAME, gfile, initlist, restartlist, dates
     )
     # get the numpies
     initd, restartd = _get_grid_props.get_numpies_hc_thickness(
@@ -111,10 +112,10 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     return grd, initd, restartd, dates
 
 
-def import_filters(config, appname, grd):
+def import_filters(config, grd):
     """Import the filter data properties, process and return a filter mask"""
 
-    filter_mask = _get_grid_props.import_filters(config, appname, grd)
+    filter_mask = _get_grid_props.import_filters(config, APPNAME, grd)
 
     return filter_mask
 
@@ -171,7 +172,7 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode, filtermean=None
 
 def main(args=None):
 
-    XTGeoDialog.print_xtgeo_header(appname, version)
+    XTGeoDialog.print_xtgeo_header(APPNAME, __version__)
 
     xtg.say("Parse command line")
     args = do_parse_args(args)
@@ -189,16 +190,16 @@ def main(args=None):
 
     # get the files
     xtg.say("Collect files...")
-    gfile, initlist, restartlist, dates = get_grid_props_data(config, appname)
+    gfile, initlist, restartlist, dates = get_grid_props_data(config)
 
     # import data from files and return relevant numpies
     xtg.say("Import files...")
     grd, initd, restartd, dates = import_pdata(
-        config, appname, gfile, initlist, restartlist, dates
+        config, gfile, initlist, restartlist, dates
     )
 
     # get the filter array
-    filterarray = import_filters(config, appname, grd)
+    filterarray = import_filters(config, grd)
     logger.info("Filter mean value: %s", filterarray.mean())
     if filterarray.mean() < 1.0:
         xtg.say("Property filters are active")

@@ -7,7 +7,7 @@ import glob
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface as RS
 
-import xtgeo_utils2.avghc.grid3d_average_map as xx
+import xtgeoapp_grd3dmaps.grid3d_average_map as xx
 from .test_grid3d_hc_thickness2 import assert_almostequal
 
 xtg = XTGeoDialog()
