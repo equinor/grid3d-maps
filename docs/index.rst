@@ -1,4 +1,4 @@
-Welcome to xtgeo_utils2' documentation!
+Welcome to xtgeoapp_grd3dmaps' documentation!
 ===========================================
 
 Contents:

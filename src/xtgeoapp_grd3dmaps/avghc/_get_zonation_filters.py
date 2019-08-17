@@ -7,6 +7,7 @@ import numpy as np
 
 import xtgeo
 from xtgeo.common import XTGeoDialog
+
 xtg = XTGeoDialog()
 
 logger = xtg.functionlogger(__name__)
@@ -30,82 +31,78 @@ def zonation(config, grd):
         superzoned (dict): Super zonation dictionary (name: [zone range])
     """
 
-    if 'zproperty' in config['zonation'] and 'zranges' in config['zonation']:
-        raise ValueError('Cannot have both "zproperty" and "zranges" in '
-                         '"zonation"')
+    if "zproperty" in config["zonation"] and "zranges" in config["zonation"]:
+        raise ValueError('Cannot have both "zproperty" and "zranges" in ' '"zonation"')
 
     zonation = np.zeros(grd.dimensions, dtype=np.int32)
     zoned = OrderedDict()
     superzoned = OrderedDict()
 
     eclroot = None
-    if 'eclroot' in config['input']:
-        if config['input']['eclroot'] is not None:
-            eclroot = config['input']['eclroot']
+    if "eclroot" in config["input"]:
+        if config["input"]["eclroot"] is not None:
+            eclroot = config["input"]["eclroot"]
 
-    if 'zproperty' in config['zonation']:
-        zcfg = config['zonation']['zproperty']
+    if "zproperty" in config["zonation"]:
+        zcfg = config["zonation"]["zproperty"]
         zon = xtgeo.grid3d.GridProperty()
 
-        mysource = zcfg['source']
-        if '$eclroot' in mysource:
-            mysource = mysource.replace('$eclroot', eclroot)
+        mysource = zcfg["source"]
+        if "$eclroot" in mysource:
+            mysource = mysource.replace("$eclroot", eclroot)
 
-        zon.from_file(mysource, fformat='guess', name=zcfg['name'],
-                      grid=grd)
+        zon.from_file(mysource, fformat="guess", name=zcfg["name"], grid=grd)
         myzonation = zon.values.astype(np.int32)
         # myzonation = np.ma.filled(zonation, fill_value=0)
-        for izn, zns in enumerate(zcfg['zones']):
+        for izn, zns in enumerate(zcfg["zones"]):
             zname = list(zns.keys())[0]  # zz.keys()[0]
             iranges = list(zns.values())[0]
             for ira in iranges:
                 zonation[myzonation == ira] = izn + 1
             zoned[zname] = izn + 1
 
-    elif 'zranges' in config['zonation']:
-        zclist = config['zonation']['zranges']
+    elif "zranges" in config["zonation"]:
+        zclist = config["zonation"]["zranges"]
         logger.info(type(zclist))
-        for i, zz in enumerate(config['zonation']['zranges']):
+        for i, zz in enumerate(config["zonation"]["zranges"]):
             zname = list(zz.keys())[0]  # zz.keys()[0]
             intv = list(zz.values())[0]
             k01 = intv[0] - 1
             k02 = intv[1]
 
-            logger.info('K01 K02: {} - {}'.format(k01, k02))
+            logger.info("K01 K02: {} - {}".format(k01, k02))
 
-            zonation[:, :, k01: k02] = i + 1
+            zonation[:, :, k01:k02] = i + 1
             zoned[zname] = i + 1
 
-    if 'superranges' in config['zonation']:
-        logger.info('Found superranges keyword...')
-        for i, zz in enumerate(config['zonation']['superranges']):
+    if "superranges" in config["zonation"]:
+        logger.info("Found superranges keyword...")
+        for i, zz in enumerate(config["zonation"]["superranges"]):
             zname = list(zz.keys())[0]
             superzoned[zname] = []
             intv = list(zz.values())[0]
-            logger.debug('Superzone spec no {}: {}  {}'
-                         .format(i + 1, zname, intv))
+            logger.debug("Superzone spec no {}: {}  {}".format(i + 1, zname, intv))
             for zn in intv:
                 superzoned[zname].append(zoned[zn])
     else:
-        logger.info('Did not find any superranges...')
+        logger.info("Did not find any superranges...")
 
     for myz, val in zoned.items():
-        logger.info('Zonation list: {}: {}'.format(myz, val))
+        logger.info("Zonation list: {}: {}".format(myz, val))
 
-    logger.debug('Zonation in cell 1, 1, kmin:kmax: {}'
-                 .format(zonation[0, 0, :]))
+    logger.debug("Zonation in cell 1, 1, kmin:kmax: {}".format(zonation[0, 0, :]))
 
     for key, vals in superzoned.items():
-        logger.debug('Superzoned {}  {}'.format(key, vals))
+        logger.debug("Superzoned {}  {}".format(key, vals))
 
-    logger.info('The zoned dict: {}'.format(zoned))
-    logger.info('The superzoned dict: {}'.format(superzoned))
+    logger.info("The zoned dict: {}".format(zoned))
+    logger.info("The superzoned dict: {}".format(superzoned))
 
     zmerged = zoned.copy()
     zmerged.update(superzoned)
 
-    zmerged['all'] = None
+    zmerged["all"] = None
 
-    logger.info('The merged dict: {}'.format(zmerged))
+    logger.info("The merged dict: {}".format(zmerged))
 
     return zonation, zmerged

@@ -55,8 +55,8 @@ setup_requirements = ["pytest-runner", "wheel", "setuptools_scm>=3.2.0"]
 
 test_requirements = ["pytest"]
 
-hc_function = "grid3d_hc_thickness=" "xtgeoapp_grd3dmaps.grid3d_hc_thickness:main"
-avg_function = "grid3d_average_map=" "xtgeoapp_grd3dmaps.grid3d_average_map:main"
+hc_function = "grid3d_hc_thickness=" "xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
+avg_function = "grid3d_average_map=" "xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
 
 
 setup(

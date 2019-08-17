@@ -5,7 +5,7 @@ import os
 
 from xtgeo.common import XTGeoDialog
 
-import xtgeo_utils2.contact.grid3d_contact_map as xx
+import xtgeoapp_grd3dmaps.contact.grid3d_contact_map as xx
 
 xtg = XTGeoDialog()
 

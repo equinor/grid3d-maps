@@ -30,6 +30,7 @@ class YamlXLoader(yaml.Loader):
     Code is borrowed from David Hall (but extended later):
     https://davidchall.github.io/yaml-includes.html
     """
+
     # pylint: disable=too-many-ancestors
 
     def __init__(self, stream, ordered=False):
@@ -39,11 +40,12 @@ class YamlXLoader(yaml.Loader):
 
         YamlXLoader.add_constructor(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            YamlXLoader.construct_mapping)
+            YamlXLoader.construct_mapping,
+        )
 
-        YamlXLoader.add_constructor('!include', YamlXLoader.include)
-        YamlXLoader.add_constructor('!import', YamlXLoader.include)
-        YamlXLoader.add_constructor('!include_from', YamlXLoader.include_from)
+        YamlXLoader.add_constructor("!include", YamlXLoader.include)
+        YamlXLoader.add_constructor("!import", YamlXLoader.include)
+        YamlXLoader.add_constructor("!include_from", YamlXLoader.include_from)
         # if root:
         #     self.root = root
         # elif isinstance(self.stream, file_types):
@@ -69,7 +71,7 @@ class YamlXLoader(yaml.Loader):
                 result[knum] = self.extract_file(val)
 
         else:
-            print('Error:: unrecognised node type in !include statement')
+            print("Error:: unrecognised node type in !include statement")
             raise yaml.constructor.ConstructorError
 
         return result
@@ -90,24 +92,24 @@ class YamlXLoader(yaml.Loader):
         oldroot = self._root
 
         if isinstance(node, yaml.ScalarNode):
-            filename, val = self.construct_scalar(node).split('::')
-            result = yaml.safe_load(open(filename, 'r'))
+            filename, val = self.construct_scalar(node).split("::")
+            result = yaml.safe_load(open(filename, "r"))
             self._root = oldroot
 
-            fields = val.strip().split('.')
+            fields = val.strip().split(".")
             for ilev, field in enumerate(fields):
                 if field in set(result.keys()):
-                    logger.info('Level %s key, field name is %s',
-                                ilev + 1, field)
+                    logger.info("Level %s key, field name is %s", ilev + 1, field)
                     result = result[field]
                 else:
-                    logger.critical('Level %s key, field name not found %s',
-                                    ilev + 1, field)
+                    logger.critical(
+                        "Level %s key, field name not found %s", ilev + 1, field
+                    )
                     raise yaml.constructor.ConstructorError
             return result
 
         else:
-            print('Error:: unrecognised node type in !include_from statement')
+            print("Error:: unrecognised node type in !include_from statement")
             raise yaml.constructor.ConstructorError
 
         return result
@@ -116,7 +118,7 @@ class YamlXLoader(yaml.Loader):
         """Extract file method"""
 
         filepath = os.path.join(self._root, filename)
-        with open(filepath, 'r') as yfile:
+        with open(filepath, "r") as yfile:
             return yaml.load(yfile, YamlXLoader)
 
     # from https://gist.github.com/pypt/94d747fe5180851196eb
@@ -124,8 +126,11 @@ class YamlXLoader(yaml.Loader):
     def construct_mapping(self, node, deep=False):
         if not isinstance(node, MappingNode):
             raise ConstructorError(
-                None, None, 'Expected a mapping node, but found %s' % node.id,
-                node.start_mark)
+                None,
+                None,
+                "Expected a mapping node, but found %s" % node.id,
+                node.start_mark,
+            )
 
         mapping = dict()
         if self._ordered:
@@ -137,12 +142,16 @@ class YamlXLoader(yaml.Loader):
                 hash(key)
             except TypeError as exc:
                 raise ConstructorError(
-                    'While constructing a mapping', node.start_mark,
-                    'found unacceptable key (%s)' % exc, key_node.start_mark)
+                    "While constructing a mapping",
+                    node.start_mark,
+                    "found unacceptable key (%s)" % exc,
+                    key_node.start_mark,
+                )
             # check for duplicate keys
             if key in mapping:
-                raise ConstructorError('Found duplicate key <{}> ... {}'
-                                       .format(key, key_node.start_mark))
+                raise ConstructorError(
+                    "Found duplicate key <{}> ... {}".format(key, key_node.start_mark)
+                )
             value = self.construct_object(value_node, deep=deep)
             mapping[key] = value
         return mapping
@@ -185,11 +194,12 @@ class YLoader(yaml.Loader):
                 ['resize-to-wearer']}
 
     """
+
     def __init__(self, *args, **kwargs):
         super(YLoader, self).__init__(*args, **kwargs)
-        self.add_constructor('!include', self._include)
-        if 'root' in kwargs:
-            self.root = kwargs['root']
+        self.add_constructor("!include", self._include)
+        if "root" in kwargs:
+            self.root = kwargs["root"]
         elif isinstance(self.stream, file_types):
             self.root = os.path.dirname(self.stream.name)
         else:
@@ -199,6 +209,6 @@ class YLoader(yaml.Loader):
         oldroot = self.root
         filename = os.path.join(self.root, loader.construct_scalar(node))
         self.root = os.path.dirname(filename)
-        data = yaml.load(open(filename, 'r'))
+        data = yaml.load(open(filename, "r"))
         self.root = oldroot
         return data

@@ -4,7 +4,7 @@ import pytest
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 
-import xtgeo_utils2.avghc.grid3d_hc_thickness as xxx
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xxx
 
 xtg = XTGeoDialog()
 

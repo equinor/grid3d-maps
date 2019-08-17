@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-"""Script to make HC thickness maps directly from 3D grids.
+"""Script to make average maps directly from 3D grids.
 
-A typical scenario is to create HC thickness maps directly from Eclipse
-simulation files (or eventually other similators).
+A typical scenario is to create average maps directly from Eclipse
+simulation files (or eventually other similators), but ROFF files
+are equally supported.
 
 """
 
@@ -16,21 +17,22 @@ from xtgeo.common import XTGeoDialog
 from . import _configparser
 from . import _get_grid_props
 from . import _get_zonation_filters
-from . import _compute_hcpfz
-from . import _hc_plotmap
+from . import _compute_avg
 from . import _mapsettings
-try:
-    from ._theversion import version
-except ImportError:
-    version = "0.0.0"
 
-appname = "grid3d_hc_thickness (xtgeoapp_grd3dmaps)"
+try:
+    from ..theversion import version as __version__
+except ImportError:
+    __version__ = "0.0.0"
+
+appname = "grid3d_average_map"
 
 appdescr = (
-    "Make HC thickness maps directly from 3D grids. Docs:\n"
+    "Make average property maps directly from 3D grids. Docs:\n"
     + "https://sdp.statoil.no/wikidocs/XTGeo/apps/"
     + "xtgeoapp_grd3dmaps/html/"
 )
+
 
 xtg = XTGeoDialog()
 
@@ -47,7 +49,7 @@ def do_parse_args(args):
 def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
-    config = _configparser.dateformatting(config)
+    config = _configparser.propformatting(config)
 
     # override with command line args
     config = _configparser.yconfig_override(config, args, appname)
@@ -77,16 +79,13 @@ def get_grid_props_data(config, appname):
 
     xtg.say("Grid file is {}".format(gfile))
 
-    if len(initlist) > 0:
-        xtg.say("Getting INITIAL file data (as INIT or ROFF)")
+    xtg.say("Getting INIT file data")
+    for initpar, initfile in initlist.items():
+        logger.info("{} file is {}".format(initpar, initfile))
 
-        for initpar, initfile in initlist.items():
-            logger.info("{} file is {}".format(initpar, initfile))
-
-    if len(restartlist) > 0:
-        xtg.say("Getting RESTART file data")
-        for restpar, restfile in restartlist.items():
-            logger.info("{} file is {}".format(restpar, restfile))
+    xtg.say("Getting RESTART file data")
+    for restpar, restfile in restartlist.items():
+        logger.info("{} file is {}".format(restpar, restfile))
 
     xtg.say("Getting dates")
     for date in dates:
@@ -101,14 +100,12 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     grd, initobjects, restobjects, dates = _get_grid_props.import_data(
         config, appname, gfile, initlist, restartlist, dates
     )
-    # get the numpies
-    initd, restartd = _get_grid_props.get_numpies_hc_thickness(
+    specd, averaged = _get_grid_props.get_numpies_avgprops(
         config, grd, initobjects, restobjects, dates
     )
 
     # returns also dates since dates list may be updated after import
-
-    return grd, initd, restartd, dates
+    return grd, specd, averaged, dates
 
 
 def import_filters(config, appname, grd):
@@ -129,31 +126,21 @@ def get_zranges(config, grd):
         - Ness: [11,13]
 
     Args:
-        config (dict): The configuration dictionary
+        config: The configuration dictionary
         grd (Grid): The XTGeo grid object
 
     Returns:
-        A numpy zonation 3D array
+        A numpy zonation 3D array (zonation) + a zone dict)
     """
     zonation, zoned = _get_zonation_filters.zonation(config, grd)
 
     return zonation, zoned
 
 
-def compute_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
-
-    hcpfzd = _compute_hcpfz.get_hcpfz(
-        config, initd, restartd, dates, hcmode, filterarray
-    )
-
-    return hcpfzd
-
-
-def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode, filtermean=None):
-    """Do checks, mapping and plotting"""
-
-    # check if values looks OK. Status flag:
-    # 0: Seems
+def compute_avg_and_plot(
+    config, grd, specd, propd, dates, zonation, zoned, filterarray
+):
+    """A dict of avg (numpy) maps, with zone name as keys."""
 
     if config["mapsettings"] is None:
         config = _mapsettings.estimate_mapsettings(config, grd)
@@ -163,15 +150,20 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode, filtermean=None
         if status >= 10:
             xtg.critical("STOP! Mapsettings defined is outside the 3D grid!")
 
-    mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode)
+    # This is done a bit different here than in the HC thickness. Here the
+    # mapping and plotting is done within _compute_avg.py
+
+    avgd = _compute_avg.get_avg(
+        config, specd, propd, dates, zonation, zoned, filterarray
+    )
 
     if config["output"]["plotfolder"] is not None:
-        _hc_plotmap.do_hc_plotting(config, mapzd, hcmode, filtermean=filtermean)
+        _compute_avg.do_avg_plotting(config, avgd)
 
 
 def main(args=None):
 
-    XTGeoDialog.print_xtgeo_header(appname, version)
+    XTGeoDialog.print_xtgeo_header(appname, __version__)
 
     xtg.say("Parse command line")
     args = do_parse_args(args)
@@ -193,7 +185,8 @@ def main(args=None):
 
     # import data from files and return relevant numpies
     xtg.say("Import files...")
-    grd, initd, restartd, dates = import_pdata(
+
+    grd, specd, propd, dates = import_pdata(
         config, appname, gfile, initlist, restartlist, dates
     )
 
@@ -203,32 +196,15 @@ def main(args=None):
     if filterarray.mean() < 1.0:
         xtg.say("Property filters are active")
 
+    for prop, val in propd.items():
+        logger.info("Key is {}, avg value is {}".format(prop, val.mean()))
+
     # Get the zonations
     xtg.say("Get zonation info")
-
     zonation, zoned = get_zranges(config, grd)
 
-    if config["computesettings"]["mode"] == "both":
-        hcmodelist = ["oil", "gas"]
-    else:
-        hcmodelist = [config["computesettings"]["mode"]]
-
-    for hcmode in hcmodelist:
-
-        xtg.say("Compute HCPFZ property for {}".format(hcmode))
-        hcpfzd = compute_hcpfz(config, initd, restartd, dates, hcmode, filterarray)
-
-        xtg.say("Do mapping...")
-        plotmap(
-            config,
-            grd,
-            initd,
-            hcpfzd,
-            zonation,
-            zoned,
-            hcmode,
-            filtermean=filterarray.mean(),
-        )
+    xtg.say("Compute average properties")
+    compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned, filterarray)
 
 
 if __name__ == "__main__":
