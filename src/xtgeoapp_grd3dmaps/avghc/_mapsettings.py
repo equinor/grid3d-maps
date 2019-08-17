@@ -20,26 +20,26 @@ def check_mapsettings(config, grd):
     ggeom = grd.get_geometrics(return_dict=True, cellcenter=False)
 
     # Compute the geometrics values from the mapsettings:
-    cfmp = config['mapsettings']
+    cfmp = config["mapsettings"]
 
-    if 'templatefile' in cfmp:
-        mymap = xtgeo.surface.RegularSurface(cfmp['templatefile'])
+    if "templatefile" in cfmp:
+        mymap = xtgeo.surface.RegularSurface(cfmp["templatefile"])
         xmin = mymap.xmin
         xmax = mymap.xmax
         ymin = mymap.ymin
         ymax = mymap.ymax
     else:
-        xmin = cfmp['xori']  # since unrotated map
-        xmax = xmin + (cfmp['ncol'] - 1) * cfmp['xinc']
-        ymin = cfmp['yori']  # since unrotated map
-        ymax = ymin + (cfmp['nrow'] - 1) * cfmp['yinc']
+        xmin = cfmp["xori"]  # since unrotated map
+        xmax = xmin + (cfmp["ncol"] - 1) * cfmp["xinc"]
+        ymin = cfmp["yori"]  # since unrotated map
+        ymax = ymin + (cfmp["nrow"] - 1) * cfmp["yinc"]
 
     # problems score pscore is 0 if all is OK
     pscore = 0
-    if xmax < ggeom['xmin'] or xmin > ggeom['xmax']:
+    if xmax < ggeom["xmin"] or xmin > ggeom["xmax"]:
         pscore += 10
 
-    if ymax < ggeom['ymin'] or ymin > ggeom['ymax']:
+    if ymax < ggeom["ymin"] or ymin > ggeom["ymax"]:
         pscore += 10
 
     return pscore
@@ -50,14 +50,14 @@ def estimate_mapsettings(config, grd):
 
     newconfig = copy.deepcopy(config)
 
-    newconfig['mapsettings'] = dict()
+    newconfig["mapsettings"] = dict()
 
     ggeom = grd.get_geometrics(return_dict=True, cellcenter=False)
 
-    xmin = ggeom['xmin']
-    xmax = ggeom['xmax']
-    ymin = ggeom['ymin']
-    ymax = ggeom['ymax']
+    xmin = ggeom["xmin"]
+    xmax = ggeom["xmax"]
+    ymin = ggeom["ymin"]
+    ymax = ggeom["ymax"]
 
     xlen = xmax - xmin
     ylen = ymax - ymin
@@ -67,7 +67,7 @@ def estimate_mapsettings(config, grd):
     ymin = ymin - 0.05 * ylen
     ymax = ymax + 0.05 * ylen
 
-    avgdxy = 0.5 * (ggeom['avg_dx'] + ggeom['avg_dy'])
+    avgdxy = 0.5 * (ggeom["avg_dx"] + ggeom["avg_dy"])
 
     xinc = 0.5 * avgdxy
     yinc = 0.5 * avgdxy
@@ -75,12 +75,12 @@ def estimate_mapsettings(config, grd):
     ncol = int(1.1 * xlen / xinc)
     nrow = int(1.1 * ylen / yinc)
 
-    newconfig['mapsettings']['ncol'] = ncol
-    newconfig['mapsettings']['nrow'] = nrow
-    newconfig['mapsettings']['xinc'] = xinc
-    newconfig['mapsettings']['yinc'] = yinc
-    newconfig['mapsettings']['xori'] = xmin
-    newconfig['mapsettings']['yori'] = ymin
+    newconfig["mapsettings"]["ncol"] = ncol
+    newconfig["mapsettings"]["nrow"] = nrow
+    newconfig["mapsettings"]["xinc"] = xinc
+    newconfig["mapsettings"]["yinc"] = yinc
+    newconfig["mapsettings"]["xori"] = xmin
+    newconfig["mapsettings"]["yori"] = ymin
 
     logger.debug(newconfig)
 
