@@ -12,7 +12,11 @@ from xtgeoapp_grd3dmaps.avghc import _configparser
 from xtgeoapp_grd3dmaps.contact import _get_grid_props
 from xtgeoapp_grd3dmaps.avghc import _get_zonation_filters
 from xtgeoapp_grd3dmaps.contact import _compute_contact
-from .. import _version
+
+try:
+    from ..theversion import version as __version__
+except ImportError:
+    __version__ = "0.0.0"
 
 
 appname = 'grid3d_get_contact'
@@ -20,8 +24,6 @@ appname = 'grid3d_get_contact'
 appdescr = 'Estimate contact maps directly from 3D grids. Docs:\n' + \
            'https://sdp.statoil.no/wikidocs/XTGeo/apps/' + \
            'xtgeoapp_grd3dmaps/html/'
-
-__version__ = _version.get_versions()['version']
 
 xtg = XTGeoDialog()
 
