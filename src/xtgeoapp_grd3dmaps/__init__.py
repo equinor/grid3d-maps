@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-try:
-    from ._theversion import version
-    __version__ = version
-except ImportError:
-    __version__ = "0.0.0"
+
+"""Package for grid3d_average_map and grid3d_hc_thickness"""
+
+__author__ = """Jan C. Rivenaes"""
+__email__ = 'jriv@statoil.'

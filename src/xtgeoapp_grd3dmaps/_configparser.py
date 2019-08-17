@@ -11,7 +11,7 @@ import copy
 import datetime
 
 from xtgeo.common import XTGeoDialog
-from xtgeoapp_grd3dmaps._loader import YamlXLoader, ConstructorError
+from xtgeo_utils2.avghc._loader import YamlXLoader, ConstructorError
 
 xtg = XTGeoDialog()
 

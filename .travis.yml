@@ -1,0 +1,18 @@
+language: python
+
+python:
+  - 2.7
+  - 3.6
+
+os:
+  - linux
+
+
+if: (branch =~ /^dev/) OR (repo == equinor/xtgeoapp-grd3dmaps)
+
+script:
+  - pip install -r requirements.txt
+  - python setup.py test
+
+after_success:
+  - ls -l ${TRAVIS_BUILD_DIR}/dist
