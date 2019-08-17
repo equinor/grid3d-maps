@@ -4,7 +4,7 @@ import pytest
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 
-import xtgeoapp_grd3dmaps.grid3d_average_map as xxx
+import xtgeo_utils2.avghc.grid3d_average_map as xxx
 
 xtg = XTGeoDialog()
 logger = xtg.basiclogger(__name__)

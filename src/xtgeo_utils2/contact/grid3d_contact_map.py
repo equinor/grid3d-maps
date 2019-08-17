@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Script to make HC thickness maps directly from 3D grids.
-
-A typical scenario is to create HC thickness maps directly from Eclipse
-simulation files (or eventually other similators).
-
-"""
+"""Script to estimate contact maps directly from 3D grids."""
 
 from __future__ import division, print_function, absolute_import
 
@@ -13,23 +8,20 @@ import sys
 
 from xtgeo.common import XTGeoDialog
 
-from . import _configparser
-from . import _get_grid_props
-from . import _get_zonation_filters
-from . import _compute_hcpfz
-from . import _hc_plotmap
-from . import _mapsettings
+from xtgeo_utils2.avghc import _configparser
+from xtgeo_utils2.contact import _get_grid_props
+from xtgeo_utils2.avghc import _get_zonation_filters
+from xtgeo_utils2.contact import _compute_contact
+from .. import _version
 
-try:
-    from ._theversion import version as __version__
-except ImportError:
-    __version__ = "0.0.0"
 
-appname = 'grid3d_hc_thickness (xtgeoapp_grd3dmaps)'
+appname = 'grid3d_get_contact'
 
-appdescr = 'Make HC thickness maps directly from 3D grids. Docs:\n' + \
+appdescr = 'Estimate contact maps directly from 3D grids. Docs:\n' + \
            'https://sdp.statoil.no/wikidocs/XTGeo/apps/' + \
-           'xtgeoapp_grd3dmaps/html/'
+           'xtgeo_utils2/html/'
+
+__version__ = _version.get_versions()['version']
 
 xtg = XTGeoDialog()
 
@@ -46,7 +38,6 @@ def do_parse_args(args):
 def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
-    config = _configparser.dateformatting(config)
 
     # override with command line args
     config = _configparser.yconfig_override(config, args, appname)
@@ -60,9 +51,6 @@ def yamlconfig(inputfile, args):
     for name, val in config.items():
         logger.info('{}'.format(name))
         logger.info('{}'.format(val))
-
-    if args.dumpfile:
-        _configparser.yconfigdump(config, args.dumpfile)
 
     return config
 
@@ -101,20 +89,12 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
                                     restartlist, dates))
     # get the numpies
     initd, restartd = (
-        _get_grid_props.get_numpies_hc_thickness(config, grd, initobjects,
-                                                 restobjects, dates))
+        _get_grid_props.get_numpies_contact(config, grd, initobjects,
+                                            restobjects, dates))
 
     # returns also dates since dates list may be updated after import
-
+    logger.info('Returning numpy dates')
     return grd, initd, restartd, dates
-
-
-def import_filters(config, appname, grd):
-    """Import the filter data properties, process and return a filter mask"""
-
-    filter_mask = _get_grid_props.import_filters(config, appname, grd)
-
-    return filter_mask
 
 
 def get_zranges(config, grd):
@@ -127,8 +107,8 @@ def get_zranges(config, grd):
         - Ness: [11,13]
 
     Args:
-        config (dict): The configuration dictionary
-        grd (Grid): The XTGeo grid object
+        config: The configuration dictionary
+        grd (Grid): grid instance
 
     Returns:
         A numpy zonation 3D array
@@ -138,35 +118,32 @@ def get_zranges(config, grd):
     return zonation, zoned
 
 
-def compute_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
+def compute_contact(config, initd, restartd, dates):
+    """The contact here is .... ready for gridding??"""
+    contact = _compute_contact.gridmap_contact(config, initd, restartd, dates)
 
-    hcpfzd = _compute_hcpfz.get_hcpfz(config, initd, restartd, dates,
-                                      hcmode, filterarray)
-
-    return hcpfzd
+#    return contact
 
 
-def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode,
-            filtermean=None):
-    """Do checks, mapping and plotting"""
+# def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode):
+#     """Do checks, mapping and plotting"""
 
-    # check if values looks OK. Status flag:
-    # 0: Seems
+#     # check if values looks OK. Status flag:
+#     # 0: Seems
 
-    if config['mapsettings'] is None:
-        config = _mapsettings.estimate_mapsettings(config, grd)
-    else:
-        xtg.say('Check map settings vs grid...')
-        status = _mapsettings.check_mapsettings(config, grd)
-        if status >= 10:
-            xtg.critical('STOP! Mapsettings defined is outside the 3D grid!')
+#     if config['mapsettings'] is None:
+#         config = _mapsettings.estimate_mapsettings(config, grd)
+#     else:
+#         xtg.say('Check map settings vs grid...')
+#         status = _mapsettings.check_mapsettings(config, grd)
+#         if status >= 10:
+#             xtg.critical('STOP! Mapsettings defined is outside the 3D grid!')
 
-    mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation,
-                                      zoned, hcmode)
+#     mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation,
+#                                       zoned, hcmode)
 
-    if config['output']['plotfolder'] is not None:
-        _hc_plotmap.do_hc_plotting(config, mapzd, hcmode,
-                                   filtermean=filtermean)
+#     if config['output']['plotfolder'] is not None:
+#         _hc_plotmap.do_hc_plotting(config, mapzd, hcmode)
 
 
 def main(args=None):
@@ -192,36 +169,22 @@ def main(args=None):
     gfile, initlist, restartlist, dates = (
         get_grid_props_data(config, appname))
 
-    # import data from files and return relevant numpies
+    # import data from files and return releavnt numpies
     xtg.say('Import files...')
     grd, initd, restartd, dates = (
         import_pdata(config, appname, gfile, initlist, restartlist, dates))
 
-    # get the filter array
-    filterarray = import_filters(config, appname, grd)
-    logger.info('Filter mean value: %s', filterarray.mean())
-    if filterarray.mean() < 1.0:
-        xtg.say('Property filters are active')
-
     # Get the zonations
-    xtg.say('Get zonation info')
-
     zonation, zoned = get_zranges(config, grd)
 
-    if config['computesettings']['mode'] == 'both':
-        hcmodelist = ['oil', 'gas']
-    else:
-        hcmodelist = [config['computesettings']['mode']]
+    xtg.say('Grid contact map...')
+    contact = compute_contact(config, initd, restartd, dates)
 
-    for hcmode in hcmodelist:
+    # for hcmode in hcmodelist:
 
-        xtg.say('Compute HCPFZ property for {}'.format(hcmode))
-        hcpfzd = compute_hcpfz(config, initd, restartd, dates, hcmode,
-                               filterarray)
 
-        xtg.say('Do mapping...')
-        plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode,
-                filtermean=filterarray.mean())
+    #     xtg.say('Do mapping...')
+    #     plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode)
 
 
 if __name__ == '__main__':
