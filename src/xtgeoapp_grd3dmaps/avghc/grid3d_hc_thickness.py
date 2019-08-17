@@ -26,7 +26,7 @@ appname = 'grid3d_hc_thickness'
 
 appdescr = 'Make HC thickness maps directly from 3D grids. Docs:\n' + \
            'https://sdp.statoil.no/wikidocs/XTGeo/apps/' + \
-           'xtgeo_utils2/html/'
+           'xtgeoapp_grd3dmaps/html/'
 
 __version__ = _version.get_versions()['version']
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for xtgeo_utils2"""
+"""Top-level package for xtgeoapp_grd3dmaps"""
 
 __author__ = """Jan C. Rivenaes"""
 __email__ = 'jriv@statoil.com'

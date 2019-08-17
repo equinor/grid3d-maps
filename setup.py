@@ -30,15 +30,15 @@ test_requirements = [
 ]
 
 hc_function = ('grid3d_hc_thickness='
-               'xtgeo_utils2.avghc.grid3d_hc_thickness:main')
+               'xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main')
 avg_function = ('grid3d_average_map='
-                'xtgeo_utils2.avghc.grid3d_average_map:main')
+                'xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main')
 con_function = ('grid3d_contact_map='
-                'xtgeo_utils2.contact.grd3d_contact_map:main')
+                'xtgeoapp_grd3dmaps.contact.grd3d_contact_map:main')
 
 
 setup(
-    name='xtgeo_utils2',
+    name='xtgeoapp_grd3dmaps',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description='Make HC thickness, avg maps, etc directly from 3D props',
@@ -57,7 +57,7 @@ setup(
     include_package_data=True,
     install_requires=requirements,
     zip_safe=False,
-    keywords='xtgeo_utils2',
+    keywords='xtgeoapp_grd3dmaps',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

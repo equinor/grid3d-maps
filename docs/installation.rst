@@ -19,7 +19,7 @@ The stable release is on /project/res, so scripts can be run as:
 From sources
 ------------
 
-The sources for xtgeo_utils2 can be downloaded from
+The sources for xtgeoapp_grd3dmaps can be downloaded from
 the `equinor Git repo`_.
 
 You can then clone the repository:
