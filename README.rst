@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.com/equinor/xtgeoapp-grd3dmaps.svg?token=6jQHz1Rt4hEEy4skfFKt&branch=master
+    :target: https://travis-ci.com/equinor/xtgeoapp-grd3dmaps
+
 ======================================
 The scripts in *xtgeoapp_grd3dmaps*
 ======================================
