@@ -34,7 +34,7 @@ def zonation(config, grd):
     if "zproperty" in config["zonation"] and "zranges" in config["zonation"]:
         raise ValueError('Cannot have both "zproperty" and "zranges" in ' '"zonation"')
 
-    zonation = np.zeros(grd.dimensions, dtype=np.int32)
+    usezonation = np.zeros(grd.dimensions, dtype=np.int32)
     zoned = OrderedDict()
     superzoned = OrderedDict()
 
@@ -58,7 +58,7 @@ def zonation(config, grd):
             zname = list(zns.keys())[0]  # zz.keys()[0]
             iranges = list(zns.values())[0]
             for ira in iranges:
-                zonation[myzonation == ira] = izn + 1
+                usezonation[myzonation == ira] = izn + 1
             zoned[zname] = izn + 1
 
     elif "zranges" in config["zonation"]:
@@ -70,9 +70,9 @@ def zonation(config, grd):
             k01 = intv[0] - 1
             k02 = intv[1]
 
-            logger.info("K01 K02: {} - {}".format(k01, k02))
+            logger.info("K01 K02: %s - %s", k01, k02)
 
-            zonation[:, :, k01:k02] = i + 1
+            usezonation[:, :, k01:k02] = i + 1
             zoned[zname] = i + 1
 
     if "superranges" in config["zonation"]:
@@ -81,28 +81,24 @@ def zonation(config, grd):
             zname = list(zz.keys())[0]
             superzoned[zname] = []
             intv = list(zz.values())[0]
-            logger.debug("Superzone spec no {}: {}  {}".format(i + 1, zname, intv))
+            logger.debug("Superzone spec no %s: %s  %s", i + 1, zname, intv)
             for zn in intv:
                 superzoned[zname].append(zoned[zn])
     else:
         logger.info("Did not find any superranges...")
 
     for myz, val in zoned.items():
-        logger.info("Zonation list: {}: {}".format(myz, val))
-
-    logger.debug("Zonation in cell 1, 1, kmin:kmax: {}".format(zonation[0, 0, :]))
+        logger.info("Zonation list: %s: %s", myz, val)
 
     for key, vals in superzoned.items():
-        logger.debug("Superzoned {}  {}".format(key, vals))
+        logger.debug("Superzoned %s  %s", key, vals)
 
-    logger.info("The zoned dict: {}".format(zoned))
-    logger.info("The superzoned dict: {}".format(superzoned))
+    logger.info("The zoned dict: %s", zoned)
+    logger.info("The superzoned dict: %s", superzoned)
 
     zmerged = zoned.copy()
     zmerged.update(superzoned)
 
     zmerged["all"] = None
 
-    logger.info("The merged dict: {}".format(zmerged))
-
-    return zonation, zmerged
+    return usezonation, zmerged
