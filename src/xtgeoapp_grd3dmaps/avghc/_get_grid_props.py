@@ -20,6 +20,13 @@ xtg = XTGeoDialog()
 
 logger = xtg.functionlogger(__name__)
 
+# Heavy need for reprogramming...:
+# pylint: disable=logging-format-interpolation
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-nested-blocks
+
 
 def files_to_import(config, appname):
     """Get a list of files to import, based on config"""
@@ -68,7 +75,6 @@ def files_to_import(config, appname):
             restartlist["SGAS"] = eclroot + ".UNRST"
 
             for date in config["input"]["dates"]:
-                logger.debug("DATE {}".format(date))
                 if len(date) == 8:
                     dates.append(date)
                 elif len(date) > 12:
@@ -130,10 +136,10 @@ def files_to_import(config, appname):
     pprestart = pprint.PrettyPrinter(indent=4)
     ppdates = pprint.PrettyPrinter(indent=4)
 
-    logger.debug("Grid from {}".format(gfile))
-    logger.debug("{}".format(ppinit.pformat(initlist)))
-    logger.debug("{}".format(pprestart.pformat(restartlist)))
-    logger.debug("{}".format(ppdates.pformat(dates)))
+    logger.debug("Grid from %s", gfile)
+    logger.debug("%s", ppinit.pformat(initlist))
+    logger.debug("%s", pprestart.pformat(restartlist))
+    logger.debug("%s", ppdates.pformat(dates))
 
     return gfile, initlist, restartlist, dates
 
@@ -151,12 +157,11 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
     """
 
-    logger.info("Import data for {}".format(appname))
+    logger.info("Import data for %s", appname)
+    logger.debug("Config is %s", config)
 
     # get the grid data + some geometrics
     grd = xtgeo.grid3d.Grid(gfile, fformat="guess")
-
-    logger.info("Grid is now imported for {}".format(appname))
 
     # For rock thickness only model, the initlist and restartlist will be
     # empty dicts, and just return at this point
@@ -174,7 +179,7 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
     initdict = defaultdict(list)
     for ipar, ifile in initlist.items():
-        logger.info("Parameter INIT: {} \t file is {}".format(ipar, ifile))
+
         if isinstance(ifile, dict):
             lookfor, usefile = list(ifile.keys()), list(ifile.values())
             initdict[usefile[0]].append([ipar, lookfor[0]])
@@ -191,11 +196,11 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
             initdict[ifile].append([ipar, lookfor])
 
     ppinitdict = pprint.PrettyPrinter(indent=4)
-    logger.debug("\n{}".format(ppinitdict.pformat(initdict)))
+    logger.debug("\n%s", ppinitdict.pformat(initdict))
 
     restdict = defaultdict(list)
     for rpar, rfile in restartlist.items():
-        logger.info("Parameter RESTART: {} \t file is {}".format(rpar, rfile))
+        logger.info("Parameter RESTART: %s \t file is %s", rpar, rfile)
         restdict[rfile].append(rpar)
 
     pprestdict = pprint.PrettyPrinter(indent=4)
@@ -243,12 +248,12 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
             )
 
         except DateNotFoundError as rwarn:
-            logger.info("Got warning...")
+            logger.info("Got warning... %s", rwarn)
             for prop in tmp.props:
                 logger.info("Append prop: {}".format(prop))
                 restobjects.append(prop)
         except KeywordFoundNoDateError as rwarn:
-            logger.info("Keyword found but not for this date")
+            logger.info("Keyword found but not for this date %s", rwarn)
             raise SystemExit("STOP")
         except Exception as message:
             raise SystemExit(message)
