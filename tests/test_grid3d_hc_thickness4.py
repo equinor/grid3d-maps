@@ -43,4 +43,4 @@ def test_hc_thickness4a():
     mapfile = os.path.join(td, 'all--hc4a_rockthickness.gri')
     mymap = RegularSurface(mapfile)
 
-    assert_almostequal(mymap.values.mean(), 0.76590, 0.0001)
+    assert_almostequal(mymap.values.mean(), 0.76590, 0.001)
