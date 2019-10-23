@@ -57,7 +57,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'xtgeoapp_grd3dmaps'
-copyright = u"equinor (contact person: Jan C. Rivenæs, JRIV@statoil.com)"
+copyright = u"equinor (contact person: Jan C. Rivenæs, JRIV@equinor.com)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -132,7 +132,7 @@ html_theme = 'sphinx_rtd_theme'
 
 # The name of an image file (relative to this directory) to place at the
 # top of the sidebar.
-html_logo = '_static/statoil_logo.png'
+html_logo = '_static/equinor_logo.png'
 
 # The name of an image file (within the static path) to use as favicon
 # of the docs.  This file should be a Windows icon file (.ico) being
