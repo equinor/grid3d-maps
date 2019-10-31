@@ -29,7 +29,7 @@ APPNAME = "grid3d_average_map"
 
 APPDESCR = (
     "Make average property maps directly from 3D grids. Docs:\n"
-    + "https://sdp.statoil.no/wikidocs/XTGeo/apps/"
+    + "https://sdp.equinor.no/wikidocs/XTGeo/apps/"
     + "xtgeoapp_grd3dmaps/html/"
 )
 

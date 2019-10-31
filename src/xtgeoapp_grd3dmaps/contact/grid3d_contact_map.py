@@ -22,7 +22,7 @@ except ImportError:
 appname = 'grid3d_get_contact'
 
 appdescr = 'Estimate contact maps directly from 3D grids. Docs:\n' + \
-           'https://sdp.statoil.no/wikidocs/XTGeo/apps/' + \
+           'https://sdp.equinor.no/wikidocs/XTGeo/apps/' + \
            'xtgeoapp_grd3dmaps/html/'
 
 xtg = XTGeoDialog()
