@@ -37,7 +37,7 @@ def test_average_map2b():
     pfile = os.path.join(td, 'myzone1--avg2b_average_pressure--20010101.gri')
     pres = RegularSurface(pfile)
 
-    assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.000001)
+    assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.01)
 
 
 def test_average_map2c():
@@ -48,4 +48,4 @@ def test_average_map2c():
     pfile = os.path.join(td, 'myzone1--avg2c_average_pressure--20010101.gri')
     pres = RegularSurface(pfile)
 
-    assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.000001)
+    assert pres.values.mean() == pytest.approx(301.689869690714, abs=0.01)
