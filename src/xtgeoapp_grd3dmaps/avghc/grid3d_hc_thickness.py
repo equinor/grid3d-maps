@@ -29,8 +29,7 @@ APPNAME = "grid3d_hc_thickness"
 
 APPDESCR = (
     "Make HC thickness maps directly from 3D grids. Docs:\n"
-    + "https://sdp.equinor.no/wikidocs/XTGeo/apps/"
-    + "xtgeoapp_grd3dmaps/html/"
+    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
 )
 
 xtg = XTGeoDialog()
