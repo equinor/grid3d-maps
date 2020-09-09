@@ -24,12 +24,14 @@ testpath = xtg.testpath
 # Some useful functions
 # =============================================================================
 
-def assert_equal(this, that, txt=''):
+
+def assert_equal(this, that, txt=""):
     assert this == that, txt
 
 
-def assert_almostequal(this, that, tol, txt=''):
+def assert_almostequal(this, that, tol, txt=""):
     assert this == pytest.approx(that, abs=tol), txt
+
 
 # =============================================================================
 # Do tests
@@ -38,11 +40,11 @@ def assert_almostequal(this, that, tol, txt=''):
 
 def test_hc_thickness2a():
     """HC thickness with YAML config example 2a; use STOOIP prop from RMS"""
-    xx.main(['--config', 'tests/yaml/hc_thickness2a.yml'])
+    xx.main(["--config", "tests/yaml/hc_thickness2a.yml"])
 
     # read in result and check statistical values
 
-    allz = RS(os.path.join(td, 'all--stoiip_oilthickness--19900101.gri'))
+    allz = RS(os.path.join(td, "all--stoiip_oilthickness--19900101.gri"))
 
     val = allz.values1d
     val[val <= 0] = np.nan
