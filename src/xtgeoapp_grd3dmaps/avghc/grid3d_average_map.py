@@ -29,8 +29,7 @@ APPNAME = "grid3d_average_map"
 
 APPDESCR = (
     "Make average property maps directly from 3D grids. Docs:\n"
-    + "https://sdp.equinor.no/wikidocs/XTGeo/apps/"
-    + "xtgeoapp_grd3dmaps/html/"
+    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
 )
 
 
@@ -181,9 +180,7 @@ def main(args=None):
     # import data from files and return relevant numpies
     xtg.say("Import files...")
 
-    grd, specd, propd, dates = import_pdata(
-        config, gfile, initlist, restartlist, dates
-    )
+    grd, specd, propd, dates = import_pdata(config, gfile, initlist, restartlist, dates)
 
     # get the filter array
     filterarray = import_filters(config, grd)
