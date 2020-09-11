@@ -60,3 +60,28 @@ target/
 
 # pyenv python configuration file
 .python-version
+docs/test_images/myzone1+3--hc1b_oilthickness--19991201.png
+docs/test_images/myzone1+3--hc1b_oilthickness--20010101_19991201.png
+docs/test_images/myzone1+3--hc1b_oilthickness--20010101.png
+docs/test_images/replace_all_with_x--hc1b_oilthickness--19991201.png
+docs/test_images/replace_all_with_x--hc1b_oilthickness--20010101_19991201.png
+docs/test_images/z1--avg1b_average_permz.png
+docs/test_images/z1--avg1b_average_por.png
+docs/test_images/z1--hc1b_oilthickness--19991201.png
+docs/test_images/z1--hc1b_oilthickness--20010101_19991201.png
+docs/test_images/z1--hc1b_oilthickness--20010101.png
+docs/test_images/z1+3--avg1b_average_permz.png
+docs/test_images/z1+3--avg1b_average_por.png
+docs/test_images/z1+3--hc1b_oilthickness--19991201.png
+docs/test_images/z1+3--hc1b_oilthickness--20010101_19991201.png
+docs/test_images/z1+3--hc1b_oilthickness--20010101.png
+docs/test_images/z2--avg1b_average_permz.png
+docs/test_images/z2--avg1b_average_por.png
+docs/test_images/z2--hc1b_oilthickness--19991201.png
+docs/test_images/z2--hc1b_oilthickness--20010101_19991201.png
+docs/test_images/z2--hc1b_oilthickness--20010101.png
+docs/test_images/z3--avg1b_average_permz.png
+docs/test_images/z3--avg1b_average_por.png
+docs/test_images/z3--hc1b_oilthickness--19991201.png
+docs/test_images/z3--hc1b_oilthickness--20010101_19991201.png
+docs/test_images/z3--hc1b_oilthickness--20010101.png
