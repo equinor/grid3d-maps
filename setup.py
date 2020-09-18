@@ -73,7 +73,12 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
-    entry_points={"console_scripts": [hc_function, avg_function]},
+    entry_points={
+        "console_scripts": [hc_function, avg_function],
+        "ert": [
+            "xtgeoapp_grd3dmaps_jobs = xtgeoapp_grd3dmaps.hook_implementations.jobs"
+        ],
+    },
     include_package_data=True,
     install_requires=requirements,
     zip_safe=False,
