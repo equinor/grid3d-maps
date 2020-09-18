@@ -9,6 +9,8 @@ The scripts in *xtgeoapp_grd3dmaps*
 
 Two scripts here, one for hc thickness maps and one for average maps.
 
+Documentation: https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/
+
 Script grid3d_hc_thickness
 --------------------------
 
