@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 # import shutil
 # import glob
@@ -27,4 +28,5 @@ ojoin = os.path.join
 
 def test_contact1a():
     """Test HC contacts with YAML config example 1a"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/contact1a.yml"])

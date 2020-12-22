@@ -1,8 +1,9 @@
 language: python
 
 python:
-  - 2.7
   - 3.6
+  - 3.7
+  - 3.8
 
 os:
   - linux
@@ -11,11 +12,12 @@ os:
 if: (branch =~ /^dev/) OR (repo == equinor/xtgeoapp-grd3dmaps)
 
 before_script:
-    - git clone https://github.com/equinor/xtgeo-testdata.git ../xtgeo-testdata
+  - git clone https://github.com/equinor/xtgeo-testdata.git ../xtgeo-testdata
 
 
 script:
   - pip install -r requirements.txt
+  - pip install .
   - python setup.py test
 
 after_success:
