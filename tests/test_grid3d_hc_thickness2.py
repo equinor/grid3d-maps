@@ -2,6 +2,7 @@ import os
 import sys
 import pytest
 import numpy as np
+from pathlib import Path
 
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface as RS
@@ -40,6 +41,7 @@ def assert_almostequal(this, that, tol, txt=""):
 
 def test_hc_thickness2a():
     """HC thickness with YAML config example 2a; use STOOIP prop from RMS"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness2a.yml"])
 
     # read in result and check statistical values

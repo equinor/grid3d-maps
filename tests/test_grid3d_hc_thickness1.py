@@ -2,6 +2,7 @@ import os
 import shutil
 import glob
 import warnings
+from pathlib import Path
 
 import numpy as np
 
@@ -30,6 +31,7 @@ ojoin = os.path.join
 
 def test_hc_thickness1a():
     """Test HC thickness with YAML config example 1a"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     dmp = ojoin(td, "hc1a_dump.yml")
     xx.main(["--config", "tests/yaml/hc_thickness1a.yml", "--dump", dmp])
 
@@ -49,6 +51,7 @@ def test_hc_thickness1a():
 
 def test_hc_thickness1b():
     """HC thickness with YAML config example 1b; zonation in own YAML file"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1b.yml"])
     imgs = glob.glob(ojoin(td, "*hc1b*.png"))
     print(imgs)
@@ -58,11 +61,13 @@ def test_hc_thickness1b():
 
 def test_hc_thickness1c():
     """HC thickness with YAML config example 1c; no map settings"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1c.yml"])
 
 
 def test_hc_thickness1d():
     """HC thickness with YAML config example 1d; as 1c but use_porv instead"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     warnings.simplefilter("error")
     xx.main(["--config", "tests/yaml/hc_thickness1d.yml"])
 
@@ -73,6 +78,7 @@ def test_hc_thickness1d():
 
 def test_hc_thickness1e():
     """HC thickness with YAML config 1e; as 1d but use ROFF grid input"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1e.yml"])
 
     x1e = RS(ojoin(td, "all--hc1e_oilthickness--19991201.gri"))
@@ -82,6 +88,7 @@ def test_hc_thickness1e():
 
 def test_hc_thickness1f():
     """HC thickness with YAML config 1f; use rotated template map"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1f.yml"])
 
     x1f = RS(ojoin(td, "all--hc1f_oilthickness--19991201.gri"))
@@ -93,6 +100,7 @@ def test_hc_thickness1f():
 def test_hc_thickness1g():
     """HC thickness with YAML config 1g; use rotated template map and both
     oil and gas"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1g.yml"])
 
     x1g1 = RS(ojoin(td, "all--hc1g_oilthickness--19991201.gri"))
@@ -106,6 +114,7 @@ def test_hc_thickness1g():
 
 def test_hc_thickness1h():
     """Test HC thickness with YAML copy from 1a, with tuning to speed up"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1h.yml"])
 
     # now read in result and check avg value
@@ -126,6 +135,7 @@ def test_hc_thickness1h():
 
 def test_hc_thickness1i():
     """Test HC thickness with YAML config example 1i, based on 1a"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1i.yml"])
 
     # now read in result and check avg value

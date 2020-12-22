@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+
 import pytest
 
 from xtgeo.common import XTGeoDialog
@@ -38,6 +40,7 @@ def assert_almostequal(this, that, tol, txt=""):
 
 def test_hc_thickness4a():
     """HC thickness with external configfiles, HC 4a"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     dump = os.path.join(td, "hc4a.yml")
     xxx.main(["--config", "tests/yaml/hc_thickness4a.yml", "--dump", dump])
 

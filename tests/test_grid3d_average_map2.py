@@ -1,5 +1,6 @@
 import os
 import pytest
+from pathlib import Path
 
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
@@ -24,12 +25,14 @@ skiplargetest = pytest.mark.skipif(xtg.bigtest is False, reason="Big tests skip"
 
 def test_average_map2a():
     """Test AVG with YAML config example 2a ECL based with filters"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     dump = os.path.join(td, "avg2a.yml")
     xxx.main(["--config", "tests/yaml/avg2a.yml", "--dump", dump])
 
 
 def test_average_map2b():
     """Test AVG with YAML config example 2b, filters, zonation from prop"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     dump = os.path.join(td, "avg2b.yml")
     xxx.main(["--config", "tests/yaml/avg2b.yml", "--dump", dump])
 
@@ -41,6 +44,7 @@ def test_average_map2b():
 
 def test_average_map2c():
     """Test AVG with YAML config example 2c, filters, zonation from prop"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     dump = os.path.join(td, "avg2c.yml")
     xxx.main(["--config", "tests/yaml/avg2c.yml", "--dump", dump])
 

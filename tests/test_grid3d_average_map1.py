@@ -3,6 +3,7 @@ import sys
 import pytest
 import shutil
 import glob
+from pathlib import Path
 
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface as RS
@@ -28,11 +29,13 @@ skiplargetest = pytest.mark.skipif(xtg.bigtest is False, reason="Big tests skip"
 
 def test_average_map1a():
     """Test HC thickness with YAML config example 1a ECL based"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1a.yml"])
 
 
 def test_average_map1b():
     """Test HC thickness with YAML config example 1b ROFF based"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1b.yml"])
 
     z1poro = RS(os.path.join(td, "z1--avg1b_average_por.gri"))
@@ -46,6 +49,7 @@ def test_average_map1b():
 
 def test_average_map1c():
     """Test HC thickness with YAML config example 1c ROFF based, rotated map"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1c.yml"])
 
     z1poro = RS(os.path.join(td, "all--avg1c_average_por.gri"))
@@ -54,14 +58,17 @@ def test_average_map1c():
 
 def test_average_map1d():
     """Test HC thickness with YAML config example 1d ROFF based, rotated map"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1d.yml"])
 
 
 def test_average_map1e():
     """Test HC thickness with YAML config example 1e ROFF based, tuning"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1e.yml"])
 
 
 def test_average_map1f():
     """Test HC thickness with YAML config example 1f ROFF based, zero layer"""
+    os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1f.yml"])
