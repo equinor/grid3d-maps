@@ -12,6 +12,10 @@ os:
 if: (branch =~ /^dev/) OR (repo == equinor/xtgeoapp-grd3dmaps)
 
 before_script:
+  - pip install -U pip
+  - pip install black && black --check *.py src tests/test*.py docs/*.py || echo
+  - pip install flake8
+  - flake8 src tests docs
   - git clone https://github.com/equinor/xtgeo-testdata.git ../xtgeo-testdata
 
 
@@ -19,6 +23,8 @@ script:
   - pip install -r requirements.txt
   - pip install .
   - python setup.py test
+  - pip install -r requirements_dev.txt
+  - rstcheck -r docs *.rst
 
 after_success:
   - ls -l ${TRAVIS_BUILD_DIR}/dist

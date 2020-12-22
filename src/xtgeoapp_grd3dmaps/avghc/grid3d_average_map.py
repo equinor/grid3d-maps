@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Script to make average maps directly from 3D grids.
 
 A typical scenario is to create average maps directly from Eclipse
@@ -7,9 +5,6 @@ simulation files (or eventually other similators), but ROFF files
 are equally supported.
 
 """
-
-from __future__ import division, print_function, absolute_import
-
 import sys
 
 from xtgeo.common import XTGeoDialog
@@ -35,7 +30,9 @@ APPDESCR = (
 # Module variables for ERT hook implementation:
 DESCRIPTION = APPDESCR
 CATEGORY = "modelling.reservoir"
-EXAMPLES = "FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)"
+EXAMPLES = (
+    "FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)"
+)
 
 xtg = XTGeoDialog()
 

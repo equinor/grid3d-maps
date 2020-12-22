@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import division, print_function, absolute_import
-
 import pprint
 import numpy.ma as ma
 
@@ -123,7 +119,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
 
     for cdate in cdates:
         cdate = str(cdate)
-        logger.debug("cdate is: ".format(cdate))
+        logger.debug("cdate is: %s", cdate)
         if "-" in cdate:
             d1 = str(cdate.split("-")[0])
             d2 = str(cdate.split("-")[1])

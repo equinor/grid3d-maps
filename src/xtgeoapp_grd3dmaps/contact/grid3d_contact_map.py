@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Script to estimate contact maps directly from 3D grids."""
-
-from __future__ import division, print_function, absolute_import
 
 import sys
 
@@ -50,7 +46,7 @@ def yamlconfig(inputfile, args):
     # in case of YAML input (e.g. zonation from file)
     config = _configparser.yconfig_addons(config, appname)
 
-    logger.info("Updated config:".format(config))
+    logger.info("Updated config:")
     for name, val in config.items():
         logger.info("{}".format(name))
         logger.info("{}".format(val))
@@ -124,31 +120,7 @@ def get_zranges(config, grd):
 
 def compute_contact(config, initd, restartd, dates):
     """The contact here is .... ready for gridding??"""
-    contact = _compute_contact.gridmap_contact(config, initd, restartd, dates)
-
-
-#    return contact
-
-
-# def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode):
-#     """Do checks, mapping and plotting"""
-
-#     # check if values looks OK. Status flag:
-#     # 0: Seems
-
-#     if config['mapsettings'] is None:
-#         config = _mapsettings.estimate_mapsettings(config, grd)
-#     else:
-#         xtg.say('Check map settings vs grid...')
-#         status = _mapsettings.check_mapsettings(config, grd)
-#         if status >= 10:
-#             xtg.critical('STOP! Mapsettings defined is outside the 3D grid!')
-
-#     mapzd = _hc_plotmap.do_hc_mapping(config, initd, hcpfzd, zonation,
-#                                       zoned, hcmode)
-
-#     if config['output']['plotfolder'] is not None:
-#         _hc_plotmap.do_hc_plotting(config, mapzd, hcmode)
+    return _compute_contact.gridmap_contact(config, initd, restartd, dates)
 
 
 def main(args=None):
@@ -183,12 +155,7 @@ def main(args=None):
     zonation, zoned = get_zranges(config, grd)
 
     xtg.say("Grid contact map...")
-    contact = compute_contact(config, initd, restartd, dates)
-
-    # for hcmode in hcmodelist:
-
-    #     xtg.say('Do mapping...')
-    #     plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode)
+    compute_contact(config, initd, restartd, dates)
 
 
 if __name__ == "__main__":
