@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """Script to make HC thickness maps directly from 3D grids.
 
 A typical scenario is to create HC thickness maps directly from Eclipse
 simulation files (or eventually other similators).
 
 """
-
-from __future__ import division, print_function, absolute_import
-
 import sys
 
 from xtgeo.common import XTGeoDialog
@@ -35,7 +30,9 @@ APPDESCR = (
 # Module variables for ERT hook implementation:
 DESCRIPTION = APPDESCR
 CATEGORY = "modelling.reservoir"
-EXAMPLES = "FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=conf.yml, <ECLROOT>=<ECLBASE>)"
+EXAMPLES = (
+    "FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=conf.yml, <ECLROOT>=<ECLBASE>)"
+)
 
 xtg = XTGeoDialog()
 

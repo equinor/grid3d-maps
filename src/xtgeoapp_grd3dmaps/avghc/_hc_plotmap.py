@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """Private module for HC thickness functions."""
-
-from __future__ import division, print_function, absolute_import
 
 import getpass
 from time import localtime, strftime
