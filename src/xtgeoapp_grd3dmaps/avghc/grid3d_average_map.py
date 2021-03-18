@@ -30,9 +30,11 @@ APPDESCR = (
 # Module variables for ERT hook implementation:
 DESCRIPTION = APPDESCR
 CATEGORY = "modelling.reservoir"
-EXAMPLES = (
-    "FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)"
-)
+EXAMPLES = """
+.. code-block:: console
+
+  FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
+"""
 
 xtg = XTGeoDialog()
 

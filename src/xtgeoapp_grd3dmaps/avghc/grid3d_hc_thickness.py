@@ -30,9 +30,11 @@ APPDESCR = (
 # Module variables for ERT hook implementation:
 DESCRIPTION = APPDESCR
 CATEGORY = "modelling.reservoir"
-EXAMPLES = (
-    "FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=conf.yml, <ECLROOT>=<ECLBASE>)"
-)
+EXAMPLES = """
+.. code-block:: console
+
+  FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
+"""
 
 xtg = XTGeoDialog()
 
