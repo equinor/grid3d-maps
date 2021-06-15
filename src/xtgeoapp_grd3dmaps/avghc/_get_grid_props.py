@@ -322,7 +322,7 @@ def import_filters(config, appname, grd):
                 drangetxt = list(drange.values())
                 drange = list(drange.keys())
             elif isinstance(drange, list):
-                drangetxt = [val for val in drange]
+                drangetxt = list(drange)
 
             irange = flist.get("intvrange", None)
             discrete = flist.get("discrete", False)

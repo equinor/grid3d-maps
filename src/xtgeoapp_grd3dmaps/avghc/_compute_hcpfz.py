@@ -42,7 +42,6 @@ def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
     alldates = hcpfzd.keys()
 
     ppalldates = pprint.PrettyPrinter(indent=4)
-    logger.debug("After cleaning: {}".format(ppalldates.pformat(alldates)))
 
     return hcpfzd
 
@@ -61,7 +60,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
 
     for date in dates:
 
-        if hcmode == "oil" or hcmode == "gas":
+        if hcmode in ("oil", "gas"):
             usehc = restartd["s" + hcmode + "_" + str(date)]
         elif hcmode == "comb":
             usehc1 = restartd["s" + "oil" + "_" + str(date)]
@@ -102,11 +101,8 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
                 ' method"'.format(hcmethod)
             )
 
-        logger.info("HCPFZ minimum is {}".format(hcpfzd[date].min()))
-        logger.info("HCPFZ maximum is {}".format(hcpfzd[date].max()))
-
     for key, val in hcpfzd.items():
-        logger.info("hcpfzd.items: {}   {}".format(key, type(val)))
+        logger.info("hcpfzd.items: %s   %s", key, type(val))
 
     # An important issue here is that one may ask for difference dates,
     # not just dates. Hence need to iterate over the dates in the input
@@ -135,7 +131,6 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
     alldates = hcpfzd.keys()
 
     ppalldates = pprint.PrettyPrinter(indent=4)
-    logger.debug("All dates: {}".format(ppalldates.pformat(alldates)))
 
     purecdates = [str(cda) for cda in cdates if "--" not in str(cda)]
     pureadates = [str(adate) for adate in alldates if "--" not in str(adate)]

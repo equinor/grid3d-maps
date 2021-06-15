@@ -19,7 +19,7 @@ def check_mapsettings(config, grd):
     cfmp = config["mapsettings"]
 
     if "templatefile" in cfmp:
-        mymap = xtgeo.surface.RegularSurface(cfmp["templatefile"])
+        mymap = xtgeo.surface_from_file(cfmp["templatefile"])
         xmin = mymap.xmin
         xmax = mymap.xmax
         ymin = mymap.ymin

@@ -3,17 +3,13 @@
 import os.path
 from collections import OrderedDict
 import io
-
-try:
-    file_types = (file, io.IOBase)
-except NameError:
-    file_types = (io.IOBase,)
-
 import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
 from xtgeo.common import XTGeoDialog
+
+file_types = (io.IOBase,)
 
 xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
@@ -31,7 +27,7 @@ class YamlXLoader(yaml.Loader):
     def __init__(self, stream, ordered=False):
         self._ordered = ordered  # for OrderedDict
         self._root = os.path.split(stream.name)[0]
-        super(YamlXLoader, self).__init__(stream)
+        super().__init__(stream)
 
         YamlXLoader.add_constructor(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
@@ -191,7 +187,7 @@ class YLoader(yaml.Loader):
     """
 
     def __init__(self, *args, **kwargs):
-        super(YLoader, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.add_constructor("!include", self._include)
         if "root" in kwargs:
             self.root = kwargs["root"]

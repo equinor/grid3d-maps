@@ -1,9 +1,10 @@
 import getpass
 from time import localtime, strftime
+from collections import OrderedDict
 import numpy as np
 import numpy.ma as ma
-from collections import OrderedDict
 
+import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 from xtgeo.xyz import Polygons
@@ -15,7 +16,9 @@ logger = xtg.functionlogger(__name__)
 def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
     """Compute a dictionary with average numpy per date
 
-    It will return a dictionary per parameter and eventually dates"""
+    It will return a dictionary per parameter and eventually dates
+    """
+    logger.info("Dates is unused %s", dates)
 
     avgd = OrderedDict()
 
@@ -23,7 +26,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
     mycoarsen = config["computesettings"]["tuning"]["coarsen"]
 
     if "templatefile" in config["mapsettings"]:
-        xmap = RegularSurface(config["mapsettings"]["templatefile"])
+        xmap = xtgeo.surface_from_file(config["mapsettings"]["templatefile"])
         xmap.values = 0.0
     else:
         ncol = config["mapsettings"].get("ncol")
@@ -39,14 +42,13 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             values=np.zeros((ncol, nrow)),
         )
 
-    logger.debug("Flags of xmap is {}".format(xmap.values.flags))
     xtg.say("Mapping ...")
     if len(propd) == 0 or len(zoned) == 0:
         raise RuntimeError("The dictionary <propd> or <zoned> is zero. Stop")
 
     for zname, zrange in zoned.items():
 
-        logger.info("ZNAME and ZRANGE are {}:  {}".format(zname, zrange))
+        logger.info("ZNAME and ZRANGE are %s:  %s", zname, zrange)
         usezonation = zonation
         usezrange = zrange
 
@@ -56,7 +58,6 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             usezonation[:, :, :] = 0
             logger.debug(usezonation)
             for zr in zrange:
-                logger.info("ZR is {}".format(zr))
                 usezonation[zonation == zr] = 888
 
             usezrange = 888
@@ -67,11 +68,10 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             usezrange = 999
 
             if config["computesettings"]["all"] is not True:
-                logger.info("Skip <{}> (cf. computesettings: all)".format(zname))
+                logger.info("Skip <%s> (cf. computesettings: all)", zname)
                 continue
         else:
             if config["computesettings"]["zone"] is not True:
-                logger.info("Skip <{}> (cf. computesettings: zone)".format(zname))
                 continue
 
         for propname, pvalues in propd.items():
@@ -96,12 +96,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             if config["computesettings"]["mask_zeros"]:
                 xmap.values = ma.masked_inside(xmap.values, -1e-30, 1e-30)
 
-            logger.debug("XMAP updated after mask: \n{}\n".format(xmap.values))
-            logger.debug("XMAP flags {}".format(xmap.values.flags))
-
             avgd[usename] = xmap.copy()
-
-            logger.debug("Saved as copy...\n{}\n".format(avgd[usename].values))
 
             xtg.say("Map file to {}".format(filename))
             avgd[usename].to_file(filename)
@@ -179,7 +174,7 @@ def _avg_filesettings(config, zname, pname, mode="root"):
     if mode == "root":
         return xfil
 
-    elif mode == "map":
+    if mode == "map":
         path = config["output"]["mapfolder"] + "/"
         xfil = xfil + ".gri"
 

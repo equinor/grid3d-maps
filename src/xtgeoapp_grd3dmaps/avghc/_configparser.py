@@ -1,10 +1,10 @@
 import argparse
 import sys
 import os.path
-import yaml
 import pprint
 import copy
 import datetime
+import yaml
 
 from xtgeo.common import XTGeoDialog
 from xtgeoapp_grd3dmaps.avghc._loader import YamlXLoader, ConstructorError
@@ -18,8 +18,6 @@ def parse_args(args, appname, appdescr):
 
     if args is None:
         args = sys.argv[1:]
-    else:
-        args = args
 
     usetxt = appname + " --config some.yaml ... "
 
@@ -106,7 +104,7 @@ def parse_args(args, appname, appdescr):
 
     logger.debug("Command line args: ")
     for arg in vars(args):
-        logger.debug("{}  {}".format(arg, getattr(args, arg)))
+        logger.debug("%s  %s", arg, getattr(args, arg))
 
     return args
 
@@ -120,7 +118,7 @@ def yconfig(inputfile, tmp=False, standard=False):
     """Read from YAML file, returns a dictionary."""
 
     if not os.path.isfile(inputfile):
-        logger.critical("STOP! No such config file exists: {}".format(inputfile))
+        logger.critical("STOP! No such config file exists: %s", inputfile)
         raise SystemExit
 
     with open(inputfile, "r") as stream:
@@ -140,7 +138,7 @@ def yconfig(inputfile, tmp=False, standard=False):
     out = pp.pformat(config)
     logger.info("\n%s", out)
 
-    logger.info("CONFIG:\n {}".format(config))
+    logger.info("CONFIG:\n %s", config)
 
     # if the file is a temporary file, delete:
     if tmp:
@@ -333,15 +331,9 @@ def yconfig_override(config, args, appname):
 
         if args.dates:
             newconfig["input"]["dates"] = args.dates
-            logger.debug(
-                "YAML config overruled by cmd line: dates are now {}".format(
-                    newconfig["eclinput"]["dates"]
-                )
-            )
 
     pp = pprint.PrettyPrinter(indent=4)
     out = pp.pformat(newconfig)
-    logger.debug("After override: \n{}".format(out))
 
     return newconfig
 
@@ -415,7 +407,7 @@ def yconfig_set_defaults(config, appname):
     if appname == "grid3d_hc_thickness":
 
         if "dates" not in newconfig["input"]:
-            if newconfig["computesettings"]["mode"] in ("rock"):
+            if newconfig["computesettings"]["mode"] in "rock":
                 xtg.say('No date give, probably OK since "rock" mode)')
             else:
                 xtg.warn('Warning: No date given, set date to "unknowndate")')
@@ -463,7 +455,7 @@ def yconfig_set_defaults(config, appname):
 
     pp = pprint.PrettyPrinter(indent=4)
     out = pp.pformat(newconfig)
-    logger.debug("After setting defaults: \n{}".format(out))
+    logger.debug("After setting defaults: \n%s", out)
 
     return newconfig
 

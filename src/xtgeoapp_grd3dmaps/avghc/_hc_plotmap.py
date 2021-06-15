@@ -2,9 +2,11 @@
 
 import getpass
 from time import localtime, strftime
-import numpy as np
 from collections import OrderedDict
 
+import numpy as np
+
+import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 from xtgeo.xyz import Polygons
@@ -20,7 +22,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
     mapzd = OrderedDict()
 
     if "templatefile" in config["mapsettings"]:
-        basemap = RegularSurface(config["mapsettings"]["templatefile"])
+        basemap = xtgeo.surface_from_file(config["mapsettings"]["templatefile"])
         basemap.values = 0.0
     else:
         ncol = config["mapsettings"].get("ncol")
@@ -51,7 +53,6 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
             usezonation[:, :, :] = 0
             logger.debug(usezonation)
             for zr in zrange:
-                logger.debug("ZR is {}".format(zr))
                 usezonation[zonation == zr] = 888
 
             usezrange = 888
