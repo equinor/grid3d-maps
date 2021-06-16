@@ -5,8 +5,8 @@ import shutil
 import glob
 from pathlib import Path
 
+import xtgeo
 from xtgeo.common import XTGeoDialog
-from xtgeo.surface import RegularSurface as RS
 
 import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as xx
 from .test_grid3d_hc_thickness2 import assert_almostequal
@@ -38,7 +38,7 @@ def test_average_map1b():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1b.yml"])
 
-    z1poro = RS(os.path.join(td, "z1--avg1b_average_por.gri"))
+    z1poro = xtgeo.surface_from_file(os.path.join(td, "z1--avg1b_average_por.gri"))
     assert_almostequal(z1poro.values.mean(), 0.1598, 0.001, "Mean value")
     assert_almostequal(z1poro.values.std(), 0.04, 0.003, "Std. dev")
 
@@ -52,7 +52,7 @@ def test_average_map1c():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1c.yml"])
 
-    z1poro = RS(os.path.join(td, "all--avg1c_average_por.gri"))
+    z1poro = xtgeo.surface_from_file(os.path.join(td, "all--avg1c_average_por.gri"))
     assert_almostequal(z1poro.values.mean(), 0.1678, 0.001, "Mean value")
 
 

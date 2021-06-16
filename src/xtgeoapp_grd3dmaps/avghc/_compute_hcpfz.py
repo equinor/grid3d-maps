@@ -1,4 +1,3 @@
-import pprint
 import numpy.ma as ma
 
 from xtgeo.common import XTGeoDialog
@@ -38,10 +37,6 @@ def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
 
     else:
         hcpfzd = _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray)
-
-    alldates = hcpfzd.keys()
-
-    ppalldates = pprint.PrettyPrinter(indent=4)
 
     return hcpfzd
 
@@ -129,8 +124,6 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
                 )
 
     alldates = hcpfzd.keys()
-
-    ppalldates = pprint.PrettyPrinter(indent=4)
 
     purecdates = [str(cda) for cda in cdates if "--" not in str(cda)]
     pureadates = [str(adate) for adate in alldates if "--" not in str(adate)]

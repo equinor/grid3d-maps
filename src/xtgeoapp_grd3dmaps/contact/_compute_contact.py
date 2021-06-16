@@ -1,5 +1,6 @@
 import numpy as np
 
+import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 
@@ -11,7 +12,7 @@ def gridmap_contact(config, specd, propd, dates):
     """Compute a contact as a gridded map surface"""
 
     if "templatefile" in config["mapsettings"]:
-        xmap = RegularSurface(config["mapsettings"]["templatefile"])
+        xmap = xtgeo.surface_from_file(config["mapsettings"]["templatefile"])
         xmap.values = 0.0
     else:
         ncol = config["mapsettings"].get("ncol")
