@@ -10,6 +10,8 @@ import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 
+from xtgeoviz import quickplot
+
 xtg = XTGeoDialog()
 
 logger = xtg.functionlogger(__name__)
@@ -130,7 +132,8 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
                     xtg.say(err)
                     faults = None
 
-            xmap.quickplot(
+            quickplot(
+                xmap,
                 filename=plotfile,
                 title=pcfg["title"],
                 subtitle=pcfg["subtitle"],
