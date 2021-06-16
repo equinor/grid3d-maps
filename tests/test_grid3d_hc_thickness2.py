@@ -5,7 +5,7 @@ import numpy as np
 from pathlib import Path
 
 from xtgeo.common import XTGeoDialog
-from xtgeo.surface import RegularSurface as RS
+import xtgeo
 
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xx
 
@@ -46,7 +46,9 @@ def test_hc_thickness2a():
 
     # read in result and check statistical values
 
-    allz = RS(os.path.join(td, "all--stoiip_oilthickness--19900101.gri"))
+    allz = xtgeo.surface_from_file(
+        os.path.join(td, "all--stoiip_oilthickness--19900101.gri")
+    )
 
     val = allz.values1d
     val[val <= 0] = np.nan

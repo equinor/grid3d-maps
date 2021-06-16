@@ -16,7 +16,7 @@ from . import _hc_plotmap
 from . import _mapsettings
 
 try:
-    from ..theversion import version as __version__
+    from xtgeoapp_grd3dmaps._theversion import version as __version__
 except ImportError:
     __version__ = "0.0.0"
 

@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
+import xtgeo
 from xtgeo.common import XTGeoDialog
-from xtgeo.surface import RegularSurface
 
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xxx
 
@@ -59,9 +59,9 @@ def test_hc_thickness3c():
     xxx.main(["--config", "tests/yaml/hc_thickness3c.yml", "--dump", dump])
 
     result = os.path.join(td, "myfip1--hc3c_oilthickness--19991201.gri")
-    res = RegularSurface(result)
+    res = xtgeo.surface_from_file(result)
     assert res.values.max() == pytest.approx(13.5681, abs=0.001)  # qc'ed RMS
 
     result = os.path.join(td, "myfip2--hc3c_oilthickness--19991201.gri")
-    res = RegularSurface(result)
+    res = xtgeo.surface_from_file(result)
     assert res.values.max() == pytest.approx(0.0, abs=0.001)  # qc'ed RMS

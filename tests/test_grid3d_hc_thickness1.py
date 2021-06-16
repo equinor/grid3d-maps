@@ -6,8 +6,8 @@ from pathlib import Path
 
 import numpy as np
 
+import xtgeo
 from xtgeo.common import XTGeoDialog
-from xtgeo.surface import RegularSurface as RS
 
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xx
 from .test_grid3d_hc_thickness2 import assert_almostequal
@@ -35,7 +35,9 @@ def test_hc_thickness1a():
     dmp = ojoin(td, "hc1a_dump.yml")
     xx.main(["--config", "tests/yaml/hc_thickness1a.yml", "--dump", dmp])
 
-    allz = RS(ojoin(td, "all--oilthickness--20010101_19991201.gri"))
+    allz = xtgeo.surface_from_file(
+        ojoin(td, "all--oilthickness--20010101_19991201.gri")
+    )
     val = allz.values1d
 
     print(np.nanmean(val), np.nanstd(val))
@@ -71,7 +73,7 @@ def test_hc_thickness1d():
     warnings.simplefilter("error")
     xx.main(["--config", "tests/yaml/hc_thickness1d.yml"])
 
-    x1d = RS(ojoin(td, "all--hc1d_oilthickness--19991201.gri"))
+    x1d = xtgeo.surface_from_file(ojoin(td, "all--hc1d_oilthickness--19991201.gri"))
 
     assert_almostequal(x1d.values.mean(), 0.516, 0.001)
 
@@ -81,7 +83,7 @@ def test_hc_thickness1e():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1e.yml"])
 
-    x1e = RS(ojoin(td, "all--hc1e_oilthickness--19991201.gri"))
+    x1e = xtgeo.surface_from_file(ojoin(td, "all--hc1e_oilthickness--19991201.gri"))
     logger.info(x1e.values.mean())
     assert_almostequal(x1e.values.mean(), 0.516, 0.001)
 
@@ -91,7 +93,7 @@ def test_hc_thickness1f():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1f.yml"])
 
-    x1f = RS(ojoin(td, "all--hc1f_oilthickness--19991201.gri"))
+    x1f = xtgeo.surface_from_file(ojoin(td, "all--hc1f_oilthickness--19991201.gri"))
     logger.info(x1f.values.mean())
     # other mean as the map is smaller; checked in RMS
     assert_almostequal(x1f.values.mean(), 1.0999, 0.0001)
@@ -103,11 +105,11 @@ def test_hc_thickness1g():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1g.yml"])
 
-    x1g1 = RS(ojoin(td, "all--hc1g_oilthickness--19991201.gri"))
+    x1g1 = xtgeo.surface_from_file(ojoin(td, "all--hc1g_oilthickness--19991201.gri"))
     logger.info(x1g1.values.mean())
     assert_almostequal(x1g1.values.mean(), 1.0999, 0.0001)
 
-    x1g2 = RS(ojoin(td, "all--hc1g_gasthickness--19991201.gri"))
+    x1g2 = xtgeo.surface_from_file(ojoin(td, "all--hc1g_gasthickness--19991201.gri"))
     logger.info(x1g1.values.mean())
     assert_almostequal(x1g2.values.mean(), 0.000, 0.0001)
 
@@ -117,13 +119,9 @@ def test_hc_thickness1h():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1h.yml"])
 
-    # now read in result and check avg value
-    # x = RegularSurface('TMP/gull_1985_10_01.gri')
-    # avg = float("{:4.3f}".format(float(x.values.mean())))
-    # logger.info("AVG is " + str(avg))
-    # assert avg == 3.649
-
-    allz = RS(ojoin(td, "all--tuning_oilthickness--20010101_19991201.gri"))
+    allz = xtgeo.surface_from_file(
+        ojoin(td, "all--tuning_oilthickness--20010101_19991201.gri")
+    )
     val = allz.values1d
 
     print(np.nanmean(val), np.nanstd(val))
@@ -138,13 +136,9 @@ def test_hc_thickness1i():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/hc_thickness1i.yml"])
 
-    # now read in result and check avg value
-    # x = RegularSurface('TMP/gull_1985_10_01.gri')
-    # avg = float("{:4.3f}".format(float(x.values.mean())))
-    # logger.info("AVG is " + str(avg))
-    # assert avg == 3.649
-
-    allz = RS(ojoin(td, "all--hc1i_oilthickness--20010101_19991201.gri"))
+    allz = xtgeo.surface_from_file(
+        ojoin(td, "all--hc1i_oilthickness--20010101_19991201.gri")
+    )
     val = allz.values
 
     print(val.mean())

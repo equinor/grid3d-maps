@@ -10,8 +10,8 @@ except ImportError:
         "Not testing ERT hooks when ERT is not installed", allow_module_level=True
     )
 
-import xtgeoapp_grd3dmaps.hook_implementations.jobs as jobs
 from ert_shared.plugins.plugin_manager import ErtPluginManager
+import xtgeoapp_grd3dmaps.hook_implementations.jobs as jobs
 
 EXPECTED_JOBS = {
     "GRID3D_AVERAGE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AVERAGE_MAP",

@@ -9,7 +9,6 @@ import numpy as np
 import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
-from xtgeo.xyz import Polygons
 
 xtg = XTGeoDialog()
 
@@ -63,17 +62,17 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
             usezrange = 999
 
             if config["computesettings"]["all"] is not True:
-                logger.info("Skip <{}> (cf. computesettings: all)".format(zname))
+                logger.info("Skip <%s> (cf. computesettings: all)", zname)
                 continue
         else:
             if config["computesettings"]["zone"] is not True:
-                logger.info("Skip <{}> (cf. computesettings: zone)".format(zname))
+                logger.info("Skip <%s> (cf. computesettings: zone)", zname)
                 continue
 
         mapd = dict()
 
         for date, hcpfz in hcpfzd.items():
-            logger.info("Mapping <{}> for date <{}> ...".format(zname, date))
+            logger.info("Mapping <%s> for date <%s> ...", zname, date)
             xmap = basemap.copy()
 
             xmap.hc_thickness_from_3dprops(
@@ -98,8 +97,6 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
 
     # return the map dictionary: {zname: {date1: map_object1, ...}}
 
-    logger.debug("The map objects: {}".format(mapzd))
-
     return mapzd
 
 
@@ -114,7 +111,7 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
 
             plotfile = _hc_filesettings(config, zname, date, hcmode, mode="plot")
 
-            pcfg = _hc_plotsettings(config, zname, date, hcmode, filtermean)
+            pcfg = _hc_plotsettings(config, zname, date, filtermean)
 
             xtg.say("Plot to {}".format(plotfile))
 
@@ -125,10 +122,12 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
             faults = None
             if pcfg["faultpolygons"] is not None:
                 try:
-                    fau = Polygons(pcfg["faultpolygons"], fformat="guess")
+                    fau = xtgeo.polygons_from_file(
+                        pcfg["faultpolygons"], fformat="guess"
+                    )
                     faults = {"faults": fau}
-                except Exception as e:
-                    xtg.say(e)
+                except OSError as err:
+                    xtg.say(err)
                     faults = None
 
             xmap.quickplot(
@@ -215,7 +214,7 @@ def _dates_oldformat(date):
     return newdate
 
 
-def _hc_plotsettings(config, zname, date, hcmode, filtermean):
+def _hc_plotsettings(config, zname, date, filtermean):
     """Local function for plot additional info."""
 
     phase = config["computesettings"]["mode"]
@@ -225,7 +224,7 @@ def _hc_plotsettings(config, zname, date, hcmode, filtermean):
 
     rock = "net"
     modecfg = config["computesettings"]["mode"]
-    if modecfg == "dz_only" or modecfg == "rock":
+    if modecfg in ("dz_only", "rock"):
         rock = "bulk"
 
     title = phase.capitalize() + " " + rock + " thickness for " + zname

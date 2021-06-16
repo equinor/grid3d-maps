@@ -16,7 +16,7 @@ from . import _compute_avg
 from . import _mapsettings
 
 try:
-    from ..theversion import version as __version__
+    from xtgeoapp_grd3dmaps._theversion import version as __version__
 except ImportError:
     __version__ = "0.0.0"
 
@@ -98,7 +98,7 @@ def import_pdata(config, gfile, initlist, restartlist, dates):
         config, APPNAME, gfile, initlist, restartlist, dates
     )
     specd, averaged = _get_grid_props.get_numpies_avgprops(
-        config, grd, initobjects, restobjects, dates
+        config, grd, initobjects, restobjects
     )
 
     # returns also dates since dates list may be updated after import

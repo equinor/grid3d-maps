@@ -137,7 +137,7 @@ class YamlXLoader(yaml.Loader):
                     node.start_mark,
                     "found unacceptable key (%s)" % exc,
                     key_node.start_mark,
-                )
+                ) from exc
             # check for duplicate keys
             if key in mapping:
                 raise ConstructorError(

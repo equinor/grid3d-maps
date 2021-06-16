@@ -7,7 +7,6 @@ import numpy.ma as ma
 import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
-from xtgeo.xyz import Polygons
 
 xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
@@ -127,11 +126,11 @@ def do_avg_plotting(config, avgd):
         if pcfg["faultpolygons"] is not None:
             xtg.say("Try: {}".format(pcfg["faultpolygons"]))
             try:
-                fau = Polygons(pcfg["faultpolygons"], fformat="guess")
+                fau = xtgeo.polygons_from_file(pcfg["faultpolygons"], fformat="guess")
                 faults = {"faults": fau}
                 xtg.say("Use fault polygons")
-            except Exception as e:
-                xtg.say(e)
+            except OSError as err:
+                xtg.say(err)
                 faults = None
                 xtg.say("No fault polygons")
 

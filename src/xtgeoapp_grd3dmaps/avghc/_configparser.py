@@ -129,7 +129,7 @@ def yconfig(inputfile, tmp=False, standard=False):
                 config = yaml.load(stream, Loader=YamlXLoader)
             except ConstructorError as errmsg:
                 xtg.error(errmsg)
-                raise SystemExit
+                raise SystemExit from errmsg
 
     xtg.say("Input config YAML file <{}> is read...".format(inputfile))
 
@@ -332,9 +332,6 @@ def yconfig_override(config, args, appname):
         if args.dates:
             newconfig["input"]["dates"] = args.dates
 
-    pp = pprint.PrettyPrinter(indent=4)
-    out = pp.pformat(newconfig)
-
     return newconfig
 
 
@@ -473,5 +470,7 @@ def yconfig_addons(config, appname):
             newconfig["zonation"]["zranges"] = zconfig["zranges"]
         if "superranges" in zconfig:
             newconfig["zonation"]["superranges"] = zconfig["superranges"]
+
+    xtg.say(f"Add configuration to {appname}")
 
     return newconfig

@@ -250,9 +250,9 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
                 restobjects.append(prop)
         except KeywordFoundNoDateError as rwarn:
             logger.info("Keyword found but not for this date %s", rwarn)
-            raise SystemExit("STOP")
+            raise SystemExit("STOP") from rwarn
         except Exception as message:
-            raise SystemExit(message)
+            raise SystemExit(message) from message
         else:
             logger.info("Works further...")
             for prop in tmp.props:
@@ -524,7 +524,7 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     return initd, restartd
 
 
-def get_numpies_avgprops(config, grd, initobjects, restobjects, dates):
+def get_numpies_avgprops(config, grd, initobjects, restobjects):
     """Process for average map; to get the needed numpies"""
 
     actnum = grd.get_actnum().get_npvalues3d(fill_value=0)
