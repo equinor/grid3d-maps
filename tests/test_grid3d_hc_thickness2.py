@@ -1,8 +1,8 @@
 import os
 import sys
+from pathlib import Path
 import pytest
 import numpy as np
-from pathlib import Path
 
 from xtgeo.common import XTGeoDialog
 import xtgeo
@@ -17,26 +17,8 @@ logger = xtg.basiclogger(__name__)
 if not xtg.testsetup():
     sys.exit(-9)
 
-td = xtg.tmpdir
+TMPD = xtg.tmpdir
 testpath = xtg.testpath
-
-
-# =============================================================================
-# Some useful functions
-# =============================================================================
-
-
-def assert_equal(this, that, txt=""):
-    assert this == that, txt
-
-
-def assert_almostequal(this, that, tol, txt=""):
-    assert this == pytest.approx(that, abs=tol), txt
-
-
-# =============================================================================
-# Do tests
-# =============================================================================
 
 
 def test_hc_thickness2a():
@@ -47,12 +29,12 @@ def test_hc_thickness2a():
     # read in result and check statistical values
 
     allz = xtgeo.surface_from_file(
-        os.path.join(td, "all--stoiip_oilthickness--19900101.gri")
+        os.path.join(TMPD, "all--stoiip_oilthickness--19900101.gri")
     )
 
     val = allz.values1d
     val[val <= 0] = np.nan
 
     # compared with data from RMS:
-    assert_almostequal(np.nanmean(val), 1.9521, 0.01)
-    assert_almostequal(np.nanstd(val), 1.2873, 0.01)
+    assert np.nanmean(val) == pytest.approx(1.9521, abs=0.01)
+    assert np.nanstd(val) == pytest.approx(1.2873, abs=0.01)

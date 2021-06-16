@@ -1,15 +1,15 @@
 import os
 import sys
-import pytest
 import shutil
 import glob
 from pathlib import Path
+
+import pytest
 
 import xtgeo
 from xtgeo.common import XTGeoDialog
 
 import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as xx
-from .test_grid3d_hc_thickness2 import assert_almostequal
 
 xtg = XTGeoDialog()
 logger = xtg.basiclogger(__name__)
@@ -17,7 +17,7 @@ logger = xtg.basiclogger(__name__)
 if not xtg.testsetup():
     sys.exit(-9)
 
-td = xtg.tmpdir
+TMPD = xtg.tmpdir
 testpath = xtg.testpath
 
 skiplargetest = pytest.mark.skipif(xtg.bigtest is False, reason="Big tests skip")
@@ -38,11 +38,11 @@ def test_average_map1b():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1b.yml"])
 
-    z1poro = xtgeo.surface_from_file(os.path.join(td, "z1--avg1b_average_por.gri"))
-    assert_almostequal(z1poro.values.mean(), 0.1598, 0.001, "Mean value")
-    assert_almostequal(z1poro.values.std(), 0.04, 0.003, "Std. dev")
+    z1poro = xtgeo.surface_from_file(os.path.join(TMPD, "z1--avg1b_average_por.gri"))
+    assert z1poro.values.mean() == pytest.approx(0.1598, abs=0.001)
+    assert z1poro.values.std() == pytest.approx(0.04, abs=0.003)
 
-    imgs = glob.glob(os.path.join(td, "*avg1b*.png"))
+    imgs = glob.glob(os.path.join(TMPD, "*avg1b*.png"))
     for img in imgs:
         shutil.copy2(img, "docs/test_images/.")
 
@@ -52,8 +52,8 @@ def test_average_map1c():
     os.chdir(str(Path(__file__).absolute().parent.parent))
     xx.main(["--config", "tests/yaml/avg1c.yml"])
 
-    z1poro = xtgeo.surface_from_file(os.path.join(td, "all--avg1c_average_por.gri"))
-    assert_almostequal(z1poro.values.mean(), 0.1678, 0.001, "Mean value")
+    z1poro = xtgeo.surface_from_file(os.path.join(TMPD, "all--avg1c_average_por.gri"))
+    assert z1poro.values.mean() == pytest.approx(0.1678, abs=0.001)
 
 
 def test_average_map1d():
