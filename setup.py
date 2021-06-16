@@ -10,6 +10,9 @@ from os.path import basename
 from os.path import splitext
 
 from setuptools import setup, find_packages
+from scripts import setup_functions
+
+CMDCLASS = {"clean": setup_functions.CleanUp}
 
 APPS = ("grid3d_hc_thickness", "grid3d_average_map")
 
@@ -78,6 +81,7 @@ setup(
             "xtgeoapp_grd3dmaps_jobs = xtgeoapp_grd3dmaps.hook_implementations.jobs"
         ],
     },
+    cmdclass=CMDCLASS,
     include_package_data=True,
     install_requires=requirements,
     zip_safe=False,
