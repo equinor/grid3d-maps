@@ -8,6 +8,8 @@ import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 
+from xtgeoviz import quickplot
+
 xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
@@ -134,14 +136,15 @@ def do_avg_plotting(config, avgd):
                 faults = None
                 xtg.say("No fault polygons")
 
-        xmap.quickplot(
+        quickplot(
+            xmap,
             filename=plotfile,
             title=pcfg["title"],
             subtitle=pcfg["subtitle"],
             infotext=pcfg["infotext"],
             xlabelrotation=pcfg["xlabelrotation"],
             minmax=usevrange,
-            colortable=pcfg["colortable"],
+            colormap=pcfg["colortable"],
             faults=faults,
         )
 
@@ -260,7 +263,7 @@ def _avg_plotsettings(config, zname, pname):
     if "_filterinfo" in config and config["_filterinfo"]:
         subtitle = config["_filterinfo"]
 
-    # assing settings to a dictionary which is returned
+    # passing settings to a dictionary which is returned
     plotcfg = {}
     plotcfg["title"] = title
     plotcfg["subtitle"] = subtitle
