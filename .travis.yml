@@ -8,7 +8,6 @@ python:
 os:
   - linux
 
-
 if: (branch =~ /^dev/) OR (repo == equinor/xtgeoapp-grd3dmaps)
 
 before_script:
@@ -16,8 +15,6 @@ before_script:
   - pip install black && black --check *.py src tests/test*.py docs/*.py || echo
   - pip install flake8
   - flake8 src tests docs
-  - git clone https://github.com/equinor/xtgeo-testdata.git ../xtgeo-testdata
-
 
 script:
   - pip install -r requirements.txt

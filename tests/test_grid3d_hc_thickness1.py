@@ -1,143 +1,213 @@
-import os
+"Suite for HC thickness test set 1."
 import shutil
-import glob
 import warnings
-from pathlib import Path
 
 import numpy as np
 import pytest
-
 import xtgeo
-from xtgeo.common import XTGeoDialog
-
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xx
 
-xtg = XTGeoDialog()
 
-xtg = XTGeoDialog()
-logger = xtg.basiclogger(__name__)
-
-if not xtg.testsetup():
-    raise SystemExit
-
-TMPD = xtg.tmpdir
-testpath = xtg.testpath
-ojoin = os.path.join
-
-# =============================================================================
-# Do tests
-# =============================================================================
-
-
-def test_hc_thickness1a():
+def test_hc_thickness1a(datatree):
     """Test HC thickness with YAML config example 1a"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    dmp = ojoin(TMPD, "hc1a_dump.yml")
-    xx.main(["--config", "tests/yaml/hc_thickness1a.yml", "--dump", dmp])
-
-    allz = xtgeo.surface_from_file(
-        ojoin(TMPD, "all--oilthickness--20010101_19991201.gri")
+    result = datatree / "hc1a_folder"
+    result.mkdir(parents=True)
+    dump = result / "hc1a_dump.yml"
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1a.yml",
+            "--dump",
+            str(dump),
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
     )
-    val = allz.values1d
 
-    print(np.nanmean(val), np.nanstd(val))
+    allz = xtgeo.surface_from_file(result / "all--oilthickness--20010101_19991201.gri")
+    val = allz.values1d
 
     # -0.0574 in RMS volumetrics, but within range as different approach
     assert np.nanmean(val) == pytest.approx(-0.03653, 0.001)
     assert np.nanstd(val) == pytest.approx(0.199886, 0.001)
 
 
-def test_hc_thickness1b():
+def test_hc_thickness1b(sourcepath, datatree):
     """HC thickness with YAML config example 1b; zonation in own YAML file"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1b.yml"])
-    imgs = glob.glob(ojoin(TMPD, "*hc1b*.png"))
-    print(imgs)
-    for img in imgs:
-        shutil.copy2(img, "docs/test_images/.")
+    result = datatree / "hc1b_folder"
+    result.mkdir(parents=True)
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1b.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
+    for img in result.glob("*hc1b*.png"):
+        shutil.copy2(img, sourcepath / "docs" / "test_images")
+
+    prp = xtgeo.surface_from_file(
+        result / "replace_all_with_x--hc1b_oilthickness--19991201.gri"
+    )
+    assert prp.values.mean() == pytest.approx(0.82378, abs=0.001)
 
 
-def test_hc_thickness1c():
+def test_hc_thickness1c(datatree):
     """HC thickness with YAML config example 1c; no map settings"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1c.yml"])
+    result = datatree / "hc1c_folder"
+    result.mkdir(parents=True)
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1c.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
+
+    prp = xtgeo.surface_from_file(result / "z1--hc1c_oilthickness--19991201.gri")
+    assert prp.values.mean() == pytest.approx(0.27483, abs=0.001)
+
+    x1d = xtgeo.surface_from_file(result / "all--hc1c_oilthickness--19991201.gri")
+    assert x1d.values.mean() == pytest.approx(0.526, abs=0.001)
 
 
-def test_hc_thickness1d():
+def test_hc_thickness1d(datatree):
     """HC thickness with YAML config example 1d; as 1c but use_porv instead"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
+    result = datatree / "hc1d_folder"
+    result.mkdir(parents=True)
     warnings.simplefilter("error")
-    xx.main(["--config", "tests/yaml/hc_thickness1d.yml"])
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1d.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
 
-    x1d = xtgeo.surface_from_file(ojoin(TMPD, "all--hc1d_oilthickness--19991201.gri"))
+    x1d = xtgeo.surface_from_file(result / "all--hc1d_oilthickness--19991201.gri")
 
     assert x1d.values.mean() == pytest.approx(0.516, abs=0.001)
 
 
-def test_hc_thickness1e():
+def test_hc_thickness1e(datatree):
     """HC thickness with YAML config 1e; as 1d but use ROFF grid input"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1e.yml"])
+    result = datatree / "hc1e_folder"
+    result.mkdir(parents=True)
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1e.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
 
-    x1e = xtgeo.surface_from_file(ojoin(TMPD, "all--hc1e_oilthickness--19991201.gri"))
-    logger.info(x1e.values.mean())
+    x1e = xtgeo.surface_from_file(result / "all--hc1e_oilthickness--19991201.gri")
     assert x1e.values.mean() == pytest.approx(0.516, abs=0.001)
 
 
-def test_hc_thickness1f():
+def test_hc_thickness1f(datatree):
     """HC thickness with YAML config 1f; use rotated template map"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1f.yml"])
+    result = datatree / "hc1f_folder"
+    result.mkdir(parents=True)
 
-    x1f = xtgeo.surface_from_file(ojoin(TMPD, "all--hc1f_oilthickness--19991201.gri"))
-    logger.info(x1f.values.mean())
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1f.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
+
+    x1f = xtgeo.surface_from_file(result / "all--hc1f_oilthickness--19991201.gri")
     # other mean as the map is smaller; checked in RMS
     assert x1f.values.mean() == pytest.approx(1.0999, abs=0.0001)
 
 
-def test_hc_thickness1g():
+def test_hc_thickness1g(datatree):
     """HC thickness with YAML config 1g; use rotated template map and both
     oil and gas"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1g.yml"])
+    result = datatree / "hc1g_folder"
+    result.mkdir(parents=True)
 
-    x1g1 = xtgeo.surface_from_file(ojoin(TMPD, "all--hc1g_oilthickness--19991201.gri"))
-    logger.info(x1g1.values.mean())
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1g.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
+
+    x1g1 = xtgeo.surface_from_file(result / "all--hc1g_oilthickness--19991201.gri")
     assert x1g1.values.mean() == pytest.approx(1.0999, abs=0.0001)
 
-    x1g2 = xtgeo.surface_from_file(ojoin(TMPD, "all--hc1g_gasthickness--19991201.gri"))
-    logger.info(x1g1.values.mean())
+    x1g2 = xtgeo.surface_from_file(result / "all--hc1g_gasthickness--19991201.gri")
     assert x1g2.values.mean() == pytest.approx(0.000, abs=0.0001)
 
 
-def test_hc_thickness1h():
+def test_hc_thickness1h(datatree):
     """Test HC thickness with YAML copy from 1a, with tuning to speed up"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1h.yml"])
+    result = datatree / "hc1h_folder"
+    result.mkdir(parents=True)
+
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1h.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
 
     allz = xtgeo.surface_from_file(
-        ojoin(TMPD, "all--tuning_oilthickness--20010101_19991201.gri")
+        result / "all--tuning_oilthickness--20010101_19991201.gri"
     )
     val = allz.values1d
-
-    print(np.nanmean(val), np.nanstd(val))
 
     # -0.0574 in RMS volumetrics, but within range as different approach
     assert np.nanmean(val) == pytest.approx(-0.0336, abs=0.005)
     assert np.nanstd(val) == pytest.approx(0.1717, abs=0.005)
 
 
-def test_hc_thickness1i():
+def test_hc_thickness1i(datatree):
     """Test HC thickness with YAML config example 1i, based on 1a"""
-    os.chdir(str(Path(__file__).absolute().parent.parent))
-    xx.main(["--config", "tests/yaml/hc_thickness1i.yml"])
+    result = datatree / "hc1i_folder"
+    result.mkdir(parents=True)
+
+    xx.main(
+        [
+            "--config",
+            "tests/yaml/hc_thickness1i.yml",
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
 
     allz = xtgeo.surface_from_file(
-        ojoin(TMPD, "all--hc1i_oilthickness--20010101_19991201.gri")
+        result / "all--hc1i_oilthickness--20010101_19991201.gri"
     )
-    val = allz.values
-
-    print(val.mean())
-
     # -0.0574 in RMS volumetrics, but within range as different approach
-    assert val.mean() == pytest.approx(-0.06, abs=0.01)
+    assert allz.values.mean() == pytest.approx(-0.06, abs=0.01)

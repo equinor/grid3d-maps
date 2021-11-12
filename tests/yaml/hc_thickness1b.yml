@@ -5,7 +5,7 @@ title: Reek
 # input is what to be made maps of
 
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+  eclroot: tests/data/reek/REEK
   dates:
     - 19991201
     - 20010101-19991201
@@ -14,12 +14,11 @@ input:
 zonation:
   yamlfile: tests/yaml/hc_thickness1b_zonation.yml
 
-
 computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.001, 1]   # saturation interval
+  shc_interval: [0.001, 1] # saturation interval
   method: use_poro
   zone: No
   all: Yes
@@ -38,17 +37,18 @@ mapsettings:
 # hieractical, which means that a general level setting will be
 # overridden by a more spesific setting, e.g. see below
 plotsettings:
+  faultpolygons: tests/data/reek/top_upper_reek_faultpoly.xyz
 
-  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.xyz
+  valuerange:
+    [0, 10] # value range min/max (values above below
+    # will be truncated in plot!)
+  diffvaluerange: [-3, 0] # value range min/max for date diffs
 
-  valuerange: [0, 10]     # value range min/max (values above below
-                          # will be truncated in plot!)
-  diffvaluerange: [-3, 0]     # value range min/max for date diffs
+  xlabelrotation: 25 # Rotate the X axis labels (if they may overlap)
 
-  xlabelrotation: 25      # Rotate the X axis labels (if they may overlap)
-
-  colortable: seismic     # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
-                          # OR from RMS colour file
+  colortable:
+    seismic # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
+    # OR from RMS colour file
 
   # individual settings will override general plot settings!
   Z1:
@@ -59,7 +59,7 @@ plotsettings:
     valuerange: [0, 5]
 
 output:
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp
   tag: hc1b
   prefix: replace_all_with_x

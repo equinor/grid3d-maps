@@ -2,7 +2,7 @@ title: Reek
 #
 # Using PORV as method; should give similar result
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+  eclroot: tests/data/reek/REEK
   dates:
     - 19991201
 
@@ -19,12 +19,12 @@ computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.1, 1]          # saturation interv
+  shc_interval: [0.1, 1] # saturation interv
   method: use_porv
   zone: Yes
   all: Yes
 
 output:
   tag: hc1d
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp

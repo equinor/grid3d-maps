@@ -3,33 +3,29 @@ title: Reek
 # Reuse dates data from global config
 
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+  eclroot: tests/data/reek/REEK
   dates: !include_from tests/yaml/global_config3a.yml::global.DATES
   diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
 
 # zonation from file on YAML format
 zonation: !include hc_thickness1b_zonation.yml
 
-
 # For filters, there are properties defined at the same grid layout as the grid read in input
 # If several filters, the will be cumulative
 filters:
-  -
-    name: PORO
+  - name: PORO
     source: $eclroot.INIT
-    intvrange: [0.2, 1.0]  # Filter for a continuous will be an interval
-  -
-    name: FACIES
+    intvrange: [0.2, 1.0] # Filter for a continuous will be an interval
+  - name: FACIES
     discrete: Yes
-    source: ../xtgeo-testdata/3dgrids/reek/reek_sim_facies2.roff
-    discrange: [1]  # Filter for a discrete will be spesic number (or codename?)
-
+    source: tests/data/reek/reek_sim_facies2.roff
+    discrange: [1] # Filter for a discrete will be spesic number (or codename?)
 
 computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.001, 1]   # saturation interval
+  shc_interval: [0.001, 1] # saturation interval
   method: use_poro
   zone: Yes
   all: No
@@ -48,17 +44,18 @@ mapsettings:
 # hieractical, which means that a general level setting will be
 # overridden by a more spesific setting, e.g. see below
 plotsettings:
+  faultpolygons: tests/data/reek/top_upper_reek_faultpoly.xyz
 
-  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.xyz
+  valuerange:
+    [0, 10] # value range min/max (values above below
+    # will be truncated in plot!)
+  diffvaluerange: [-3, 0] # value range min/max for date diffs
 
-  valuerange: [0, 10]     # value range min/max (values above below
-                          # will be truncated in plot!)
-  diffvaluerange: [-3, 0]     # value range min/max for date diffs
+  xlabelrotation: 25 # Rotate the X axis labels (if they may overlap)
 
-  xlabelrotation: 25      # Rotate the X axis labels (if they may overlap)
-
-  colortable: rainbow     # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
-                          # OR from RMS colour file
+  colortable:
+    rainbow # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
+    # OR from RMS colour file
 
   # individual settings will override general plot settings!
   Z1:
@@ -69,6 +66,6 @@ plotsettings:
     valuerange: [0, 5]
 
 output:
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp
   tag: hc1b

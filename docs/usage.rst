@@ -79,7 +79,7 @@ file, e.g. as:
 .. code-block:: yaml
 
    input:
-     eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+     eclroot: tests/data/reek/REEK
      dates: !include_from ../../share/fmuconfig/output/global_variables.yml::global.DATES
      diffdates: !include_from  ../../share/fmuconfig/output/global_variables.yml::global.DIFFDATES
 

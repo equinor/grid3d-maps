@@ -1,3 +1,4 @@
+"""Test suite for hook implementation."""
 import os
 import shutil
 
@@ -10,8 +11,8 @@ except ImportError:
         "Not testing ERT hooks when ERT is not installed", allow_module_level=True
     )
 
-from ert_shared.plugins.plugin_manager import ErtPluginManager
 import xtgeoapp_grd3dmaps.hook_implementations.jobs as jobs
+from ert_shared.plugins.plugin_manager import ErtPluginManager
 
 EXPECTED_JOBS = {
     "GRID3D_AVERAGE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AVERAGE_MAP",
@@ -20,9 +21,10 @@ EXPECTED_JOBS = {
 
 
 def test_hook_implementations():
-    pm = ErtPluginManager(plugins=[jobs])
+    """Test hook implementation."""
+    pma = ErtPluginManager(plugins=[jobs])
 
-    installable_jobs = pm.get_installable_jobs()
+    installable_jobs = pma.get_installable_jobs()
     for wf_name, wf_location in EXPECTED_JOBS.items():
         assert wf_name in installable_jobs
         assert installable_jobs[wf_name].endswith(wf_location)
@@ -31,7 +33,7 @@ def test_hook_implementations():
     assert set(installable_jobs.keys()) == set(EXPECTED_JOBS.keys())
 
     expected_workflow_jobs = {}
-    installable_workflow_jobs = pm.get_installable_workflow_jobs()
+    installable_workflow_jobs = pma.get_installable_workflow_jobs()
     for wf_name, wf_location in expected_workflow_jobs.items():
         assert wf_name in installable_workflow_jobs
         assert installable_workflow_jobs[wf_name].endswith(wf_location)
@@ -44,7 +46,7 @@ def test_job_config_syntax():
     src_path = os.path.join(os.path.dirname(__file__), "../src")
     for _, job_config in EXPECTED_JOBS.items():
         # Check (loosely) that double-dashes are enclosed in quotes:
-        with open(os.path.join(src_path, job_config)) as f_handle:
+        with open(os.path.join(src_path, job_config), encoding="utf8") as f_handle:
             for line in f_handle.readlines():
                 if not line.strip().startswith("--") and "--" in line:
                     assert '"--' in line and " --" not in line
@@ -55,17 +57,18 @@ def test_executables():
     """Test executables listed in job configurations exist in $PATH"""
     src_path = os.path.join(os.path.dirname(__file__), "../src")
     for _, job_config in EXPECTED_JOBS.items():
-        with open(os.path.join(src_path, job_config)) as f_handle:
+        with open(os.path.join(src_path, job_config), encoding="utf8") as f_handle:
             executable = f_handle.readlines()[0].split()[1]
             assert shutil.which(executable)
 
 
 def test_hook_implementations_job_docs():
-    pm = ErtPluginManager(plugins=[jobs])
+    """Testing hook job docs."""
+    pma = ErtPluginManager(plugins=[jobs])
 
-    installable_jobs = pm.get_installable_jobs()
+    installable_jobs = pma.get_installable_jobs()
 
-    docs = pm.get_documentation_for_jobs()
+    docs = pma.get_documentation_for_jobs()
 
     assert set(docs.keys()) == set(installable_jobs.keys())
 

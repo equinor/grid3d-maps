@@ -3,27 +3,26 @@ title: Reek
 
 input:
   # folderroot is a short form to a folder
-  folderroot: ../xtgeo-testdata/3dgrids/reek
+  folderroot: tests/data/reek
   grid: $folderroot/reek2_grid_w_zerolayer.roff
   dz: $folderroot/reek2_grid_w_zerolayer_dz.roff
 
 # zonation from file on YAML format
 zonation:
   zranges:
-  - UPPER: [1, 6]
-  - LOWER: [8, 14]
-  - ZERO: [15, 15]
-
+    - UPPER: [1, 6]
+    - LOWER: [8, 14]
+    - ZERO: [15, 15]
 
 computesettings:
   zone: Yes
   all: No
   tuning:
-    zone_avg: Yes    # will average, weighted per zone first -> faster
-    coarsen: 2       # sample every 2'nd cell -> faster
+    zone_avg: Yes # will average, weighted per zone first -> faster
+    coarsen: 2 # sample every 2'nd cell -> faster
 
 plotsettings:
-  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.xyz
+  faultpolygons: tests/data/reek/top_upper_reek_faultpoly.xyz
   dz:
     # general range:
     valuerange: [0, 3]
@@ -31,5 +30,5 @@ plotsettings:
 output:
   tag: avg1f
 
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp
