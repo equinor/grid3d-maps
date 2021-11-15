@@ -1,11 +1,14 @@
 "Suite for HC thickness test set 1."
 import shutil
 import warnings
+from pathlib import Path
 
 import numpy as np
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xx
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
+
+SOURCEPATH = Path(__file__).absolute().parent.parent
 
 
 def test_hc_thickness1a(datatree):
@@ -13,7 +16,7 @@ def test_hc_thickness1a(datatree):
     result = datatree / "hc1a_folder"
     result.mkdir(parents=True)
     dump = result / "hc1a_dump.yml"
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1a.yml",
@@ -34,11 +37,14 @@ def test_hc_thickness1a(datatree):
     assert np.nanstd(val) == pytest.approx(0.199886, 0.001)
 
 
-def test_hc_thickness1b(sourcepath, datatree):
-    """HC thickness with YAML config example 1b; zonation in own YAML file"""
+def test_hc_thickness1b_output_docs(datatree):
+    """HC thickness with YAML config example 1b; zonation in own YAML file.
+
+    Note that plots here goes into the Sphinx documentation!
+    """
     result = datatree / "hc1b_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1b.yml",
@@ -49,7 +55,7 @@ def test_hc_thickness1b(sourcepath, datatree):
         ]
     )
     for img in result.glob("*hc1b*.png"):
-        shutil.copy2(img, sourcepath / "docs" / "test_images")
+        shutil.copy2(img, SOURCEPATH / "docs" / "test_images")
 
     prp = xtgeo.surface_from_file(
         result / "replace_all_with_x--hc1b_oilthickness--19991201.gri"
@@ -61,7 +67,7 @@ def test_hc_thickness1c(datatree):
     """HC thickness with YAML config example 1c; no map settings"""
     result = datatree / "hc1c_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1c.yml",
@@ -84,7 +90,7 @@ def test_hc_thickness1d(datatree):
     result = datatree / "hc1d_folder"
     result.mkdir(parents=True)
     warnings.simplefilter("error")
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1d.yml",
@@ -104,7 +110,7 @@ def test_hc_thickness1e(datatree):
     """HC thickness with YAML config 1e; as 1d but use ROFF grid input"""
     result = datatree / "hc1e_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1e.yml",
@@ -124,7 +130,7 @@ def test_hc_thickness1f(datatree):
     result = datatree / "hc1f_folder"
     result.mkdir(parents=True)
 
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1f.yml",
@@ -146,7 +152,7 @@ def test_hc_thickness1g(datatree):
     result = datatree / "hc1g_folder"
     result.mkdir(parents=True)
 
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1g.yml",
@@ -169,7 +175,7 @@ def test_hc_thickness1h(datatree):
     result = datatree / "hc1h_folder"
     result.mkdir(parents=True)
 
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1h.yml",
@@ -195,7 +201,7 @@ def test_hc_thickness1i(datatree):
     result = datatree / "hc1i_folder"
     result.mkdir(parents=True)
 
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness1i.yml",

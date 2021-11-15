@@ -1,7 +1,7 @@
 """Test suite hc 4."""
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xxx
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 
 def test_hc_thickness4a(datatree):
@@ -9,7 +9,7 @@ def test_hc_thickness4a(datatree):
 
     result = datatree / "hc4a_folder"
     result.mkdir(parents=True)
-    xxx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness4a.yml",

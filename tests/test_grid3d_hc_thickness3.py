@@ -1,6 +1,6 @@
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xxx
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 
 def test_hc_thickness3a(datatree):
@@ -8,7 +8,7 @@ def test_hc_thickness3a(datatree):
     result = datatree / "hc3a_folder"
     result.mkdir(parents=True)
     dump = result / "hc3a_dump.yml"
-    xxx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness3a.yml",
@@ -29,7 +29,7 @@ def test_hc_thickness3b(datatree):
     result = datatree / "hc3b_folder"
     result.mkdir(parents=True)
     dump = result / "hc3b_dump.yml"
-    xxx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness3b.yml",
@@ -49,7 +49,7 @@ def test_hc_thickness3c(datatree):
     """HC thickness with external configfiles, HC 3c"""
     result = datatree / "hc3c_folder"
     result.mkdir(parents=True)
-    xxx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness3c.yml",

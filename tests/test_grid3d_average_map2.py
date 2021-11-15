@@ -2,7 +2,7 @@
 import numpy.testing as nptest
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as xxx
+import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_average_map
 
 # =============================================================================
 # Do tests
@@ -14,7 +14,7 @@ def test_average_map2a(datatree):
     result = datatree / "map2a_folder"
     result.mkdir(parents=True)
     dump = result / "avg2a.yml"
-    xxx.main(
+    grid3d_average_map.main(
         [
             "--config",
             "tests/yaml/avg2a.yml",
@@ -37,7 +37,7 @@ def test_average_map2b(datatree):
     result = datatree / "map2b_folder"
     result.mkdir(parents=True)
     dump = result / "avg2b.yml"
-    xxx.main(
+    grid3d_average_map.main(
         [
             "--config",
             "tests/yaml/avg2b.yml",
@@ -58,7 +58,7 @@ def test_average_map2b(datatree):
     # test dumped YAML file to reproduce result
     result2 = datatree / "map2b_folder_rerun"
     result2.mkdir(parents=True)
-    xxx.main(
+    grid3d_average_map.main(
         [
             "--config",
             str(result / "avg2b.yml"),
@@ -78,7 +78,7 @@ def test_average_map2c(datatree):
     result = datatree / "map2c_folder"
     result.mkdir(parents=True)
     dump = result / "avg2c.yml"
-    xxx.main(
+    grid3d_average_map.main(
         [
             "--config",
             "tests/yaml/avg2c.yml",

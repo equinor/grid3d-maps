@@ -1,13 +1,12 @@
 import getpass
-from time import localtime, strftime
 from collections import OrderedDict
+from time import localtime, strftime
+
 import numpy as np
 import numpy.ma as ma
-
 import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
-
 from xtgeoviz import quickplot
 
 xtg = XTGeoDialog()
@@ -120,13 +119,12 @@ def do_avg_plotting(config, avgd):
 
         pcfg = _avg_plotsettings(config, zname, pname)
 
-        xtg.say("Plot to {}".format(plotfile))
+        xtg.say(f"Plot to {plotfile}")
 
         usevrange = pcfg["valuerange"]
 
         faults = None
         if pcfg["faultpolygons"] is not None:
-            xtg.say("Try: {}".format(pcfg["faultpolygons"]))
             try:
                 fau = xtgeo.polygons_from_file(pcfg["faultpolygons"], fformat="guess")
                 faults = {"faults": fau}

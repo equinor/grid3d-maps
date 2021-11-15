@@ -1,16 +1,19 @@
 """Testing suite average_map1."""
 import shutil
+from pathlib import Path
 
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as xx
+import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_hc_thickness
+
+SOURCEPATH = Path(__file__).absolute().parent.parent
 
 
 def test_average_map1a(datatree):
     """Test HC thickness with YAML config example 1a ECL based"""
     result = datatree / "map1a_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/avg1a.yml",
@@ -25,11 +28,14 @@ def test_average_map1a(datatree):
     assert z1poro.values.mean() == pytest.approx(0.1598, abs=0.001)
 
 
-def test_average_map1b(sourcepath, datatree):
-    """Test HC thickness with YAML config example 1b ROFF based"""
+def test_average_map1b_output_docs(datatree):
+    """Test HC thickness with YAML config example 1b ROFF based.
+
+    Note that plots here goes directly into the Sphinx documentation!
+    """
     result = datatree / "map1b_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/avg1b.yml",
@@ -46,14 +52,14 @@ def test_average_map1b(sourcepath, datatree):
 
     # for auto documentation
     for img in result.glob("*avg1b*.png"):
-        shutil.copy2(img, sourcepath / "docs" / "test_images")
+        shutil.copy2(img, SOURCEPATH / "docs" / "test_images")
 
 
 def test_average_map1c(datatree):
     """Test HC thickness with YAML config example 1c ROFF based, rotated map"""
     result = datatree / "map1c_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/avg1c.yml",
@@ -72,7 +78,7 @@ def test_average_map1d(datatree):
     """Test HC thickness with YAML config example 1d ROFF based, rotated map"""
     result = datatree / "map1d_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/avg1d.yml",
@@ -90,7 +96,7 @@ def test_average_map1e(datatree):
     """Test HC thickness with YAML config example 1e ROFF based, tuning"""
     result = datatree / "map1e_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/avg1e.yml",
@@ -108,7 +114,7 @@ def test_average_map1f(datatree):
     """Test HC thickness with YAML config example 1f ROFF based, zero layer"""
     result = datatree / "map1f_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/avg1f.yml",

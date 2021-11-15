@@ -1,9 +1,7 @@
-from pathlib import Path
-
 import numpy as np
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as xx
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 
 def test_hc_thickness2a(datatree):
@@ -11,7 +9,7 @@ def test_hc_thickness2a(datatree):
 
     result = datatree / "hc2a_folder"
     result.mkdir(parents=True)
-    xx.main(
+    grid3d_hc_thickness.main(
         [
             "--config",
             "tests/yaml/hc_thickness2a.yml",
