@@ -1,15 +1,14 @@
 title: Reek
 
-
 # just give rootname in case of "eclipserun" model
 # input is what to be made maps of
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+  eclroot: tests/data/reek/REEK
   dates:
     - 19991201
     - 20021101
-    - 20021111   # this does not exist but script will ignore with warning
-    - 20010101-19991201  # difference map
+    - 20021111 # this does not exist but script will ignore with warning
+    - 20010101-19991201 # difference map
     # - 20030101--19991201  # difference map
 
 # Zonation gives what zones to compute over, and typically is similar
@@ -32,7 +31,7 @@ computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.1, 1]          # saturation interv
+  shc_interval: [0.1, 1] # saturation interv
   method: use_poro
   zone: Yes
   all: Yes
@@ -47,5 +46,5 @@ mapsettings:
   nrow: 200
 
 output:
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp

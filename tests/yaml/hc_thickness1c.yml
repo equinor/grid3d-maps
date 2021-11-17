@@ -5,7 +5,7 @@ title: Reek
 # just give rootname in case of "eclipserun" model
 # input is what to be made maps of
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+  eclroot: tests/data/reek/REEK
   dates:
     - 19991201
 
@@ -24,12 +24,12 @@ computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.1, 1]          # saturation interv
+  shc_interval: [0.1, 1] # saturation interv
   method: use_poro
   zone: Yes
   all: Yes
 
 output:
   tag: hc1c
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp

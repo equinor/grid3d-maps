@@ -62,7 +62,7 @@ The following example shows input from Eclipse where a Eclipse root name must ex
 .. code-block:: yaml
 
    input:
-     eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+     eclroot: tests/data/reek/REEK
      dates:
        - 19991201
        - 20021101
@@ -78,8 +78,8 @@ It is possible to use a grid spsfication from a ROFF file instead of an EGRID fi
 .. code-block:: yaml
 
    input:
-     eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
-     grid: ../xtgeo-testdata/3dgrids/reek/reek_grid_fromegrid.roff
+     eclroot: tests/data/reek/REEK
+     grid: tests/data/reek/reek_grid_fromegrid.roff
      dates:
        - 19991201
 
@@ -94,8 +94,8 @@ to make HC thickness maps from geomodels directly.
 .. code-block:: yaml
 
    input:
-     grid: ../xtgeo-testdata/3dgrids/reek/reek_geo_grid.roff
-     stoiip: {STOIIP: ../xtgeo-testdata/3dgrids/reek/reek_geo_stooip.roff}
+     grid: tests/data/reek/reek_geo_grid.roff
+     stoiip: {STOIIP: tests/data/reek/reek_geo_stooip.roff}
      dates: [19900101]
 
 The "STOIIP" in the example above is the name of the property within the ROFF file.
@@ -113,7 +113,7 @@ Dates can now be read directly from an external global-variables YAML file:
 .. code-block:: yaml
 
    input:
-     eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+     eclroot: tests/data/reek/REEK
      dates: !include_from tests/yaml/global_config3a.yml::global.DATES
      diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
 
@@ -134,7 +134,7 @@ properties, either continuous of discrete. For example:
      -
        name: FACIES
        discrete: Yes
-       source: ../xtgeo-testdata/3dgrids/reek/reek_sim_facies2.roff
+       source: tests/data/reek/reek_sim_facies2.roff
        discrange: [1]  # Filter for a discrete will be spesic number (code)
 
 

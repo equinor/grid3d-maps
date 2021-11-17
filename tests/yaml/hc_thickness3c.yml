@@ -7,7 +7,7 @@ title: Reek
 # Reuse dates data from global config
 
 input:
-  eclroot: ../xtgeo-testdata/3dgrids/reek/REEK
+  eclroot: tests/data/reek/REEK
   dates: !include_from tests/yaml/global_config3a.yml::global.DATES
   diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
 
@@ -16,23 +16,21 @@ zonation:
     name: FIPNUM
     source: $eclroot.INIT
     zones:
-      - myfip1: [1]  # can be a discrete selection, e.g. [1, 3, 6]
+      - myfip1: [1] # can be a discrete selection, e.g. [1, 3, 6]
       - myfip2: [2]
 
 # For filters, properties shall defined at the same grid layout as the grid read in input
 # If several filters, they will be cumulative
 filters:
-  -
-    name: PORO
+  - name: PORO
     source: $eclroot.INIT
-    intvrange: [0.0, 1.0]  # Filter for a continuous will be an interval
-
+    intvrange: [0.0, 1.0] # Filter for a continuous will be an interval
 
 computesettings:
   # choose oil, gas or both
   mode: oil
   critmode: No
-  shc_interval: [0.001, 1]   # saturation interval
+  shc_interval: [0.001, 1] # saturation interval
   method: use_poro
   zone: yes
   all: yes
@@ -51,17 +49,18 @@ mapsettings:
 # hieractical, which means that a general level setting will be
 # overridden by a more spesific setting, e.g. see below
 plotsettings:
+  faultpolygons: tests/data/reek/top_upper_reek_faultpoly.xyz
 
-  faultpolygons: ../xtgeo-testdata/polygons/reek/1/top_upper_reek_faultpoly.xyz
+  valuerange:
+    [0, 10] # value range min/max (values above below
+    # will be truncated in plot!)
+  diffvaluerange: [-3, 0] # value range min/max for date diffs
 
-  valuerange: [0, 10]     # value range min/max (values above below
-                          # will be truncated in plot!)
-  diffvaluerange: [-3, 0]     # value range min/max for date diffs
+  xlabelrotation: 25 # Rotate the X axis labels (if they may overlap)
 
-  xlabelrotation: 25      # Rotate the X axis labels (if they may overlap)
-
-  colortable: rainbow     # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
-                          # OR from RMS colour file
+  colortable:
+    rainbow # colours jet/rainbow/seismic/gnuplot/gnuplot2/...
+    # OR from RMS colour file
 
   # individual settings will override general plot settings!
   Z1:
@@ -72,6 +71,6 @@ plotsettings:
     valuerange: [0, 5]
 
 output:
-  mapfolder: TMP
-  plotfolder: TMP
+  mapfolder: /tmp
+  plotfolder: /tmp
   tag: hc3c
