@@ -16,7 +16,7 @@ def pytest_runtest_setup(item):
             pytest.skip("Skip test if not ERT present (executable 'ert' is missing)")
 
 
-@pytest.fixture(name="datatree", scope="session", autouse=True)
+@pytest.fixture(name="datatree", scope="module", autouse=True)
 def fixture_datatree(tmp_path_factory):
     """Create a tmp folder structure for testing."""
     tmppath = tmp_path_factory.mktemp("grd3dmaps")
@@ -29,14 +29,14 @@ def fixture_datatree(tmp_path_factory):
     return tmppath
 
 
-@pytest.fixture(name="erttree", scope="session", autouse=True)
-def fixture_erttree(tmp_path_factory):
-    """Create a tmp folder structure for testing ert connection."""
-    tmppath = tmp_path_factory.mktemp("ertrun")
+# @pytest.fixture(name="erttree", scope="module", autouse=True)
+# def fixture_erttree(tmp_path_factory):
+#     """Create a tmp folder structure for testing ert connection."""
+#     tmppath = tmp_path_factory.mktemp("ertrun")
 
-    shutil.copytree("tests/yaml", tmppath / "tests" / "yaml")
-    shutil.copytree("tests/data", tmppath / "tests" / "data")
+#     shutil.copytree("tests/yaml", tmppath / "tests" / "yaml")
+#     shutil.copytree("tests/data", tmppath / "tests" / "data")
 
-    print("Temporary folder: ", tmppath)
-    os.chdir(tmppath)
-    return tmppath
+#     print("Temporary folder: ", tmppath)
+#     os.chdir(tmppath)
+#     return tmppath
