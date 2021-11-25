@@ -9,6 +9,8 @@ from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
 from xtgeoviz import quickplot
 
+from ._export_via_fmudataio import export_avg_map_dataio
+
 xtg = XTGeoDialog()
 logger = xtg.functionlogger(__name__)
 
@@ -90,7 +92,12 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
                 coarsen=mycoarsen,
             )
 
-            filename = _avg_filesettings(config, zname, propname, mode="map")
+            use_fmu_dataio = False
+            if config["output"]["mapfolder"] == "fmu-dataio":
+                use_fmu_dataio = True
+            else:
+                filename = _avg_filesettings(config, zname, propname, mode="map")
+
             usename = (zname, propname)
 
             if config["computesettings"]["mask_zeros"]:
@@ -98,8 +105,11 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
 
             avgd[usename] = xmap.copy()
 
-            xtg.say("Map file to {}".format(filename))
-            avgd[usename].to_file(filename)
+            if use_fmu_dataio:
+                export_avg_map_dataio(avgd[usename], name="somename")
+            else:
+                xtg.say("Map file to {}".format(filename))
+                avgd[usename].to_file(filename)
 
     return avgd
 

@@ -1,13 +1,13 @@
 import argparse
-import sys
-import os.path
-import pprint
 import copy
 import datetime
-import yaml
+import os.path
+import pprint
+import sys
 
+import yaml
 from xtgeo.common import XTGeoDialog
-from xtgeoapp_grd3dmaps.avghc._loader import YamlXLoader, ConstructorError
+from xtgeoapp_grd3dmaps.avghc._loader import ConstructorError, YamlXLoader
 
 xtg = XTGeoDialog()
 
@@ -121,9 +121,9 @@ def yconfig(inputfile, tmp=False, standard=False):
         logger.critical("STOP! No such config file exists: %s", inputfile)
         raise SystemExit
 
-    with open(inputfile, "r") as stream:
+    with open(inputfile, "r", encoding="utf8") as stream:
         if standard:
-            config = yaml.load(stream)
+            config = yaml.safe_load(stream)
         else:
             try:
                 config = yaml.load(stream, Loader=YamlXLoader)
@@ -131,11 +131,11 @@ def yconfig(inputfile, tmp=False, standard=False):
                 xtg.error(errmsg)
                 raise SystemExit from errmsg
 
-    xtg.say("Input config YAML file <{}> is read...".format(inputfile))
+    xtg.say(f"Input config YAML file <{inputfile}> is read...")
 
-    pp = pprint.PrettyPrinter(indent=4)
+    ppr = pprint.PrettyPrinter(indent=4)
 
-    out = pp.pformat(config)
+    out = ppr.pformat(config)
     logger.info("\n%s", out)
 
     logger.info("CONFIG:\n %s", config)

@@ -1,0 +1,56 @@
+masterdata:
+  smda:
+    country:
+      - identifier: Norway
+        uuid: ad214d85-8a1d-19da-e053-c918a4889309
+    discovery:
+      - short_identifier: REEK
+        uuid: ad214d85-8a1d-19da-e053-c918a4889309
+    field:
+      - identifier: REEK
+        uuid: 00000000-0000-0000-0000-000000000000
+    coordinate_system:
+      identifier: ST_WGS84_UTM37N_P32637
+      uuid: ad214d85-dac7-19da-e053-c918a4889309
+    stratigraphic_column:
+      identifier: REEK_2002
+      uuid: some-unique-id-to-be-provided-by-smda
+access:
+  asset:
+    name: Reek
+  ssdl:
+    access_level: internal
+    rep_include: true
+model:
+  name: ff
+  revision: AUTO
+  description:
+    - Reek course data set for Equinor FMU
+stratigraphy:
+  MSL:
+    stratigraphic: false
+    name: MSL
+  Seabase:
+    stratigraphic: false
+    name: Seabase
+fmu:
+  model:
+    name: ff
+    revision: 21.0.0.dev
+    desciption:
+      - Reek model for courses etc
+  realization: null
+  ensemble: null
+global:
+  SEISMIC_DATES:
+    - 1999-12-01
+    - 2002-12-01
+  ECLIPSE_INIT_DATE: 1999-12-01
+  ECLIPSE_HIST_DATES:
+    - 2002-12-01
+  ECLIPSE_HIST_DIFFDATES:
+    - - 2002-12-01
+      - 1999-12-01
+  DCONV_ALTERNATIVE: 1
+  HUM_MODEL_MODE: 1
+  FACIESMODEL_ALTERNATIVE: 0

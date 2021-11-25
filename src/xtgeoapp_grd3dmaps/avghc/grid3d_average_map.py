@@ -9,11 +9,13 @@ import sys
 
 from xtgeo.common import XTGeoDialog
 
-from . import _configparser
-from . import _get_grid_props
-from . import _get_zonation_filters
-from . import _compute_avg
-from . import _mapsettings
+from . import (
+    _compute_avg,
+    _configparser,
+    _get_grid_props,
+    _get_zonation_filters,
+    _mapsettings,
+)
 
 try:
     from xtgeoapp_grd3dmaps._theversion import version as __version__
@@ -42,7 +44,7 @@ logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
-
+    """Parse command line arguments that will override config."""
     args = _configparser.parse_args(args, APPNAME, APPDESCR)
 
     return args
@@ -74,7 +76,7 @@ def get_grid_props_data(config):
         config, APPNAME
     )
 
-    xtg.say("Grid file is {}".format(gfile))
+    xtg.say(f"Grid file is {gfile}")
 
     xtg.say("Getting INIT file data")
     for initpar, initfile in initlist.items():
@@ -159,7 +161,7 @@ def compute_avg_and_plot(
 
 
 def main(args=None):
-
+    """Main routine."""
     XTGeoDialog.print_xtgeo_header(APPNAME, __version__)
 
     xtg.say("Parse command line")
