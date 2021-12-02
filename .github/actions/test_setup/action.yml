@@ -1,0 +1,15 @@
+name: "Set up for tests"
+description: "Set up the xtgeoapp-grd3dmaps test environment"
+
+inputs:
+  python-version:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: "./.github/actions/build-xtgeoapp-grd3dmaps"
+      with:
+        python-version: ${{ inputs.python-version }}
+    - run: pip install -r requirements/requirements_tests.txt
+      shell: bash

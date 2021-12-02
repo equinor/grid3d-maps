@@ -8,7 +8,7 @@ import pytest
 import xtgeo
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
-SOURCEPATH = Path(__file__).absolute().parent.parent
+SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
 def test_hc_thickness1a(datatree):

@@ -1,6 +1,7 @@
 """Test suite for hook implementation."""
 import os
 import shutil
+from pathlib import Path
 
 import pytest
 
@@ -19,7 +20,10 @@ EXPECTED_JOBS = {
     "GRID3D_HC_THICKNESS": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_HC_THICKNESS",
 }
 
+SRC_PATH = Path(__file__).absolute().parent.parent.parent / "src"
 
+
+@pytest.mark.requires_ert
 def test_hook_implementations():
     """Test hook implementation."""
     pma = ErtPluginManager(plugins=[jobs])
@@ -41,27 +45,28 @@ def test_hook_implementations():
     assert set(installable_workflow_jobs.keys()) == set(expected_workflow_jobs.keys())
 
 
+@pytest.mark.requires_ert
 def test_job_config_syntax():
     """Check for syntax errors made in job configuration files"""
-    src_path = os.path.join(os.path.dirname(__file__), "../src")
     for _, job_config in EXPECTED_JOBS.items():
         # Check (loosely) that double-dashes are enclosed in quotes:
-        with open(os.path.join(src_path, job_config), encoding="utf8") as f_handle:
+        with open(os.path.join(SRC_PATH, job_config), encoding="utf8") as f_handle:
             for line in f_handle.readlines():
                 if not line.strip().startswith("--") and "--" in line:
                     assert '"--' in line and " --" not in line
 
 
+@pytest.mark.requires_ert
 @pytest.mark.integration
 def test_executables():
     """Test executables listed in job configurations exist in $PATH"""
-    src_path = os.path.join(os.path.dirname(__file__), "../src")
     for _, job_config in EXPECTED_JOBS.items():
-        with open(os.path.join(src_path, job_config), encoding="utf8") as f_handle:
+        with open(os.path.join(SRC_PATH, job_config), encoding="utf8") as f_handle:
             executable = f_handle.readlines()[0].split()[1]
             assert shutil.which(executable)
 
 
+@pytest.mark.requires_ert
 def test_hook_implementations_job_docs():
     """Testing hook job docs."""
     pma = ErtPluginManager(plugins=[jobs])

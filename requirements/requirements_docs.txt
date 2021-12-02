@@ -1,0 +1,5 @@
+pip>=19.1.1
+setuptools>=43
+setuptools_scm
+sphinx
+sphinx-rtd-theme
