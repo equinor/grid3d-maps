@@ -6,7 +6,7 @@ import pytest
 import xtgeo
 import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_hc_thickness
 
-SOURCEPATH = Path(__file__).absolute().parent.parent
+SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
 def test_average_map1a(datatree):

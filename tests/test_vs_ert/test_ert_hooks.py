@@ -2,11 +2,13 @@
 import subprocess
 from pathlib import Path
 
+import pytest
 import yaml
 
 XTGEOTESTDATA = "tests/data/reek"
 
 
+@pytest.mark.requires_ert
 def test_xtgeoapps_through_ert(erttree):
     """Test through ERT."""
     print(f"ERT run on {erttree}")

@@ -1,5 +1,4 @@
-PyYAML
-ert
 numpy
+pyyaml
 xtgeo
 xtgeoviz

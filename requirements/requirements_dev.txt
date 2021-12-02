@@ -1,4 +1,4 @@
-Sphinx>=1.4.8
+
 black
 coverage>=4.1
 flake8
@@ -7,5 +7,6 @@ pylint
 pytest-runner>=2.11.1
 pytest>=2.9.2
 rstcheck
+sphinx>=1.4.8
 watchdog>=0.8.3
 wheel>=0.29.0
