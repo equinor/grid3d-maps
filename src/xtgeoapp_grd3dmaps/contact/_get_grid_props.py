@@ -1,16 +1,14 @@
 import pprint
 from collections import defaultdict
+
 import numpy as np
 import numpy.ma as ma
-
 import xtgeo
-from xtgeo.common.exceptions import DateNotFoundError
-from xtgeo.common.exceptions import KeywordFoundNoDateError
 
 # from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
-from xtgeo.grid3d import GridProperties
-from xtgeo.grid3d import GridProperty
+from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
+from xtgeo.grid3d import GridProperties, GridProperty
 
 xtg = XTGeoDialog()
 
@@ -82,7 +80,7 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
     logger.info("Import data for {}".format(appname))
 
     # get the grid data + some geometrics
-    grd = xtgeo.grid3d.Grid(gfile, fformat="guess")
+    grd = xtgeo.grid_from_file(gfile, fformat="guess")
 
     logger.info("Grid is now imported for {}".format(appname))
 
@@ -143,11 +141,12 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
         else:
             # single properties, typically ROFF stuff
-            tmp = GridProperty()
             usename, lookforname = iniprops[0]
 
             xtg.say("Import <{}> from <{}> ...".format(lookforname, inifile))
-            tmp.from_file(inifile, name=lookforname, fformat="guess", grid=grd)
+            tmp = xtgeo.gridproperty_from_file(
+                inifile, name=lookforname, fformat="guess", grid=grd
+            )
             tmp.name = usename
             initobjects.append(tmp)
 
@@ -157,10 +156,9 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
     # assume that this is Eclipse stuff .UNRST
     restobjects = []
     for restfile, restprops in restdict.items():
-        tmp = GridProperties()
         try:
             logger.info("Reading--")
-            tmp.from_file(
+            tmp = xtgeo.gridproperty_from_file(
                 restfile, names=restprops, fformat="unrst", grid=grd, dates=dates
             )
 

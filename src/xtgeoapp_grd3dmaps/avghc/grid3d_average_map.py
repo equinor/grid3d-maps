@@ -53,6 +53,7 @@ def do_parse_args(args):
 def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
+    config = _configparser.prepare_metadata(config)
     config = _configparser.propformatting(config)
 
     # override with command line args

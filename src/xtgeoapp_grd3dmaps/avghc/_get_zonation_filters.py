@@ -1,6 +1,6 @@
 from collections import OrderedDict
-import numpy as np
 
+import numpy as np
 import xtgeo
 from xtgeo.common import XTGeoDialog
 
@@ -41,13 +41,14 @@ def zonation(config, grd):
 
     if "zproperty" in config["zonation"]:
         zcfg = config["zonation"]["zproperty"]
-        zon = xtgeo.grid3d.GridProperty()
 
         mysource = zcfg["source"]
         if "$eclroot" in mysource:
             mysource = mysource.replace("$eclroot", eclroot)
 
-        zon.from_file(mysource, fformat="guess", name=zcfg["name"], grid=grd)
+        zon = xtgeo.gridproperty_from_file(
+            mysource, fformat="guess", name=zcfg["name"], grid=grd
+        )
         myzonation = zon.values.astype(np.int32)
         # myzonation = np.ma.filled(zonation, fill_value=0)
         for izn, zns in enumerate(zcfg["zones"]):

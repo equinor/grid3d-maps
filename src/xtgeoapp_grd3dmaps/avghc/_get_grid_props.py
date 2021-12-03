@@ -1,16 +1,14 @@
 import pprint
 from collections import defaultdict
+
 import numpy as np
 import numpy.ma as ma
-
 import xtgeo
-from xtgeo.common.exceptions import DateNotFoundError
-from xtgeo.common.exceptions import KeywordFoundNoDateError
 
 # from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
-from xtgeo.grid3d import GridProperties
-from xtgeo.grid3d import GridProperty
+from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
+from xtgeo.grid3d import GridProperties, GridProperty
 
 xtg = XTGeoDialog()
 
@@ -157,7 +155,7 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
     logger.debug("Config is %s", config)
 
     # get the grid data + some geometrics
-    grd = xtgeo.grid3d.Grid(gfile, fformat="guess")
+    grd = xtgeo.grid_from_file(gfile, fformat="guess")
 
     # For rock thickness only model, the initlist and restartlist will be
     # empty dicts, and just return at this point
@@ -222,11 +220,12 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
         else:
             # single properties, typically ROFF stuff
-            tmp = GridProperty()
             usename, lookforname = iniprops[0]
 
-            xtg.say("Import <{}> from <{}> ...".format(lookforname, inifile))
-            tmp.from_file(inifile, name=lookforname, fformat="guess", grid=grd)
+            xtg.say(f"Import <{lookforname}> from <{inifile}> ...")
+            tmp = xtgeo.gridproperty_from_file(
+                inifile, name=lookforname, fformat="guess", grid=grd
+            )
             tmp.name = usename
             initobjects.append(tmp)
 
@@ -330,7 +329,7 @@ def import_filters(config, appname, grd):
 
             if "$eclroot" in source:
                 source = source.replace("$eclroot", eclroot)
-            gprop = GridProperty(source, grid=grd, name=name)
+            gprop = xtgeo.gridproperty_from_file(source, grid=grd, name=name)
             pval = gprop.values
             xtg.say("Filter, import <{}> from <{}> ...".format(name, source))
 

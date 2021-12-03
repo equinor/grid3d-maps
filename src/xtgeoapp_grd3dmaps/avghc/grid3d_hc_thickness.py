@@ -8,12 +8,14 @@ import sys
 
 from xtgeo.common import XTGeoDialog
 
-from . import _configparser
-from . import _get_grid_props
-from . import _get_zonation_filters
-from . import _compute_hcpfz
-from . import _hc_plotmap
-from . import _mapsettings
+from . import (
+    _compute_hcpfz,
+    _configparser,
+    _get_grid_props,
+    _get_zonation_filters,
+    _hc_plotmap,
+    _mapsettings,
+)
 
 try:
     from xtgeoapp_grd3dmaps._theversion import version as __version__
@@ -52,6 +54,7 @@ def yamlconfig(inputfile, args):
     """Read from YAML file and modify/override"""
     config = _configparser.yconfig(inputfile)
     config = _configparser.dateformatting(config)
+    config = _configparser.prepare_metadata(config)
 
     # override with command line args
     config = _configparser.yconfig_override(config, args, APPNAME)
@@ -60,6 +63,7 @@ def yamlconfig(inputfile, args):
 
     # in case of YAML input (e.g. zonation from file)
     config = _configparser.yconfig_addons(config, APPNAME)
+    config = _configparser.yconfig_metadata_hc(config)
 
     if args.dumpfile:
         _configparser.yconfigdump(config, args.dumpfile)

@@ -17,10 +17,16 @@ input:
       source: $eclroot.UNRST
       dates: !include_from tests/yaml/global_config3a.yml::global.DATES
       diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
+      metadata:
+        content: saturation
+        unit: fraction
     - name: PRESSURE
       source: $eclroot.UNRST
       dates: !include_from tests/yaml/global_config3a.yml::global.DATES
       diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
+      metadata:
+        content: pressure
+        unit: bar
 
 zonation:
   zproperty:
@@ -71,4 +77,4 @@ def test_average_map3a(datatree):
     os.environ["FMU_GLOBAL_CONFIG"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
     )
-    grid3d_average_map.main(["--config", "avg3a.yml"])
+    grid3d_average_map.main(["--config", "avg3a.yml", "--dump", "dump_config.yml"])

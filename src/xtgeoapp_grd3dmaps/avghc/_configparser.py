@@ -150,8 +150,33 @@ def yconfig(inputfile, tmp=False, standard=False):
 def yconfigdump(cfg, outfile):
     """Write a dictionary (config) to YAML file."""
 
-    with open(outfile, "w") as stream:
+    with open(outfile, "w", encoding="utf8") as stream:
         yaml.dump(cfg, stream, default_flow_style=False)
+
+
+def prepare_metadata(config):
+    """Initiate metadata block.
+
+    The metadata are needed for fmu-dataio and will be initiated here. It will
+    look like this:
+
+    "metadata": {
+        "SWAT--19991201": {               # identifier name in this package
+            "name": "SWAT",               # generic property name
+            "source": "$eclroot.UNRST",   # info
+            "t1": "20010101",             # timedata entry 1
+            "t2": "19991201",             # timedata entry 2
+            "content": "saturation",      # content info for sumo
+            "unit": "fraction",           # unit info
+            "globaltag": "avg2c"          # a global tag from output.tag
+        },
+
+    """
+    newconfig = copy.deepcopy(config)
+    # make an entry metadata for fmu-dataio
+    newconfig["metadata"] = {}
+
+    return newconfig
 
 
 def dateformatting(config):
@@ -249,6 +274,10 @@ def propformatting(config):
         if "source" not in prop:
             raise KeyError('The "source" key is required in "properties"')
 
+        # metdata are fetched both from ordinary data (e.g. name, dates) and from the
+        # new metadata block
+        fetched_metadata = {"name": prop["name"], "source": prop["source"]}
+
         newdates = list()
         if "dates" in prop:
             for entry in prop["dates"]:
@@ -256,6 +285,7 @@ def propformatting(config):
                     newdates.append(entry.strftime("%Y%m%d"))
                 else:
                     newdates.append(entry)
+                fetched_metadata.update({"t1": entry})
 
         if "diffdates" in prop:
             for entry in prop["diffdates"]:
@@ -266,13 +296,28 @@ def propformatting(config):
                     if isinstance(dd2, datetime.date):
                         dd2 = dd2.strftime("%Y%m%d")
                     newdates.append(dd1 + "-" + dd2)
+                    fetched_metadata.update({"t1": dd1})
+                    fetched_metadata.update({"t2": dd2})
 
+        # get the addional metadata
+        if "metadata" in prop:
+            fetched_metadata.update(prop["metadata"])
+
+        namekey = prop["name"]
+        namekeys = []
         if newdates:
             for mydate in newdates:
-                newkey = prop["name"] + "--" + mydate
-                newconfig["input"][newkey] = prop["source"]
+                namekey = prop["name"] + "--" + mydate
+                newconfig["input"][namekey] = prop["source"]
+                namekeys.append(namekey)
         else:
-            newconfig["input"][prop["name"]] = prop["source"]
+            newconfig["input"][namekey] = prop["source"]
+            namekeys.append(namekey)
+
+        if "tag" in config["output"]:
+            fetched_metadata.update({"globaltag": config["output"]["tag"]})
+        for nkey in namekeys:
+            newconfig["metadata"][nkey] = fetched_metadata
 
     del newconfig["input"]["properties"]
 
@@ -450,8 +495,8 @@ def yconfig_set_defaults(config, appname):
 
         newconfig["input"]["dates"] = dlist
 
-    pp = pprint.PrettyPrinter(indent=4)
-    out = pp.pformat(newconfig)
+    ppr = pprint.PrettyPrinter(indent=4)
+    out = ppr.pformat(newconfig)
     logger.debug("After setting defaults: \n%s", out)
 
     return newconfig
@@ -472,5 +517,23 @@ def yconfig_addons(config, appname):
             newconfig["zonation"]["superranges"] = zconfig["superranges"]
 
     xtg.say(f"Add configuration to {appname}")
+
+    return newconfig
+
+
+def yconfig_metadata_hc(config):
+    """Collect general metadata for HC thickness script.
+
+    Note that date and zone info will be added in map plotting loop, later.
+    """
+
+    newconfig = copy.deepcopy(config)
+    attribute = config["computesettings"]["mode"] + "thickness"  # e.g. oilthickness
+    newconfig["metadata"]["nameinfo"] = attribute
+    newconfig["metadata"]["content"] = attribute
+    newconfig["metadata"]["unit"] = "m"
+    newconfig["metadata"]["source"] = config["input"]["eclroot"]
+
+    newconfig["metadata"]["globaltag"] = config["output"].get("tag", "")
 
     return newconfig
