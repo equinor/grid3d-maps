@@ -1,5 +1,6 @@
 """Setup helpers for setup.py."""
 import fnmatch
+import glob
 import os
 from distutils.command.clean import clean as _clean
 from os.path import exists
@@ -46,6 +47,7 @@ class CleanUp(_clean):
 
     CLEANFOLDERSRECURSIVE = ["__pycache__", "_tmp_*", "*.egg-info"]
     CLEANFILESRECURSIVE = ["*.pyc", "*.pyo"]
+    CLEANSPECIAL = ["docs/test_to_docs/*.png", "docs/test_to_docs/*.yml"]
 
     @staticmethod
     def ffind(pattern, path):
@@ -89,6 +91,11 @@ class CleanUp(_clean):
         for fil_ in CleanUp.CLEANFILESRECURSIVE:
             for pfil in self.ffind(fil_, "."):
                 print(f"Remove file {pfil}")
+                os.unlink(pfil)
+
+        for fil_ in CleanUp.CLEANSPECIAL:
+            for pfil in glob.glob(fil_):
+                print(f"Remove (auto doc) file {pfil}")
                 os.unlink(pfil)
 
 

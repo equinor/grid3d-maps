@@ -35,3 +35,7 @@ Features
 * Outputs PNG figures and Irap (RMS) binary maps
 * Simple configuration through a YAML file
 * Configuration from YAML can be overriden by command line options
+* From version 1.3, output via `fmu-dataio`_ (to `sumo`_) is supported.
+
+.. _fmu-dataio: https://github.com/equinor/fmu-dataio/
+.. _sumo: https://github.com/equinor/fmu-sumo

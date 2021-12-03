@@ -1,7 +1,13 @@
 """Testing suite avg3, using dataio output."""
+import json
 import os
+import shutil
+from pathlib import Path
 
-import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_average_map
+import pytest
+import xtgeo
+import yaml
+from xtgeoapp_grd3dmaps.avghc import grid3d_average_map
 
 YAMLCONTENT = """
 title: Reek
@@ -61,20 +67,45 @@ mapsettings:
   nrow: 250
 
 output:
-  tag: avg2c # the tag will added to file name as extra info, e.g. as
-
+  tag: avgdataio1a # the tag will added to file name as extra info
   # Note: using the 'magical' fmu-dataio as argument!
   mapfolder: fmu-dataio
 """
+SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
-def test_average_map3a(datatree):
+def test_average_map_dataio1a_add2docs(datatree):
     """Test AVG with YAML config example 3a piped through dataio"""
 
-    cfg = datatree / "avg3a.yml"
+    cfg = datatree / "avgdataio1a.yml"
     cfg.write_text(YAMLCONTENT)
 
     os.environ["FMU_GLOBAL_CONFIG"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
     )
-    grid3d_average_map.main(["--config", "avg3a.yml", "--dump", "dump_config.yml"])
+    grid3d_average_map.main(
+        ["--config", "avgdataio1a.yml", "--dump", "dump_config.yml"]
+    )
+
+    # read result file
+    res = datatree / "share" / "results" / "maps"
+    surf = xtgeo.surface_from_file(
+        res / "myzone1--avgdataio1a_average_swat--20010101_19991201.gri"
+    )
+    assert surf.values.mean() == pytest.approx(0.035489, rel=0.01)
+
+    # read metadatafile
+    with open(
+        res / ".myzone1--avgdataio1a_average_swat--20010101_19991201.gri.yml",
+        encoding="utf8",
+    ) as stream:
+        metadata = yaml.safe_load(stream)
+
+    if "DUMP" in os.environ:
+        print(json.dumps(metadata, indent=4))
+
+    assert metadata["data"]["spec"]["ncol"] == 200
+    assert metadata["data"]["property"]["attribute"] == "saturation"
+
+    # for auto documentation
+    shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")

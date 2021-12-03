@@ -7,7 +7,6 @@ import pytest
 
 def pytest_runtest_setup(item):
     """Called for each test."""
-
     markers = [value.name for value in item.iter_markers()]
 
     # pytest.mark.requires_ert:
@@ -27,16 +26,3 @@ def fixture_datatree(tmp_path_factory):
     print("Temporary folder: ", tmppath)
     os.chdir(tmppath)
     return tmppath
-
-
-# @pytest.fixture(name="erttree", scope="module", autouse=True)
-# def fixture_erttree(tmp_path_factory):
-#     """Create a tmp folder structure for testing ert connection."""
-#     tmppath = tmp_path_factory.mktemp("ertrun")
-
-#     shutil.copytree("tests/yaml", tmppath / "tests" / "yaml")
-#     shutil.copytree("tests/data", tmppath / "tests" / "data")
-
-#     print("Temporary folder: ", tmppath)
-#     os.chdir(tmppath)
-#     return tmppath

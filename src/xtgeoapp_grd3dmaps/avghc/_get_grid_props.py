@@ -82,8 +82,6 @@ def files_to_import(config, appname):
         # For instance, a ROFF parameter PRESSURE_20110101 will
         # technically be an initlist parameter here
 
-        logger.debug(config["input"])
-
         for item in config["input"]:
             if item == "folderroot":
                 continue
@@ -122,23 +120,12 @@ def files_to_import(config, appname):
                         ifile = ifile.replace("$eclroot", eclroot)
                     initlist[item] = ifile
 
-        logger.debug(dates)
-
     dates = list(sorted(set(dates)))  # to get a list with unique dates
-
-    ppinit = pprint.PrettyPrinter(indent=4)
-    pprestart = pprint.PrettyPrinter(indent=4)
-    ppdates = pprint.PrettyPrinter(indent=4)
-
-    logger.debug("Grid from %s", gfile)
-    logger.debug("%s", ppinit.pformat(initlist))
-    logger.debug("%s", pprestart.pformat(restartlist))
-    logger.debug("%s", ppdates.pformat(dates))
 
     return gfile, initlist, restartlist, dates
 
 
-def import_data(config, appname, gfile, initlist, restartlist, dates):
+def import_data(_, appname, gfile, initlist, restartlist, dates):
     """Get the grid and the props data.
     Well get the grid and the propsdata for data to be plotted,
     zonation (if required), filters (if required)
@@ -152,13 +139,12 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
     """
 
     logger.info("Import data for %s", appname)
-    logger.debug("Config is %s", config)
 
     # get the grid data + some geometrics
-    grd = xtgeo.grid_from_file(gfile, fformat="guess")
+    grd = xtgeo.grid_from_file(gfile)
 
     # For rock thickness only model, the initlist and restartlist will be
-    # empty dicts, and just return at this point
+    # empty dicts, and just return at this point.
 
     if not initlist and not restartlist:
         return grd, None, None, None
@@ -182,23 +168,17 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
             # if just a name: file.roff, than the name here and name in
             # the file may not match. So here it is assumed that "lookfor"
-            # shall be 'unknown'
+            # shall be None
 
             if ifile.endswith(".roff"):
-                lookfor = "unknown"
+                lookfor = None
 
             initdict[ifile].append([ipar, lookfor])
-
-    ppinitdict = pprint.PrettyPrinter(indent=4)
-    logger.debug("\n%s", ppinitdict.pformat(initdict))
 
     restdict = defaultdict(list)
     for rpar, rfile in restartlist.items():
         logger.info("Parameter RESTART: %s \t file is %s", rpar, rfile)
         restdict[rfile].append(rpar)
-
-    pprestdict = pprint.PrettyPrinter(indent=4)
-    logger.debug("\n{}".format(pprestdict.pformat(restdict)))
 
     initobjects = []
     for inifile, iniprops in initdict.items():
@@ -222,6 +202,10 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
             # single properties, typically ROFF stuff
             usename, lookforname = iniprops[0]
 
+            # backward compatibility and flexibility; accept None, none, unknown, ...
+            if lookforname and lookforname.lower() in {"none", "unknown"}:
+                lookforname = None
+
             xtg.say(f"Import <{lookforname}> from <{inifile}> ...")
             tmp = xtgeo.gridproperty_from_file(
                 inifile, name=lookforname, fformat="guess", grid=grd
@@ -234,10 +218,10 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
     # restarts; will issue an warning if one or more dates are not found
     # assume that this is Eclipse stuff .UNRST
     restobjects = []
+
     for restfile, restprops in restdict.items():
         tmp = GridProperties()
         try:
-            logger.info("Reading--")
             tmp.from_file(
                 restfile, names=restprops, fformat="unrst", grid=grd, dates=dates
             )
@@ -262,20 +246,10 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
     newdateslist = []
     for rest in restobjects:
-        newdateslist.append(rest.date)
+        newdateslist.append(str(rest.date))  # assure date datatype is str
 
     newdateslist = list(set(newdateslist))
     logger.info("Actual dates to use: {}".format(newdateslist))
-
-    for obj in initobjects:
-        logger.info("Init object for <{}> is <{}> ".format(obj.name, obj))
-
-    for obj in restobjects:
-        logger.info("Restart object for <{}> is <{}> ".format(obj.name, obj))
-
-    logger.info("Routine at end")
-
-    logger.debug("The initiobjects and restobjects: %s %s", initobjects, restobjects)
 
     return grd, initobjects, restobjects, newdateslist
 
@@ -384,10 +358,7 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
 
     logger.info("Getting actnum...")
     actnum = grd.get_actnum().values3d
-    logger.info("Got actnum...")
     actnum = ma.filled(actnum)
-    logger.info("Ran ma.filled for actnum")
-    # mask is False  to get values for all cells, also inactive
 
     logger.info("Getting xc, yc, zc...")
     xc, yc, zc = grd.get_xyz(asmasked=False)
@@ -399,7 +370,6 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     dz = ma.filled(grd.get_dz(asmasked=False).values3d)
     logger.info("Getting dz as ma.filled...")
     dz[actnum == 0] = 0.0
-    logger.info("dz = 0 of actnum is 0 ...")
 
     logger.info("Getting dx dy...")
     dx, dy = grd.get_dxdy()
@@ -500,10 +470,6 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
                 if crname is not None:
                     soil[date] = soil[date] - soxcr
 
-        logger.debug("Date is {} and  SWAT is {}".format(date, swat))
-        logger.debug("Date is {} and  SGAS is {}".format(date, sgas))
-        logger.debug("Date is {} and  SOIL is {}".format(date, soil))
-
         # numpy operations on the saturations
         for anp in [soil[date], sgas[date]]:
             anp[anp > 1.0] = 1.0
@@ -513,12 +479,6 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
         restartd["sgas_" + str(date)] = sgas[date]
         restartd["swat_" + str(date)] = swat[date]
         restartd["soil_" + str(date)] = soil[date]
-
-    for key in initd:
-        logger.debug("INITS: Key and object {} {}".format(key, type(initd[key])))
-
-    for key in restartd:
-        logger.debug("RESTARTS: Key and object {} {}".format(key, type(restartd[key])))
 
     return initd, restartd
 
@@ -538,14 +498,6 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects):
 
     # store these in a dict for special data (specd):
     specd = {"idz": dz, "ixc": xc, "iyc": yc, "izc": zc, "iactnum": actnum}
-
-    if initobjects is not None:
-        for prop in initobjects:
-            logger.debug("INIT PROP name {}".format(prop.name))
-
-    if restobjects is not None:
-        for prop in restobjects:
-            logger.debug("REST PROP name {}".format(prop.name))
 
     if initobjects is not None and restobjects is not None:
         groupobjects = initobjects + restobjects
@@ -590,7 +542,6 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects):
                     if ok1 and ok2:
                         ptmp = ptmp1 - ptmp2
                         propd[pname] = ptmp
-                        logger.debug("DIFF were made: {}".format(pname))
 
             # only one date
             else:

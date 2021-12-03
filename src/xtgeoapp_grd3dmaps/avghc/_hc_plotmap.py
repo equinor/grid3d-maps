@@ -88,17 +88,13 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
                 zone_avg=myavgzon,
                 mask_outside=mymaskoutside,
             )
-            use_fmu_dataio = False
-            if config["output"]["mapfolder"] == "fmu-dataio":
-                use_fmu_dataio = True
-            else:
+            filename = None
+            if config["output"]["mapfolder"] != "fmu-dataio":
                 filename = _hc_filesettings(config, zname, date, hcmode)
-
-            if use_fmu_dataio:
-                export_hc_map_dataio(xmap, zname, date, hcmode, config)
-            else:
                 xtg.say(f"Map file to {filename}")
                 xmap.to_file(filename)
+            else:
+                export_hc_map_dataio(xmap, zname, date, hcmode, config)
 
             mapd[date] = xmap
 

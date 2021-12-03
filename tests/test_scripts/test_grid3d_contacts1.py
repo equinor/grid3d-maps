@@ -1,4 +1,5 @@
 """Testing contacts, not finished!"""
+import pytest
 import xtgeoapp_grd3dmaps.contact.grid3d_contact_map as grid3d_contacts
 
 # =============================================================================
@@ -6,6 +7,7 @@ import xtgeoapp_grd3dmaps.contact.grid3d_contact_map as grid3d_contacts
 # =============================================================================
 
 
+@pytest.mark.skip("Take this later")
 def test_contact1a(datatree):
     """Test HC contacts with YAML config example 1a"""
     result = datatree / "contacts1a_folder"

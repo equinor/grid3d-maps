@@ -92,10 +92,8 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
                 coarsen=mycoarsen,
             )
 
-            use_fmu_dataio = False
-            if config["output"]["mapfolder"] == "fmu-dataio":
-                use_fmu_dataio = True
-            else:
+            filename = None
+            if config["output"]["mapfolder"] != "fmu-dataio":
                 filename = _avg_filesettings(config, zname, propname, mode="map")
 
             usename = (zname, propname)
@@ -104,7 +102,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
                 xmap.values = ma.masked_inside(xmap.values, -1e-30, 1e-30)
 
             avgd[usename] = xmap.copy()
-            if use_fmu_dataio:
+            if filename is None:
                 export_avg_map_dataio(avgd[usename], usename, config)
             else:
                 xtg.say("Map file to {}".format(filename))

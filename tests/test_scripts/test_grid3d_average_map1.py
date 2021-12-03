@@ -52,7 +52,7 @@ def test_average_map1b_output_docs(datatree):
 
     # for auto documentation
     for img in result.glob("*avg1b*.png"):
-        shutil.copy2(img, SOURCEPATH / "docs" / "test_images")
+        shutil.copy2(img, SOURCEPATH / "docs" / "test_to_docs")
 
 
 def test_average_map1c(datatree):

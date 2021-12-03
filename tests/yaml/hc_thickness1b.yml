@@ -62,4 +62,3 @@ output:
   mapfolder: /tmp
   plotfolder: /tmp
   tag: hc1b
-  prefix: replace_all_with_x

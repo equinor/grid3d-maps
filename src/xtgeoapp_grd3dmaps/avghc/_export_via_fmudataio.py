@@ -16,11 +16,11 @@ def export_avg_map_dataio(surf, nametuple, config):
     Args:
         surf: XTGeo RegularSurface object
         nametuple: On form ('myzone1', 'PRESSURE--19991201') where the last
-            is an identifier for the metadata config
+            is an identifier (nameid) for the metadata config
         config: The processed config setup
     """
 
-    zoneinfo, nameinfo = nametuple
+    zoneinfo, nameid = nametuple
     logger.debug("Processed config: \n%s", json.dumps(config, indent=4))
 
     # this routine is dependent that the env variable FMU_GLOBAL_CONFIG is active
@@ -28,10 +28,10 @@ def export_avg_map_dataio(surf, nametuple, config):
         raise RuntimeError("The env variable FMU_GLOBAL_CONFIG is not set.")
 
     metadata = config["metadata"]
-    if nameinfo not in metadata:
-        raise ValueError(f"Seems that medata for {nameinfo} is missing!")
+    if nameid not in metadata:
+        raise ValueError(f"Seems that medata for {nameid} is missing!")
 
-    mdata = metadata[nameinfo]
+    mdata = metadata[nameid]
     name = mdata.get("name", "unknown_name")
     attribute = mdata.get("content", "unknown_attribute")
     unit = mdata.get("unit", None)
@@ -84,7 +84,7 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
     mdata = config["metadata"]
 
     name = hcmode + "thickness"
-    attribute = mdata.get("content", "unknown_attribute")
+    attribute = name
     unit = mdata.get("unit", None)
 
     tt1 = None

@@ -98,9 +98,9 @@ to make HC thickness maps from geomodels directly.
      stoiip: {STOIIP: tests/data/reek/reek_geo_stooip.roff}
      dates: [19900101]
 
-The "STOIIP" in the example above is the name of the property within the ROFF file.
-If this name is noit known, try 'unknown' as name instead. The date is purely
-informative.
+The "STOIIP" in the example above is the name of the property within the ROFF file. If this name is
+not known, try 'null' as name instead (also 'unknown' is supported for backward compatibility). The
+date is purely informative.
 
 
 Input Eclipse with dates from external config
@@ -141,7 +141,7 @@ properties, either continuous of discrete. For example:
 The ``zonation`` section
 ------------------------
 
-This section is optopnal (more text to come)
+This section is optional (more text to come)
 
 
 The ``mapsettings`` section
@@ -159,4 +159,9 @@ Text coming...
 The ``output`` section
 ----------------------
 
-Text coming...
+A missing output will (from version 1.3):
+
+* Output maps via `fmu-dataio <https://github.com/equinor/fmu-dataio/>`_.
+* Output plots to ``/tmp`` folder
+
+For other settings, see :ref:`allexamples`
