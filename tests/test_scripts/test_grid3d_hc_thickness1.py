@@ -55,11 +55,9 @@ def test_hc_thickness1b_output_docs(datatree):
         ]
     )
     for img in result.glob("*hc1b*.png"):
-        shutil.copy2(img, SOURCEPATH / "docs" / "test_images")
+        shutil.copy2(img, SOURCEPATH / "docs" / "test_to_docs")
 
-    prp = xtgeo.surface_from_file(
-        result / "replace_all_with_x--hc1b_oilthickness--19991201.gri"
-    )
+    prp = xtgeo.surface_from_file(result / "all--hc1b_oilthickness--19991201.gri")
     assert prp.values.mean() == pytest.approx(0.82378, abs=0.001)
 
 
@@ -89,7 +87,6 @@ def test_hc_thickness1d(datatree):
     """HC thickness with YAML config example 1d; as 1c but use_porv instead"""
     result = datatree / "hc1d_folder"
     result.mkdir(parents=True)
-    warnings.simplefilter("error")
     grid3d_hc_thickness.main(
         [
             "--config",

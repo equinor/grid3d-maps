@@ -1,3 +1,5 @@
+.. _allexamples:
+
 ============
 Examples
 ============
@@ -29,13 +31,13 @@ The zonation file:
 
 Plots (examples):
 
-Zone 1+3 oilthickness in 19991201:
+All zones oilthickness in 19991201:
 
-.. image:: test_images/z1+3--hc1b_oilthickness--19991201.png
+.. image:: test_to_docs/all--hc1b_oilthickness--19991201.png
 
-Difference oil column in Zone3:
+Difference oil column:
 
-.. image:: test_images/z3--hc1b_oilthickness--20010101_19991201.png
+.. image:: test_to_docs/all--hc1b_oilthickness--20010101_19991201.png
 
 HC thickness 1c
 """""""""""""""
@@ -150,6 +152,33 @@ a cumulative facies thickness when filter is activated, as in this example.
 .. literalinclude:: ../tests/yaml/hc_thickness4a.yml
    :language: yaml
 
+HC thickness hcdataio1a (dataio)
+""""""""""""""""""""""""""""""""
+
+Thickness maps (oil) using PORV from Eclipse files. Here fmu-dataio is the backend, for upload to
+SUMO. See ``mapfolder`` is set to `magic` ``fmu-dataio``!
+
+.. literalinclude:: ../docs/test_to_docs/hcdataio1a.yml
+   :language: yaml
+
+HC thickness hcdataio1b (dataio)
+""""""""""""""""""""""""""""""""
+
+Thickness maps for both gas and oil using PORV from Eclipse files and grid from roff. See
+``mapfolder`` is set to `magic` ``fmu-dataio``! Alternatively ``mapfolder`` could just be missing.
+
+.. literalinclude:: ../docs/test_to_docs/hcdataio1b.yml
+   :language: yaml
+
+HC thickness hcdataio1c (dataio)
+""""""""""""""""""""""""""""""""
+
+Thickness maps using STOIIP from roff files. Here fmu-dataio is the backend, for upload to
+SUMO. This is default behaviour (from version 1.3) when ``mapfolder`` is missing
+
+.. literalinclude:: ../docs/test_to_docs/hcdataio1c.yml
+   :language: yaml
+
 
 ---------------------------------------
 Examples of YAML setup for Average maps
@@ -173,9 +202,9 @@ AVG example 1b
 .. literalinclude:: ../tests/yaml/avg1b.yml
    :language: yaml
 
-.. image:: test_images/z1--avg1b_average_por.png
+.. image:: test_to_docs/z1--avg1b_average_por.png
 
-.. image:: test_images/z3--avg1b_average_por.png
+.. image:: test_to_docs/z3--avg1b_average_por.png
 
 
 AVG example 1c
@@ -230,4 +259,13 @@ to make "irregular zonations", e.g. base it on a FIPNUM or EQLNUM
 or whatever. Both Eclipse and ROFF input should be possible.
 
 .. literalinclude:: ../tests/yaml/avg2b.yml
+   :language: yaml
+
+AVG example dataio 1a
+"""""""""""""""""""""
+
+Using FMU dataio as backend. Otherwise similar to previous case 2c. Note that a metadata section is
+required for average data, and properties must occur under ``properties:``
+
+.. literalinclude:: ../docs/test_to_docs/avgdataio1a.yml
    :language: yaml

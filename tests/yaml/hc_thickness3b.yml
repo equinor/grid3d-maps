@@ -72,5 +72,5 @@ plotsettings:
 output:
   mapfolder: /tmp
   plotfolder: /tmp
-  tag: hc1b
+  tag: hc3b
   prefix: myzone1+3

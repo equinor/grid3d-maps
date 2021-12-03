@@ -4,7 +4,7 @@ title: Reek
 input:
   grid: tests/data/reek/reek_geo_grid.roff
   # the name is the actual name of the parameter in the ROFF file
-  # here STOIIP (if you don't know, try with "unknown" as name!)
+  # here STOIIP (if you don't know, try with 'null' as name!)
   stoiip: { STOIIP: tests/data/reek/reek_geo_stooip.roff }
 
   # date will just be informative (on plots etc) in this case

@@ -84,3 +84,42 @@ file, e.g. as:
      diffdates: !include_from  ../../share/fmuconfig/output/global_variables.yml::global.DIFFDATES
 
 Note that dates and diffdates are two separate lists
+
+
+--------------------------------
+Using fmu-dataio for SUMO output
+--------------------------------
+
+From version 1.3, a ``fmu-dataio`` pipeline is supported and encouraged. This will make results
+compatible with upload to SUMO. This involves some changes:
+
+  * The environment variable ``FMU_GLOBAL_CONFIG`` shall be set in advance and this shall
+    point to a fmu-dataio compatible global variables file (on YAML format), for example:
+
+  .. code-block:: bash
+
+      export FMU_GLOBAL_CONFIG=fmuconfig/output/global_variables.yml
+
+  * The output.mapfolder must either:
+
+    * be missing, as default now is fmu-dataio
+
+    * be set to the magical string ``fmu-dataio``
+
+  * For average maps, some additional metadata are needed, which shall be given in the
+    ``metadata`` block under ``input.properties`` section, e.g.
+
+  .. code-block:: yaml
+
+      input:
+        eclroot: tests/data/reek/REEK
+        grid: $eclroot.EGRID
+
+        properties:
+          - name: SWAT
+            source: $eclroot.UNRST
+            dates: !include_from tests/yaml/global_config3a.yml::global.DATES
+            diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
+            metadata:
+              content: saturation
+              unit: fraction

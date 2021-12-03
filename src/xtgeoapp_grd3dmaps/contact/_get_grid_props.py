@@ -103,10 +103,10 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
 
             # if just a name: file.roff, than the name here and name in
             # the file may not match. So here it is assumed that "lookfor"
-            # shall be 'unknown'
+            # shall be None
 
             if ifile.endswith(".roff"):
-                lookfor = "unknown"
+                lookfor = None
 
             initdict[ifile].append([ipar, lookfor])
 

@@ -104,6 +104,7 @@ def import_pdata(config, gfile, initlist, restartlist, dates):
     grd, initobjects, restobjects, dates = _get_grid_props.import_data(
         config, APPNAME, gfile, initlist, restartlist, dates
     )
+
     # get the numpies
     initd, restartd = _get_grid_props.get_numpies_hc_thickness(
         config, grd, initobjects, restobjects, dates

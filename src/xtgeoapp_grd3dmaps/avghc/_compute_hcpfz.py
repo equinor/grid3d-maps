@@ -1,5 +1,4 @@
 import numpy.ma as ma
-
 from xtgeo.common import XTGeoDialog
 
 xtg = XTGeoDialog()
@@ -25,7 +24,7 @@ def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
     hcpfzd = dict()
 
     # use the given date from config if stoiip, giip, etc as info
-    gdate = config["input"]["dates"][0]  # will give 'unknowndate' if unset
+    gdate = str(config["input"]["dates"][0])  # will give 'unknowndate' if unset
 
     if "rock" in hcmode:
         hcpfzd[gdate] = initd["dz"] * filterarray
@@ -54,7 +53,6 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
         raise RuntimeError("Dates er missing. Bug?")
 
     for date in dates:
-
         if hcmode in ("oil", "gas"):
             usehc = restartd["s" + hcmode + "_" + str(date)]
         elif hcmode == "comb":
@@ -62,9 +60,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
             usehc2 = restartd["s" + "gas" + "_" + str(date)]
             usehc = usehc1 + usehc2
         else:
-            raise ValueError(
-                'Invalid mode "{}" in "computesettings: method"'.format(hcmode)
-            )
+            raise ValueError(f"Invalid mode '{hcmode}'' in 'computesettings: method'")
 
         if hcmethod == "use_poro":
             usehc[usehc < shcintv[0]] = 0.0
@@ -92,8 +88,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
 
         else:
             raise ValueError(
-                'Unsupported method "{}" in "computesettings:'
-                ' method"'.format(hcmethod)
+                f"Unsupported method '{hcmethod}' in 'computesettings' method"
             )
 
     for key, val in hcpfzd.items():
@@ -104,23 +99,21 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
     # config and select the right one, and delete those that are not
     # relevant; e.g. one may ask for 20050816--19930101 but not for
     # 20050816; in that case the difference must be computed but
-    # after that the 20050816 entry will be removed fomr the list
+    # after that the 20050816 entry will be removed from the list
 
     cdates = config["input"]["dates"]
 
     for cdate in cdates:
         cdate = str(cdate)
-        logger.debug("cdate is: %s", cdate)
         if "-" in cdate:
-            d1 = str(cdate.split("-")[0])
-            d2 = str(cdate.split("-")[1])
-
-            if d1 in hcpfzd and d2 in hcpfzd:
-                hcpfzd[cdate] = hcpfzd[d1] - hcpfzd[d2]
+            dt1 = str(cdate.split("-")[0])
+            dt2 = str(cdate.split("-")[1])
+            if dt1 in hcpfzd and dt2 in hcpfzd:
+                hcpfzd[cdate] = hcpfzd[dt1] - hcpfzd[dt2]
             else:
                 xtg.warn(
-                    "Cannot retrieve data for date {} and/or {}. "
-                    "Some TSTEPs failed?".format(d1, d2)
+                    f"Cannot retrieve data for date {dt1} and/or {dt2}. "
+                    "Some TSTEPs failed?"
                 )
 
     alldates = hcpfzd.keys()

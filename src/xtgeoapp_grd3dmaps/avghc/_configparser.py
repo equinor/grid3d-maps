@@ -2,7 +2,6 @@ import argparse
 import copy
 import datetime
 import os.path
-import pprint
 import sys
 
 import yaml
@@ -15,7 +14,7 @@ logger = xtg.functionlogger(__name__)
 
 
 def parse_args(args, appname, appdescr):
-
+    """Parse command line arguments."""
     if args is None:
         args = sys.argv[1:]
 
@@ -102,10 +101,6 @@ def parse_args(args, appname, appdescr):
 
     args = parser.parse_args(args)
 
-    logger.debug("Command line args: ")
-    for arg in vars(args):
-        logger.debug("%s  %s", arg, getattr(args, arg))
-
     return args
 
 
@@ -133,13 +128,6 @@ def yconfig(inputfile, tmp=False, standard=False):
 
     xtg.say(f"Input config YAML file <{inputfile}> is read...")
 
-    ppr = pprint.PrettyPrinter(indent=4)
-
-    out = ppr.pformat(config)
-    logger.info("\n%s", out)
-
-    logger.info("CONFIG:\n %s", config)
-
     # if the file is a temporary file, delete:
     if tmp:
         os.remove(inputfile)
@@ -163,6 +151,7 @@ def prepare_metadata(config):
     "metadata": {
         "SWAT--19991201": {               # identifier name in this package
             "name": "SWAT",               # generic property name
+            "nameinfo"                    # e.g. "oilthickness"
             "source": "$eclroot.UNRST",   # info
             "t1": "20010101",             # timedata entry 1
             "t2": "19991201",             # timedata entry 2
@@ -239,7 +228,7 @@ def dateformatting(config):
 def propformatting(config):
     """Special processing of 'properties' list if present in input.
 
-    This applies to the average script.
+    This applies to the 'average' script.
 
     Example on the 'implemented' format::
 
@@ -299,7 +288,7 @@ def propformatting(config):
                     fetched_metadata.update({"t1": dd1})
                     fetched_metadata.update({"t2": dd2})
 
-        # get the addional metadata
+        # get the addional metadata privded by user input under properties:
         if "metadata" in prop:
             fetched_metadata.update(prop["metadata"])
 
@@ -316,6 +305,7 @@ def propformatting(config):
 
         if "tag" in config["output"]:
             fetched_metadata.update({"globaltag": config["output"]["tag"]})
+
         for nkey in namekeys:
             newconfig["metadata"][nkey] = fetched_metadata
 
@@ -401,6 +391,9 @@ def yconfig_set_defaults(config, appname):
     if "mapsettings" not in newconfig:
         newconfig["mapsettings"] = None
 
+    if "output" not in newconfig:
+        newconfig["output"] = dict()
+
     if "mapfile" not in newconfig["output"]:
         newconfig["output"]["mapfile"] = "hc_thickness"
 
@@ -410,14 +403,8 @@ def yconfig_set_defaults(config, appname):
     if "legacydateformat" not in newconfig["output"]:
         newconfig["output"]["legacydateformat"] = False
 
-    if "tuning" not in newconfig["computesettings"]:
-        newconfig["computesettings"]["tuning"] = dict()
-
-    if "mask_zeros" not in newconfig["computesettings"]:
-        newconfig["computesettings"]["mask_zeros"] = False
-
     if "mapfolder" not in newconfig["output"]:
-        newconfig["output"]["mapfolder"] = "/tmp"
+        newconfig["output"]["mapfolder"] = "fmu-dataio"  # Was /tmp
 
     if "plotfolder" not in newconfig["output"]:
         newconfig["output"]["plotfolder"] = None
@@ -430,6 +417,12 @@ def yconfig_set_defaults(config, appname):
 
     if "lowercase" not in newconfig["output"]:
         newconfig["output"]["lowercase"] = True
+
+    if "tuning" not in newconfig["computesettings"]:
+        newconfig["computesettings"]["tuning"] = dict()
+
+    if "mask_zeros" not in newconfig["computesettings"]:
+        newconfig["computesettings"]["mask_zeros"] = False
 
     if "zname" not in newconfig["zonation"]:
         newconfig["zonation"]["zname"] = "all"
@@ -461,6 +454,9 @@ def yconfig_set_defaults(config, appname):
 
         if "method" not in newconfig["computesettings"]:
             newconfig["computesettings"]["method"] = "use_poro"
+
+        if "unit" not in newconfig["computesettings"]:
+            newconfig["computesettings"]["unit"] = "m"
 
         if "mask_outside" not in newconfig["computesettings"]:
             newconfig["computesettings"]["mask_outside"] = False
@@ -495,10 +491,6 @@ def yconfig_set_defaults(config, appname):
 
         newconfig["input"]["dates"] = dlist
 
-    ppr = pprint.PrettyPrinter(indent=4)
-    out = ppr.pformat(newconfig)
-    logger.debug("After setting defaults: \n%s", out)
-
     return newconfig
 
 
@@ -524,16 +516,18 @@ def yconfig_addons(config, appname):
 def yconfig_metadata_hc(config):
     """Collect general metadata for HC thickness script.
 
+    Metadata for HC maps is easier to derive as the output is known in advance; hence
+    there seems to be almost no need for user spesified metadata, perhaps only 'unit'
+    which can be given in computesettings block in input.
+
     Note that date and zone info will be added in map plotting loop, later.
     """
 
     newconfig = copy.deepcopy(config)
     attribute = config["computesettings"]["mode"] + "thickness"  # e.g. oilthickness
-    newconfig["metadata"]["nameinfo"] = attribute
-    newconfig["metadata"]["content"] = attribute
-    newconfig["metadata"]["unit"] = "m"
-    newconfig["metadata"]["source"] = config["input"]["eclroot"]
 
+    newconfig["metadata"]["nameinfo"] = attribute
+    newconfig["metadata"]["unit"] = config["computesettings"]["unit"]
     newconfig["metadata"]["globaltag"] = config["output"].get("tag", "")
 
     return newconfig

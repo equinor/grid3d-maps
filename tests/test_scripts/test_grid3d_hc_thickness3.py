@@ -20,7 +20,7 @@ def test_hc_thickness3a(datatree):
             str(result),
         ]
     )
-    res = xtgeo.surface_from_file(result / "z2--hc1b_oilthickness--20010101.gri")
+    res = xtgeo.surface_from_file(result / "z2--hc3a_oilthickness--20010101.gri")
     assert res.values.max() == pytest.approx(5.8094, abs=0.001)  # qc'ed RMS
 
 
@@ -41,7 +41,7 @@ def test_hc_thickness3b(datatree):
             str(result),
         ]
     )
-    res = xtgeo.surface_from_file(result / "myzone1+3--hc1b_oilthickness--19991201.gri")
+    res = xtgeo.surface_from_file(result / "myzone1+3--hc3b_oilthickness--19991201.gri")
     assert res.values.max() == pytest.approx(6.3532, abs=0.001)  # qc'ed RMS
 
 
