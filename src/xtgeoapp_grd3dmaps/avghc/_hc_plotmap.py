@@ -1,16 +1,16 @@
 """Private module for HC thickness functions."""
 
 import getpass
-from time import localtime, strftime
 from collections import OrderedDict
+from time import localtime, strftime
 
 import numpy as np
-
 import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
-
 from xtgeoviz import quickplot
+
+from ._export_via_fmudataio import export_hc_map_dataio
 
 xtg = XTGeoDialog()
 
@@ -88,10 +88,17 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
                 zone_avg=myavgzon,
                 mask_outside=mymaskoutside,
             )
+            use_fmu_dataio = False
+            if config["output"]["mapfolder"] == "fmu-dataio":
+                use_fmu_dataio = True
+            else:
+                filename = _hc_filesettings(config, zname, date, hcmode)
 
-            filename = _hc_filesettings(config, zname, date, hcmode)
-            xtg.say("Map file to {}".format(filename))
-            xmap.to_file(filename)
+            if use_fmu_dataio:
+                export_hc_map_dataio(xmap, zname, date, hcmode, config)
+            else:
+                xtg.say(f"Map file to {filename}")
+                xmap.to_file(filename)
 
             mapd[date] = xmap
 
