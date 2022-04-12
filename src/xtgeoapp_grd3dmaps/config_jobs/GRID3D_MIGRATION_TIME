@@ -1,0 +1,5 @@
+EXECUTABLE grid3d_migration_time
+ARGLIST "--config"  <CONFIG_MIGTIME> "--eclroot" <ECLROOT>
+
+STDERR GRID3D_MIGRATION_TIME.stderr
+STDOUT GRID3D_MIGRATION_TIME.stdout

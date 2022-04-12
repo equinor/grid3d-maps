@@ -1,0 +1,5 @@
+EXECUTABLE grid3d_aggregate_map
+ARGLIST "--config"  <CONFIG_AGGREGATE> "--eclroot" <ECLROOT>
+
+STDERR GRID3D_AGGREGATE_MAP.stderr
+STDOUT GRID3D_AGGREGATE_MAP.stdout

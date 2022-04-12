@@ -1,0 +1,23 @@
+input:
+  grid: "tests/data/reek/REEK.EGRID"
+  properties:
+    - source: "tests/data/reek/REEK.INIT"
+      name: "PORO"
+
+zonation:
+  zproperty:
+    source: "tests/data/reek/reek_sim_zone.roff"
+
+computesettings:
+  aggregation: "mean"
+
+mapsettings:
+  xori: 457000
+  xinc: 50
+  yori: 5927000
+  yinc: 50
+  ncol: 200
+  nrow: 250
+
+output:
+  mapfolder: tmp

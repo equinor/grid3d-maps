@@ -14,7 +14,8 @@ sum hc thickness map per zone or by all zones that are spesified.
 
 For average maps, a thickness weighted average is computed.
 
-
+This is not applicable to grid3d_aggregate_map and grid3d_migration_time,
+which uses a different approach for aggregating layers.
 
 Further details
 ---------------

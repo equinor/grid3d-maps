@@ -1,0 +1,17 @@
+input:
+  eclroot: tests/data/reek/REEK
+  grid: $eclroot.EGRID
+  properties:
+    - source: $eclroot.UNRST
+      name: "SWAT"
+      lower_threshold: 0.5
+
+zonation:
+  zranges:
+    - lower_zone: [10, 9999]
+
+computesettings:
+  all: no
+
+output:
+  mapfolder: tmp
