@@ -269,3 +269,46 @@ required for average data, and properties must occur under ``properties:``
 
 .. literalinclude:: ../docs/test_to_docs/avgdataio1a.yml
    :language: yaml
+
+Aggregate example 1
+"""""""""""""""""""
+
+Minimal aggregation example, doing a "maximum" aggregation across all layers
+
+.. literalinclude:: ../docs/test_to_docs/aggregate1.yml
+   :language: yaml
+
+Aggregate example 2
+"""""""""""""""""""
+
+Example using "minimum" aggregation. Zonation is provided in a property file, and ``eclroot:`` is
+used as an alias
+
+.. literalinclude:: ../docs/test_to_docs/aggregate2.yml
+   :language: yaml
+
+Aggregate example 3
+"""""""""""""""""""
+
+Example using "mean" aggregation and explicit map settings
+
+.. literalinclude:: ../docs/test_to_docs/aggregate3.yml
+   :language: yaml
+
+Aggregate example 4
+"""""""""""""""""""
+
+Example using an interval-based zonation
+
+.. literalinclude:: ../docs/test_to_docs/aggregate4.yml
+   :language: yaml
+
+Aggregate example 5
+"""""""""""""""""""
+
+Example using "mean" aggregation, with weights calculated from cell thickness. "folderroot"
+is used as an alias. The map settings are calculated automatically, with resolution
+determined by "pixel_to_cell_ratio".
+
+.. literalinclude:: ../docs/test_to_docs/aggregate5.yml
+   :language: yaml

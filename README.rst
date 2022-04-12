@@ -7,7 +7,7 @@
 The scripts in *xtgeoapp_grd3dmaps*
 ======================================
 
-Two scripts here, one for hc thickness maps and one for average maps.
+Various scripts for generating maps from 3D grid properties.
 
 Documentation: https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/
 
@@ -20,6 +20,16 @@ Script grid3d_average_map
 -------------------------
 
 Make average maps from a 3D grid parameter, Eclipse or Roff input
+
+Script grid3d_aggregate_map
+---------------------------
+
+Make aggregated maps (min/max/mean/sum) from a 3D grid parameter, Eclipse or Roff input
+
+Script grid3d_migration_time
+---------------------------
+
+Make migration time maps aimed at tracking plume migration in CCS applications
 
 Features
 --------

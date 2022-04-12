@@ -14,6 +14,8 @@ The stable release is on /project/res, so scripts can be run as:
 
     $ grid3d_hc_thickness <options>
     $ grid3d_average_map <options>
+    $ grid3d_aggregate_map <options>
+    $ grid3d_migration_time <options>
 
 
 From sources

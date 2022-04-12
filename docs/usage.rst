@@ -11,6 +11,10 @@ other makes average maps
 
    grid3d_average_map --config myfile_avg.yml
 
+In addition, there are scripts for general aggregation (min/max/mean/sum),
+"grid3d_aggregate_map" and CO2 plume migration time, "grid3d_migration_time".
+These scripts are invoked similarly to the two above, but may not support all
+the features described below.
 
 -------------------------
 Override the Eclipse root

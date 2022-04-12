@@ -29,6 +29,8 @@ REQUIREMENTS_EXTRAS = {"tests": REQUIREMENTS_TESTS, "docs": REQUIREMENTS_DOCS}
 
 HC_FUNCTION = "grid3d_hc_thickness=xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
 AVG_FUNCTION = "grid3d_average_map=xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
+AGG_FUNCTION = "grid3d_aggregate_map=xtgeoapp_grd3dmaps.avghc.grid3d_aggregate_map:main"
+MIG_FUNCTION = "grid3d_migration_time=xtgeoapp_grd3dmaps.avghc.grid3d_migration_time:main"
 
 
 def src(anypath):
@@ -51,7 +53,7 @@ setup(
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     entry_points={
-        "console_scripts": [HC_FUNCTION, AVG_FUNCTION],
+        "console_scripts": [HC_FUNCTION, AVG_FUNCTION, AGG_FUNCTION, MIG_FUNCTION],
         "ert": [
             "xtgeoapp_grd3dmaps_jobs = xtgeoapp_grd3dmaps.hook_implementations.jobs"
         ],

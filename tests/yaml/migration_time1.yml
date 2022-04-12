@@ -1,0 +1,10 @@
+input:
+  eclroot: tests/data/reek/REEK
+  grid: $eclroot.EGRID
+  properties:
+    - source: $eclroot.UNRST
+      name: "SWAT"
+      lower_threshold: 0.5
+
+output:
+  mapfolder: tmp

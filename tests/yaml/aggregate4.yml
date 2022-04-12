@@ -1,0 +1,15 @@
+input:
+  grid: "tests/data/reek/REEK.EGRID"
+  properties:
+    - source: "tests/data/reek/REEK.UNRST"
+      name: "SWAT"
+      lower_threshold: 1e-12
+
+zonation:
+  zranges:
+    - zone1: [ 1, 5 ]
+    - zone2: [ 6, 10 ]
+    - zone3: [ 11, 14 ]
+
+output:
+  mapfolder: tmp
