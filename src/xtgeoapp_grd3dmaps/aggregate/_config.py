@@ -1,3 +1,4 @@
+# pylint: disable=missing-class-docstring
 """
 Configuration for the `aggregate` module. Starting from `RootConfig`, it is possible to
 deduce mandatory and optional parameters, as well as default values for whatever is not
@@ -9,6 +10,9 @@ from typing import Optional, List, Tuple, Dict
 
 
 class AggregationMethod(Enum):
+    """
+    Enum representing the available aggregation methods for `grid3d_aggregate_map`
+    """
     MAX = "max"
     MIN = "min"
     MEAN = "mean"
@@ -65,6 +69,7 @@ class ComputeSettings:
 
     def __post_init__(self):
         if isinstance(self.aggregation, str):
+            # pylint: disable=no-member
             self.aggregation = AggregationMethod(self.aggregation.lower())
         if self.all is False and self.zone is False:
             raise ValueError(
@@ -74,6 +79,7 @@ class ComputeSettings:
 
 @dataclass
 class MapSettings:
+    # pylint: disable=too-many-instance-attributes
     xori: Optional[float] = None
     xinc: Optional[float] = None
     yori: Optional[float] = None

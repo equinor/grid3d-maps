@@ -32,6 +32,10 @@ def calculate_migration_time_property(
     lower_threshold: float,
     grid_file: Optional[str],
 ):
+    """
+    Calculates a 3D migration time property from the provided grid and grid property
+    files
+    """
     prop_spec = [
         _config.Property(source=f, name=property_name)
         for f in glob.glob(properties_files, recursive=True)
@@ -44,7 +48,29 @@ def calculate_migration_time_property(
     return t_prop
 
 
+def migration_time_property_to_map(
+    config_: _config.RootConfig,
+    t_prop: xtgeo.GridProperty,
+):
+    """
+    Aggregates and writes a migration time property to file using `grid3d_aggragte_map`.
+    The migration time property is written to a temporary file while performing the
+    aggregation.
+    """
+    config_.computesettings.aggregation = _config.AggregationMethod.MIN
+    config_.output.aggregation_tag = False
+    temp_file, temp_path = tempfile.mkstemp()
+    os.close(temp_file)
+    config_.input.properties.append(_config.Property(temp_path, None, None))
+    t_prop.to_file(temp_path)
+    grid3d_aggregate_map.generate_from_config(config_)
+    os.unlink(temp_path)
+
+
 def main(arguments=None):
+    """
+    Calculates a migration time property and aggregates it to a 2D map
+    """
     if arguments is None:
         arguments = sys.argv[1:]
     config_ = _parser.process_arguments(arguments)
@@ -59,15 +85,7 @@ def main(arguments=None):
         p_spec.lower_threshold,
         config_.input.grid,
     )
-    # Use temporary file for t_prop while executing aggregation
-    config_.computesettings.aggregation = _config.AggregationMethod.MIN
-    config_.output.aggregation_tag = False
-    temp_file, temp_path = tempfile.mkstemp()
-    os.close(temp_file)
-    config_.input.properties.append(_config.Property(temp_path, None, None))
-    t_prop.to_file(temp_path)
-    grid3d_aggregate_map.generate_from_config(config_)
-    os.unlink(temp_path)
+    migration_time_property_to_map(config_, t_prop)
 
 
 if __name__ == '__main__':

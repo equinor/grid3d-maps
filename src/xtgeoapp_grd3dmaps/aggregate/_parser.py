@@ -19,6 +19,9 @@ from xtgeoapp_grd3dmaps.aggregate._config import (
 
 
 def parse_arguments(arguments):
+    """
+    Uses argparse to parse arguments as expected from command line invocation
+    """
     parser = argparse.ArgumentParser(__file__)
     parser.add_argument(
         "-c",
@@ -51,6 +54,10 @@ def parse_arguments(arguments):
 
 
 def process_arguments(arguments) -> RootConfig:
+    """
+    Interprets and parses the provided arguments to an internal representation of input
+    in the `RootConfig` class
+    """
     parsed_args = parse_arguments(arguments)
     replacements = {}
     if parsed_args.eclroot is not None:
@@ -72,6 +79,10 @@ def parse_yaml(
     plot_folder: Optional[str],
     replacements: Dict[str, str],
 ) -> RootConfig:
+    """
+    Parses a yaml file to a corresponding `RootConfig` object. See `load_yaml` for
+    details.
+    """
     config = load_yaml(yaml_file, map_folder, plot_folder, replacements)
     return RootConfig(
         input=Input(**config["input"]),
@@ -88,7 +99,13 @@ def load_yaml(
     plot_folder: Optional[str],
     replacements: Dict[str, str],
 ) -> Dict[str, Any]:
-    content = open(yaml_file).read()
+    """
+    Loads a yaml config file. `replacements` is used to overwrite specific keywords in
+    the file before parsing. `map_folder` and `plot_folder` can be used to override the
+    corresponding keywords in the file.
+    """
+    with open(yaml_file, encoding="utf-8") as yml:
+        content = yml.read()
     config = yaml.safe_load(content)
     for kw in ("eclroot", "folderroot"):
         if kw in config["input"] and kw not in replacements:
@@ -126,6 +143,9 @@ def load_yaml(
 def extract_properties(
     property_spec: List[Property], grid: Optional[xtgeo.Grid]
 ) -> List[xtgeo.GridProperty]:
+    """
+    Extract 3D grid properties based on the provided property specification
+    """
     properties = []
     for spec in property_spec:
         try:
@@ -136,20 +156,20 @@ def extract_properties(
         except (RuntimeError, ValueError):
             props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
         if spec.lower_threshold is not None:
-            for p in props:
-                p.values.mask[p.values < spec.lower_threshold] = True
+            for prop in props:
+                prop.values.mask[prop.values < spec.lower_threshold] = True
         # Check if any of the properties missing a date had date as part of the file
         # stem, separated by a "--"
-        for p in props:
-            if p.date is None and "--" in spec.source:
-                d = pathlib.Path(spec.source.split("--")[-1]).stem
+        for prop in props:
+            if prop.date is None and "--" in spec.source:
+                date = pathlib.Path(spec.source.split("--")[-1]).stem
                 try:
                     # Make sure time stamp is on a valid format
-                    datetime.datetime.strptime(d, "%Y%m%d")
+                    datetime.datetime.strptime(date, "%Y%m%d")
                 except ValueError:
                     continue
-                p.date = d
-                p.name += f"--{d}"
+                prop.date = date
+                prop.name += f"--{date}"
         properties += props
     return properties
 
@@ -158,6 +178,9 @@ def extract_zonations(
     zonation: Zonation,
     grid: xtgeo.Grid
 ) -> List[Tuple[str, np.ndarray]]:
+    """
+    Extract boolean zonation arrays and corresponding names based on `zonation`
+    """
     zones = []
     actnum = grid.actnum_indices
     if zonation.zproperty is not None:
@@ -180,12 +203,17 @@ def extract_zonations(
 def create_map_template(
     map_settings: _config.MapSettings
 ) -> Union[xtgeo.RegularSurface, float]:
+    """
+    Creates the map template to use based on the provided settings. May instead return a
+    float value that is intended as a pixel-to-cell-size ratio to be used later for
+    automatically calculating a map template based on the grid extents.
+    """
     if map_settings.templatefile is not None:
         surf = xtgeo.surface_from_file(map_settings.templatefile)
         if surf.rotation != 0.0:
             raise NotImplementedError("Rotated surfaces are not handled correctly yet")
         return surf
-    elif map_settings.xori is not None:
+    if map_settings.xori is not None:
         surf_kwargs = dict(
             ncol=map_settings.ncol,
             nrow=map_settings.nrow,
@@ -201,5 +229,4 @@ def create_map_template(
                 f"Missing: {', '.join(missing)}"
             )
         return xtgeo.RegularSurface(**surf_kwargs)
-    else:
-        return map_settings.pixel_to_cell_ratio
+    return map_settings.pixel_to_cell_ratio

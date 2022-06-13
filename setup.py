@@ -27,10 +27,18 @@ REQUIREMENTS_TESTS = setupx.parse_requirements("requirements/requirements_tests.
 REQUIREMENTS_DOCS = setupx.parse_requirements("requirements/requirements_docs.txt")
 REQUIREMENTS_EXTRAS = {"tests": REQUIREMENTS_TESTS, "docs": REQUIREMENTS_DOCS}
 
-HC_FUNCTION = "grid3d_hc_thickness=xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
-AVG_FUNCTION = "grid3d_average_map=xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
-AGG_FUNCTION = "grid3d_aggregate_map=xtgeoapp_grd3dmaps.avghc.grid3d_aggregate_map:main"
-MIG_FUNCTION = "grid3d_migration_time=xtgeoapp_grd3dmaps.avghc.grid3d_migration_time:main"
+HC_FUNCTION = (
+    "grid3d_hc_thickness=xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
+)
+AVG_FUNCTION = (
+    "grid3d_average_map=xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
+)
+AGG_FUNCTION = (
+    "grid3d_aggregate_map=xtgeoapp_grd3dmaps.aggregate.grid3d_aggregate_map:main"
+)
+MIG_FUNCTION = (
+    "grid3d_migration_time=xtgeoapp_grd3dmaps.aggregate.grid3d_migration_time:main"
+)
 
 
 def src(anypath):
