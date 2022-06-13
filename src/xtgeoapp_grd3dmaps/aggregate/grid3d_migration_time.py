@@ -13,6 +13,19 @@ from xtgeoapp_grd3dmaps.aggregate import (
 )
 
 
+# Module variables for ERT hook implementation:
+DESCRIPTION = (
+    "Generate migration time property maps. Docs:\n"
+    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
+)
+CATEGORY = "modelling.reservoir"
+EXAMPLES = """
+.. code-block:: console
+
+  FORWARD_MODEL GRID3D_MIGRATION_TIME(<CONFIG_AGGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
+"""
+
+
 def calculate_migration_time_property(
     properties_files: str,
     property_name: Optional[str],
