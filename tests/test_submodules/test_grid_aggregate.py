@@ -5,30 +5,19 @@ import xtgeo
 from xtgeoapp_grd3dmaps.aggregate import aggregate_maps, AggregationMethod
 
 
-def generate_example_property(example_grid):
-    values = np.full(example_grid.dimensions, fill_value=np.nan)
-    xyz = example_grid.get_xyz()
-    d_xy = np.sqrt(xyz[0].values ** 2 + xyz[1].values ** 2)[:, :, 0]
-    values[:, :, 1] = np.exp(-(d_xy / 100) ** 2)
-    values[:, :, 0] = np.exp(-(d_xy / 33) ** 2)
-    return xtgeo.GridProperty(
-        example_grid, values=np.ma.masked_where(np.isnan(values), values)
-    )
-
-
-@pytest.fixture
-def example_grid():
-    xx, yy = np.meshgrid(
+@pytest.fixture(name="example_grid")
+def fixture_example_grid():
+    grid_x, grid_y = np.meshgrid(
         np.linspace(-100, 100, 21),
         np.linspace(-60, 60, 13),
         indexing='ij',
     )
-    z = np.array([100, 107, 114, 128])
+    depths = np.array([100, 107, 114, 128])
     coordsv = np.dstack([
-        xx, yy, np.ones_like(xx) * z[0],
-        xx, yy, np.ones_like(xx) * z[-1],
+        grid_x, grid_y, np.ones_like(grid_x) * depths[0],
+        grid_x, grid_y, np.ones_like(grid_x) * depths[-1],
     ])
-    zcornsv = np.ones_like(xx)[:, :, np.newaxis] * z
+    zcornsv = np.ones_like(grid_x)[:, :, np.newaxis] * depths
     zcornsv = zcornsv[:, :, :, np.newaxis] * np.ones(4)
     zcornsv = zcornsv.astype(np.float32)
     actnum = np.ones(np.array(zcornsv.shape[:-1]) - 1, dtype=np.int32)
@@ -37,13 +26,13 @@ def example_grid():
     return grid
 
 
-@pytest.fixture
-def example_property(example_grid):
+@pytest.fixture(name="example_property")
+def fixture_example_property(example_grid):
     return example_grid.props[0]
 
 
-@pytest.fixture
-def default_args(example_grid, example_property):
+@pytest.fixture(name="default_args")
+def fixture_default_args(example_grid, example_property):
     return dict(
         map_template=1.0,
         grid=example_grid,
@@ -51,6 +40,17 @@ def default_args(example_grid, example_property):
         inclusion_filters=[None],
         method=AggregationMethod.MAX,
         weight_by_dz=False,
+    )
+
+
+def generate_example_property(grid):
+    values = np.full(grid.dimensions, fill_value=np.nan)
+    xyz = grid.get_xyz()
+    d_xy = np.sqrt(xyz[0].values ** 2 + xyz[1].values ** 2)[:, :, 0]
+    values[:, :, 1] = np.exp(-(d_xy / 100) ** 2)
+    values[:, :, 0] = np.exp(-(d_xy / 33) ** 2)
+    return xtgeo.GridProperty(
+        grid, values=np.ma.masked_where(np.isnan(values), values)
     )
 
 
