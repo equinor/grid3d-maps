@@ -18,6 +18,8 @@ from ert_shared.plugins.plugin_manager import ErtPluginManager
 EXPECTED_JOBS = {
     "GRID3D_AVERAGE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AVERAGE_MAP",
     "GRID3D_HC_THICKNESS": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_HC_THICKNESS",
+    "GRID3D_AGGREGATE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AGGREGATE_MAP",
+    "GRID3D_MIGRATION_TIME": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_MIGRATION_TIME",
 }
 
 SRC_PATH = Path(__file__).absolute().parent.parent.parent / "src"

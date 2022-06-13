@@ -31,13 +31,12 @@ def installable_workflow_jobs():
     return {}
 
 
-def _get_module_variable_if_exists(module_name, variable_name, default=""):
+def _get_module_if_exists(module_name):
     try:
         script_module = importlib.import_module(module_name)
     except ImportError:
-        return default
-
-    return getattr(script_module, variable_name, default)
+        return None
+    return script_module
 
 
 @hook_implementation
@@ -47,20 +46,14 @@ def job_documentation(job_name):
     if job_name not in subscript_jobs:
         return None
 
-    module_name = PLUGIN_NAME + ".avghc.{job_name}".format(job_name=job_name.lower())
-    print(module_name)
-    description = _get_module_variable_if_exists(
-        module_name=module_name, variable_name="DESCRIPTION"
-    )
-    examples = _get_module_variable_if_exists(
-        module_name=module_name, variable_name="EXAMPLES"
-    )
-    category = _get_module_variable_if_exists(
-        module_name=module_name, variable_name="CATEGORY", default="other"
-    )
-
-    return {
-        "description": description,
-        "examples": examples,
-        "category": category,
-    }
+    for sm in ["avghc", "aggregate"]:
+        module_name = f"{PLUGIN_NAME}.{sm}.{job_name.lower()}"
+        module = _get_module_if_exists(module_name)
+        if module is not None:
+            print(module_name)
+            return {
+                "description": getattr(module, "DESCRIPTION", ""),
+                "examples": getattr(module, "EXAMPLES", ""),
+                "category": getattr(module, "CATEGORY", "other"),
+            }
+    return None

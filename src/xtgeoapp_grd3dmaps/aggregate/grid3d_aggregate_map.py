@@ -24,6 +24,19 @@ from . import _grid_aggregation, _config
 _XTG = XTGeoDialog()
 
 
+# Module variables for ERT hook implementation:
+DESCRIPTION = (
+    "Aggregate property maps from 3D grids. Docs:\n"
+    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
+)
+CATEGORY = "modelling.reservoir"
+EXAMPLES = """
+.. code-block:: console
+
+  FORWARD_MODEL GRID3D_AGGREGATE_MAP(<CONFIG_AGGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
+"""
+
+
 def write_map(xn, yn, map_, filename):
     dx = xn[1] - xn[0]
     dy = yn[1] - yn[0]
