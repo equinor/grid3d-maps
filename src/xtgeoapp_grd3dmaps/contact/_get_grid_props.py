@@ -8,7 +8,7 @@ import xtgeo
 # from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
 from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
-from xtgeo.grid3d import GridProperties, GridProperty
+from xtgeo.grid3d import GridProperties
 
 xtg = XTGeoDialog()
 
