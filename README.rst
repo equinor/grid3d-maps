@@ -27,7 +27,7 @@ Script grid3d_aggregate_map
 Make aggregated maps (min/max/mean/sum) from a 3D grid parameter, Eclipse or Roff input
 
 Script grid3d_migration_time
----------------------------
+----------------------------
 
 Make migration time maps aimed at tracking plume migration in CCS applications
 
