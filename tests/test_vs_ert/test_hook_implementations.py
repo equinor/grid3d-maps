@@ -6,20 +6,21 @@ from pathlib import Path
 import pytest
 
 try:
-    import ert_shared  # noqa
+    import ert  # noqa
 except ImportError:
     try:
-        import ert # noqa
+        import ert_shared  # noqa
     except ImportError:
         pytest.skip(
             "Not testing ERT hooks when ERT is not installed", allow_module_level=True
         )
 
 import xtgeoapp_grd3dmaps.hook_implementations.jobs as jobs
+
 try:
-    from ert_shared.plugins.plugin_manager import ErtPluginManager
-except ModuleNotFoundError:
     from ert.shared.plugins.plugin_manager import ErtPluginManager
+except ModuleNotFoundError:
+    from ert_shared.plugins.plugin_manager import ErtPluginManager
 
 EXPECTED_JOBS = {
     "GRID3D_AVERAGE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AVERAGE_MAP",

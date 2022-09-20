@@ -3,11 +3,11 @@ import os
 from pkg_resources import resource_filename
 
 try:
-    from ert_shared.plugins.plugin_manager import hook_implementation
-    from ert_shared.plugins.plugin_response import plugin_response
-except ModuleNotFoundError:
     from ert.shared.plugins.plugin_manager import hook_implementation
     from ert.shared.plugins.plugin_response import plugin_response
+except ModuleNotFoundError:
+    from ert_shared.plugins.plugin_manager import hook_implementation
+    from ert_shared.plugins.plugin_response import plugin_response
 
 PLUGIN_NAME = "xtgeoapp_grd3dmaps"
 
