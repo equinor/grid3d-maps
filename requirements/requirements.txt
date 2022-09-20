@@ -1,5 +1,5 @@
 numpy
 pyyaml
 xtgeo
-fmu-dataio
+fmu-dataio>=1.0.0
 xtgeoviz

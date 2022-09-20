@@ -74,7 +74,7 @@ def test_hc_thickness_1b_add2docs(datatree):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 161
-    assert metadata["data"]["property"]["attribute"] == "oilthickness"
+    assert metadata["data"]["content"]["property"]["attribute"] == "oilthickness"
 
     # for auto documentation
     shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")

@@ -105,7 +105,7 @@ def test_average_map_dataio1a_add2docs(datatree):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 200
-    assert metadata["data"]["property"]["attribute"] == "saturation"
+    assert metadata["data"]["content"]["property"]["attribute"] == "saturation"
 
     # for auto documentation
     shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
