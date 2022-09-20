@@ -60,7 +60,7 @@ def export_avg_map_dataio(surf, nametuple, config):
         workflow="xtgeoapp-grd3dmaps script average maps",
     )
     fname = edata.export(surf, unit=unit)
-    xtg.say(f"Outout as fmu-dataio: {fname}")
+    xtg.say(f"Output as fmu-dataio: {fname}")
     return fname
 
 

@@ -73,7 +73,7 @@ def test_hc_thickness_1c_add2docs(datatree):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 292
-    assert metadata["data"]["time"][0]["value"] == "1990-01-01T00:00:00"
+    assert metadata["data"]["time"]["t0"]["value"] == "1990-01-01T00:00:00"
 
     # for auto documentation
     shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
