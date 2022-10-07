@@ -123,7 +123,9 @@ def load_yaml(
     if plot_folder is not None:
         config["output"]["plotfolder"] = plot_folder
     # Handle things that is implemented in avghc, but not in this module
-    redundant_keywords = set(config["input"].keys()).difference({"properties", "grid"})
+    redundant_keywords = set(config["input"].keys()).difference(
+        {"properties", "grid", "dates"}
+    )
     if redundant_keywords:
         raise ValueError(
             "The 'input' section only allows keywords 'properties' and 'grid'."
@@ -141,7 +143,7 @@ def load_yaml(
 
 
 def extract_properties(
-    property_spec: List[Property], grid: Optional[xtgeo.Grid]
+    property_spec: List[Property], grid: Optional[xtgeo.Grid], dates: List[str]
 ) -> List[xtgeo.GridProperty]:
     """
     Extract 3D grid properties based on the provided property specification
@@ -151,7 +153,7 @@ def extract_properties(
         try:
             names = "all" if spec.name is None else [spec.name]
             props = xtgeo.gridproperties_from_file(
-                spec.source, names=names, grid=grid, dates="all",
+                spec.source, names=names, grid=grid, dates=dates or "all",
             ).props
         except (RuntimeError, ValueError):
             props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
@@ -170,6 +172,8 @@ def extract_properties(
                     continue
                 prop.date = date
                 prop.name += f"--{date}"
+        if len(dates) > 0:
+            props = [p for p in props if p.date in dates]
         properties += props
     return properties
 

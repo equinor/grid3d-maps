@@ -125,7 +125,15 @@ def test_aggregated_map6_add2docs(datatree):
             str(result),
         ]
     )
-    assert (Path(result) / "FirstZone--max_PORO.gri").exists()
-    assert (Path(result) / "SecondZone--max_PORO.gri").exists()
-    assert (Path(result) / "ThirdZone--max_PORO.gri").exists()
+    gri_files = [p.stem for p in Path(result).glob("*.gri")]
+    assert gri_files == [
+        "all--max_SWAT--19991201",
+        "all--max_SWAT--20030101",
+        "FirstZone--max_SWAT--19991201",
+        "FirstZone--max_SWAT--20030101",
+        "SecondZone--max_SWAT--19991201",
+        "SecondZone--max_SWAT--20030101",
+        "ThirdZone--max_SWAT--19991201",
+        "ThirdZone--max_SWAT--20030101",
+    ]
     _copy2docs(cfg)

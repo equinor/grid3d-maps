@@ -1,9 +1,12 @@
 input:
-  folderroot: tests/data/reek
-  grid: $folderroot/reek_sim_grid.roff
+  grid: "tests/data/reek/REEK.EGRID"
+  dates:
+    - 19991201
+    - 20030101
   properties:
-    - source: $folderroot/reek_sim_poro.roff
-      name: PORO
+    - source: "tests/data/reek/REEK.UNRST"
+      name: "SWAT"
+      lower_threshold: 1e-12
 
 zonation:
   zproperty:
@@ -12,9 +15,6 @@ zonation:
       - FirstZone: [1]
       - SecondZone: [2]
       - ThirdZone: [3]
-
-mapsettings:
-  pixel_to_cell_ratio: 4.0
 
 output:
   mapfolder: tmp
