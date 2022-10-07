@@ -47,6 +47,7 @@ class Input:
 class ZProperty:
     source: str
     name: Optional[str] = None
+    zones: List[Dict[str, List[int]]] = field(default_factory=list)
 
 
 @dataclass

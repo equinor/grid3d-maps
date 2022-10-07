@@ -1,0 +1,20 @@
+input:
+  folderroot: tests/data/reek
+  grid: $folderroot/reek_sim_grid.roff
+  properties:
+    - source: $folderroot/reek_sim_poro.roff
+      name: PORO
+
+zonation:
+  zproperty:
+    source: tests/data/reek/reek_sim_zone.roff
+    zones:
+      - FirstZone: [1]
+      - SecondZone: [2]
+      - ThirdZone: [3]
+
+mapsettings:
+  pixel_to_cell_ratio: 4.0
+
+output:
+  mapfolder: tmp
