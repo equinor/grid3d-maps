@@ -15,7 +15,7 @@ def test_migration_time1(datatree):
             str(result),
         ]
     )
-    swat = xtgeo.surface_from_file(result / "all--MigrationTime.gri")
+    swat = xtgeo.surface_from_file(result / "all--migrationtime.gri")
     assert swat.values.max() == pytest.approx(3.08767, abs=0.001)
 
 
@@ -30,5 +30,5 @@ def test_migration_time2(datatree):
             str(result),
         ]
     )
-    assert (result / "lower_zone--MigrationTime.gri").is_file()
-    assert not (result / "all--MigrationTime.gri").is_file()
+    assert (result / "lower_zone--migrationtime.gri").is_file()
+    assert not (result / "all--migrationtime.gri").is_file()

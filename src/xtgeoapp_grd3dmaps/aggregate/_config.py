@@ -96,6 +96,7 @@ class MapSettings:
 @dataclass
 class Output:
     mapfolder: str
+    lowercase: bool = True
     plotfolder: Optional[str] = None
     use_plotly: bool = False
     aggregation_tag: bool = True

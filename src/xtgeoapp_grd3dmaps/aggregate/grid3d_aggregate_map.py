@@ -117,6 +117,7 @@ def generate_maps(
         xn,
         yn,
         p_maps,
+        output.lowercase,
     )
     _write_surfaces(surfs, output.mapfolder, output.plotfolder, output.use_plotly)
 
@@ -132,6 +133,7 @@ def _ndarray_to_regsurfs(
     x_nodes: np.ndarray,
     y_nodes: np.ndarray,
     maps: List[List[np.ndarray]],
+    lowercase: bool,
 ) -> List[xtgeo.RegularSurface]:
     return [
         xtgeo.RegularSurface(
@@ -142,11 +144,18 @@ def _ndarray_to_regsurfs(
             xori=x_nodes[0],
             yori=y_nodes[0],
             values=np.ma.array(map_, mask=np.isnan(map_)),
-            name=f"{fn}--{prop}"
+            name=_deduce_surface_name(fn, prop, lowercase),
         )
         for fn, inner in zip(filter_names, maps)
         for prop, map_ in zip(prop_names, inner)
     ]
+
+
+def _deduce_surface_name(filter_name, property_name, lowercase):
+    name = f"{filter_name}--{property_name}"
+    if lowercase:
+        name = name.lower()
+    return name
 
 
 def _write_surfaces(
