@@ -27,7 +27,7 @@ def test_aggregated_map1_add2docs(datatree):
             str(result),
         ]
     )
-    swat = xtgeo.surface_from_file(result / "all--max_SWAT--20030101.gri")
+    swat = xtgeo.surface_from_file(result / "all--max_swat--20030101.gri")
     assert swat.values.min() == pytest.approx(0.14292679727077484, abs=1e-8)
     _copy2docs(cfg)
 
@@ -46,7 +46,7 @@ def test_aggregated_map2_add2docs(datatree):
             str(result),
         ]
     )
-    swat = xtgeo.surface_from_file(result / "all--min_SWAT--20030101.gri")
+    swat = xtgeo.surface_from_file(result / "all--min_swat--20030101.gri")
     assert swat.values.mean() == pytest.approx(0.7908786104444353, abs=1e-8)
     _copy2docs(cfg)
 
@@ -65,7 +65,7 @@ def test_aggregated_map3_add2docs(datatree):
             str(result),
         ]
     )
-    poro = xtgeo.surface_from_file(result / "all--mean_PORO.gri")
+    poro = xtgeo.surface_from_file(result / "all--mean_poro.gri")
     assert poro.values.mean() == pytest.approx(0.1677586422488292, abs=1e-8)
     _copy2docs(cfg)
 
@@ -84,11 +84,11 @@ def test_aggregated_map4_add2docs(datatree):
             str(result),
         ]
     )
-    swat = xtgeo.surface_from_file(result / "zone1--max_SWAT--20030101.gri")
+    swat = xtgeo.surface_from_file(result / "zone1--max_swat--20030101.gri")
     assert swat.values.max() == pytest.approx(1.0000962018966675, abs=1e-8)
-    assert (result / "all--max_SWAT--20030101.gri").is_file()
-    assert (result / "zone2--max_SWAT--20030101.gri").is_file()
-    assert (result / "zone3--max_SWAT--20030101.gri").is_file()
+    assert (result / "all--max_swat--20030101.gri").is_file()
+    assert (result / "zone2--max_swat--20030101.gri").is_file()
+    assert (result / "zone3--max_swat--20030101.gri").is_file()
     _copy2docs(yml)
 
 
@@ -106,7 +106,7 @@ def test_aggregated_map5_add2docs(datatree):
             str(result),
         ]
     )
-    poro = xtgeo.surface_from_file(result / "all--mean_PORO.gri")
+    poro = xtgeo.surface_from_file(result / "all--mean_poro.gri")
     assert poro.values.mean() == pytest.approx(0.1648792893163274, abs=1e-8)
     _copy2docs(cfg)
 
@@ -127,13 +127,13 @@ def test_aggregated_map6_add2docs(datatree):
     )
     gri_files = [p.stem for p in Path(result).glob("*.gri")]
     assert sorted(gri_files) == sorted([
-        "all--max_SWAT--19991201",
-        "all--max_SWAT--20030101",
-        "FirstZone--max_SWAT--19991201",
-        "FirstZone--max_SWAT--20030101",
-        "SecondZone--max_SWAT--19991201",
-        "SecondZone--max_SWAT--20030101",
-        "ThirdZone--max_SWAT--19991201",
-        "ThirdZone--max_SWAT--20030101",
+        "all--max_swat--19991201",
+        "all--max_swat--20030101",
+        "firstzone--max_swat--19991201",
+        "firstzone--max_swat--20030101",
+        "secondzone--max_swat--19991201",
+        "secondzone--max_swat--20030101",
+        "thirdzone--max_swat--19991201",
+        "thirdzone--max_swat--20030101",
     ])
     _copy2docs(cfg)
