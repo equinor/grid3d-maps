@@ -126,7 +126,7 @@ def test_aggregated_map6_add2docs(datatree):
         ]
     )
     gri_files = [p.stem for p in Path(result).glob("*.gri")]
-    assert gri_files == [
+    assert sorted(gri_files) == sorted([
         "all--max_SWAT--19991201",
         "all--max_SWAT--20030101",
         "FirstZone--max_SWAT--19991201",
@@ -135,5 +135,5 @@ def test_aggregated_map6_add2docs(datatree):
         "SecondZone--max_SWAT--20030101",
         "ThirdZone--max_SWAT--19991201",
         "ThirdZone--max_SWAT--20030101",
-    ]
+    ])
     _copy2docs(cfg)

@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 import tempfile
-from typing import Optional
+from typing import Optional, List
 import xtgeo
 
 from xtgeoapp_grd3dmaps.aggregate import (
