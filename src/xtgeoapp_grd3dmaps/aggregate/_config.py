@@ -34,8 +34,10 @@ class Property:
 class Input:
     grid: str
     properties: List[Property]
+    dates: List[str] = field(default_factory=list)
 
     def __post_init__(self):
+        self.dates = [str(d).replace("-", "") for d in self.dates]
         if (
             len(self.properties) > 0
             and isinstance(self.properties[0], dict)
@@ -47,6 +49,7 @@ class Input:
 class ZProperty:
     source: str
     name: Optional[str] = None
+    zones: List[Dict[str, List[int]]] = field(default_factory=list)
 
 
 @dataclass

@@ -92,7 +92,7 @@ def generate_maps(
     """
     _XTG.say("Reading grid, properties and zone(s)")
     grid = xtgeo.grid_from_file(input_.grid)
-    properties = extract_properties(input_.properties, grid)
+    properties = extract_properties(input_.properties, grid, input_.dates)
     _filters = []
     if computesettings.all:
         _filters.append(("all", None))

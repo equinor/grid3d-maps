@@ -14,7 +14,7 @@ from xtgeoapp_grd3dmaps.aggregate._config import (
     Input,
     Output,
     ComputeSettings,
-    MapSettings, Zonation
+    MapSettings, Zonation, ZProperty
 )
 
 
@@ -123,7 +123,9 @@ def load_yaml(
     if plot_folder is not None:
         config["output"]["plotfolder"] = plot_folder
     # Handle things that is implemented in avghc, but not in this module
-    redundant_keywords = set(config["input"].keys()).difference({"properties", "grid"})
+    redundant_keywords = set(config["input"].keys()).difference(
+        {"properties", "grid", "dates"}
+    )
     if redundant_keywords:
         raise ValueError(
             "The 'input' section only allows keywords 'properties' and 'grid'."
@@ -141,7 +143,7 @@ def load_yaml(
 
 
 def extract_properties(
-    property_spec: List[Property], grid: Optional[xtgeo.Grid]
+    property_spec: List[Property], grid: Optional[xtgeo.Grid], dates: List[str]
 ) -> List[xtgeo.GridProperty]:
     """
     Extract 3D grid properties based on the provided property specification
@@ -151,7 +153,7 @@ def extract_properties(
         try:
             names = "all" if spec.name is None else [spec.name]
             props = xtgeo.gridproperties_from_file(
-                spec.source, names=names, grid=grid, dates="all",
+                spec.source, names=names, grid=grid, dates=dates or "all",
             ).props
         except (RuntimeError, ValueError):
             props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
@@ -170,6 +172,8 @@ def extract_properties(
                     continue
                 prop.date = date
                 prop.name += f"--{date}"
+        if len(dates) > 0:
+            props = [p for p in props if p.date in dates]
         properties += props
     return properties
 
@@ -181,23 +185,42 @@ def extract_zonations(
     """
     Extract boolean zonation arrays and corresponding names based on `zonation`
     """
-    zones = []
+    if zonation.zproperty is None:
+        return _zonation_from_zranges(grid, zonation.zranges)
+    return _zonation_from_zproperty(grid, zonation.zproperty)
+
+
+def _zonation_from_zranges(grid: xtgeo.Grid, z_ranges) -> List[Tuple[str, np.ndarray]]:
     actnum = grid.actnum_indices
-    if zonation.zproperty is not None:
-        prop = xtgeo.gridproperty_from_file(
-            zonation.zproperty.source, grid=grid, name=zonation.zproperty.name
-        )
-        assert prop.isdiscrete
-        for f_code, f_name in prop.codes.items():
-            if f_name == "":
-                continue
-            zones.append((f_name, prop.values1d[actnum] == f_code))
-    else:
-        k = grid.get_ijk()[2].values1d[actnum]
-        for z_def in zonation.zranges:
-            for z_name, zr in z_def.items():
-                zones.append((z_name, (zr[0] <= k) & (k <= zr[1])))
+    zones = []
+    k = grid.get_ijk()[2].values1d[actnum]
+    for z_def in z_ranges:
+        for z_name, zr in z_def.items():
+            zones.append((z_name, (zr[0] <= k) & (k <= zr[1])))
     return zones
+
+
+def _zonation_from_zproperty(
+    grid: xtgeo.Grid,
+    zproperty: ZProperty
+) -> List[Tuple[str, np.ndarray]]:
+    actnum = grid.actnum_indices
+    prop = xtgeo.gridproperty_from_file(
+        zproperty.source, grid=grid, name=zproperty.name
+    )
+    assert prop.isdiscrete
+    if len(zproperty.zones) == 0:
+        # Return definition for all zones extracted from the property file
+        return [
+            (f_name, prop.values1d[actnum] == f_code)
+            for f_code, f_name in prop.codes.items()
+            if f_name != ""
+        ]
+    return [
+        (z_name, np.isin(prop.values1d[actnum], z_codes))
+        for zone_def in zproperty.zones
+        for z_name, z_codes in zone_def.items()
+    ]
 
 
 def create_map_template(

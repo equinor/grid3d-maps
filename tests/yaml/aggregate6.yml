@@ -1,0 +1,20 @@
+input:
+  grid: "tests/data/reek/REEK.EGRID"
+  dates:
+    - 19991201
+    - 20030101
+  properties:
+    - source: "tests/data/reek/REEK.UNRST"
+      name: "SWAT"
+      lower_threshold: 1e-12
+
+zonation:
+  zproperty:
+    source: tests/data/reek/reek_sim_zone.roff
+    zones:
+      - FirstZone: [1]
+      - SecondZone: [2]
+      - ThirdZone: [3]
+
+output:
+  mapfolder: tmp

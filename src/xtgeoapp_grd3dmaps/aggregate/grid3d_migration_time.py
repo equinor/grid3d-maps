@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 import tempfile
-from typing import Optional
+from typing import Optional, List
 import xtgeo
 
 from xtgeoapp_grd3dmaps.aggregate import (
@@ -31,6 +31,7 @@ def calculate_migration_time_property(
     property_name: Optional[str],
     lower_threshold: float,
     grid_file: Optional[str],
+    dates: List[str],
 ):
     """
     Calculates a 3D migration time property from the provided grid and grid property
@@ -41,7 +42,7 @@ def calculate_migration_time_property(
         for f in glob.glob(properties_files, recursive=True)
     ]
     grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
-    properties = _parser.extract_properties(prop_spec, grid)
+    properties = _parser.extract_properties(prop_spec, grid, dates)
     t_prop = _migration_time.generate_migration_time_property(
         properties, lower_threshold
     )
@@ -84,6 +85,7 @@ def main(arguments=None):
         p_spec.name,
         p_spec.lower_threshold,
         config_.input.grid,
+        config_.input.dates,
     )
     migration_time_property_to_map(config_, t_prop)
 

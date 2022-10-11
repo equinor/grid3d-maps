@@ -109,3 +109,31 @@ def test_aggregated_map5_add2docs(datatree):
     poro = xtgeo.surface_from_file(result / "all--mean_PORO.gri")
     assert poro.values.mean() == pytest.approx(0.1648792893163274, abs=1e-8)
     _copy2docs(cfg)
+
+
+def test_aggregated_map6_add2docs(datatree):
+    result = datatree / "aggregate6_folder"
+    result.mkdir(parents=True)
+    cfg = "tests/yaml/aggregate6.yml"
+    grid3d_aggregate_map.main(
+        [
+            "--config",
+            cfg,
+            "--mapfolder",
+            str(result),
+            "--plotfolder",
+            str(result),
+        ]
+    )
+    gri_files = [p.stem for p in Path(result).glob("*.gri")]
+    assert sorted(gri_files) == sorted([
+        "all--max_SWAT--19991201",
+        "all--max_SWAT--20030101",
+        "FirstZone--max_SWAT--19991201",
+        "FirstZone--max_SWAT--20030101",
+        "SecondZone--max_SWAT--19991201",
+        "SecondZone--max_SWAT--20030101",
+        "ThirdZone--max_SWAT--19991201",
+        "ThirdZone--max_SWAT--20030101",
+    ])
+    _copy2docs(cfg)
