@@ -124,7 +124,6 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
     initobjects = []
     for inifile, iniprops in initdict.items():
         if len(iniprops) > 1:
-            tmp = GridProperties()
             lookfornames = []
             usenames = []
             for iniprop in iniprops:
@@ -133,7 +132,9 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
                 usenames.append(usename)
 
             xtg.say("Import <{}> from <{}> ...".format(lookfornames, inifile))
-            tmp.from_file(inifile, names=lookfornames, fformat="init", grid=grd)
+            tmp = gridproperties_from_file(
+                inifile, names=lookfornames, fformat="init", grid=grd
+            )
             for i, name in enumerate(lookfornames):
                 prop = tmp.get_prop_by_name(name)
                 prop.name = usenames[i]  # rename if different
