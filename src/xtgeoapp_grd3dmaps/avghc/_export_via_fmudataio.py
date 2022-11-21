@@ -33,10 +33,14 @@ def export_avg_map_dataio(surf, nametuple, config):
 
     mdata = metadata[nameid]
     name = mdata.get("name", "unknown_name")
-    attribute = mdata.get("content", "unknown_attribute")
+    attribute = mdata.get("attribute", "unknown_attribute")
     unit = mdata.get("unit", None)
     tt1 = mdata.get("t1", None)
     tt2 = mdata.get("t2", None)
+    if tt1 and tt1 not in nameid:
+        tt1 = None
+    if tt2 and tt2 not in nameid:
+        tt2 = None
 
     globaltag = mdata.get("globaltag", "")
     globaltag = globaltag + "_" if globaltag else ""
@@ -45,7 +49,10 @@ def export_avg_map_dataio(surf, nametuple, config):
     if tt1:
         tdata = [[tt1, "monitor"]]
     if tt2:
-        tdata.append([tt2, "base"])
+        if tdata:
+            tdata.append([tt2, "base"])
+        else:
+            tdata = [[tt2, "base"]]
 
     edata = dataio.ExportData(
         name=zoneinfo,

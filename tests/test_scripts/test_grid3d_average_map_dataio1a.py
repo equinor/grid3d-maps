@@ -24,14 +24,14 @@ input:
       dates: !include_from tests/yaml/global_config3a.yml::global.DATES
       diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
       metadata:
-        content: saturation
+        attribute: saturation
         unit: fraction
     - name: PRESSURE
       source: $eclroot.UNRST
       dates: !include_from tests/yaml/global_config3a.yml::global.DATES
       diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
       metadata:
-        content: pressure
+        attribute: pressure
         unit: bar
 
 zonation:
@@ -69,16 +69,36 @@ mapsettings:
 output:
   tag: avgdataio1a # the tag will added to file name as extra info
   # Note: using the 'magical' fmu-dataio as argument!
-  mapfolder: fmu-dataio
+  mapfolder: MODE
 """
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
+
+
+def test_average_map_dataio1a_legacy(datatree):
+    """Test AVG with YAML config example 3a as legacy example"""
+
+    tmp = datatree / "tmp_legacy"
+    tmp.mkdir(parents=True, exist_ok=True)
+
+    content = YAMLCONTENT.replace("MODE", str(tmp))
+
+    cfg = datatree / "avgdataio1a_legacy.yml"
+    cfg.write_text(content)
+
+    grid3d_average_map.main(
+        ["--config", "avgdataio1a_legacy.yml", "--dump", "dump_config.yml"]
+    )
+    out = tmp / "myzone1--avgdataio1a_average_swat--20010101_19991201.gri"
+    assert out.is_file()
 
 
 def test_average_map_dataio1a_add2docs(datatree):
     """Test AVG with YAML config example 3a piped through dataio"""
 
+    content = YAMLCONTENT.replace("MODE", "fmu-dataio")
+
     cfg = datatree / "avgdataio1a.yml"
-    cfg.write_text(YAMLCONTENT)
+    cfg.write_text(content)
 
     os.environ["FMU_GLOBAL_CONFIG"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
@@ -105,7 +125,16 @@ def test_average_map_dataio1a_add2docs(datatree):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 200
-    assert metadata["data"]["content"]["property"]["attribute"] == "saturation"
+    assert metadata["data"]["property"]["attribute"] == "saturation"
+
+    legacy = (
+        datatree
+        / "tmp_legacy"
+        / "myzone1--avgdataio1a_average_swat--20010101_19991201.gri"
+    )
+    if legacy.is_file():
+        surf2 = xtgeo.surface_from_file(legacy)
+        assert surf2.generate_hash() == surf.generate_hash()
 
     # for auto documentation
     shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
