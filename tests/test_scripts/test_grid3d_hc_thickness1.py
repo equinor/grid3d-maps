@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 import xtgeo
+
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
@@ -37,7 +38,7 @@ def test_hc_thickness1a(datatree):
     assert np.nanstd(val) == pytest.approx(0.199886, 0.001)
 
 
-def test_hc_thickness1b_output_docs(datatree):
+def test_hc_thickness1b_output_add2docs(datatree):
     """HC thickness with YAML config example 1b; zonation in own YAML file.
 
     Note that plots here goes into the Sphinx documentation!

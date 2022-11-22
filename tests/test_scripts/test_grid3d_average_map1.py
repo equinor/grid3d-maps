@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 import xtgeo
+
 import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_hc_thickness
 
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
@@ -28,7 +29,7 @@ def test_average_map1a(datatree):
     assert z1poro.values.mean() == pytest.approx(0.1598, abs=0.001)
 
 
-def test_average_map1b_output_docs(datatree):
+def test_average_map1b_output_add2docs(datatree):
     """Test HC thickness with YAML config example 1b ROFF based.
 
     Note that plots here goes directly into the Sphinx documentation!

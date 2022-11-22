@@ -125,5 +125,5 @@ compatible with upload to SUMO. This involves some changes:
             dates: !include_from tests/yaml/global_config3a.yml::global.DATES
             diffdates: !include_from tests/yaml/global_config3a.yml::global.DIFFDATES
             metadata:
-              content: saturation
+              attribute: saturation
               unit: fraction
