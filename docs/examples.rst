@@ -275,7 +275,7 @@ Aggregate example 1
 
 Minimal aggregation example, doing a "maximum" aggregation across all layers
 
-.. literalinclude:: ../docs/test_to_docs/aggregate1.yml
+.. literalinclude:: ../tests/yaml/aggregate1.yml
    :language: yaml
 
 Aggregate example 2
@@ -284,7 +284,7 @@ Aggregate example 2
 Example using "minimum" aggregation. Zonation is provided in a property file, and ``eclroot:`` is
 used as an alias
 
-.. literalinclude:: ../docs/test_to_docs/aggregate2.yml
+.. literalinclude:: ../tests/yaml/aggregate2.yml
    :language: yaml
 
 Aggregate example 3
@@ -292,7 +292,7 @@ Aggregate example 3
 
 Example using "mean" aggregation and explicit map settings
 
-.. literalinclude:: ../docs/test_to_docs/aggregate3.yml
+.. literalinclude:: ../tests/yaml/aggregate3.yml
    :language: yaml
 
 Aggregate example 4
@@ -300,7 +300,7 @@ Aggregate example 4
 
 Example using an interval-based zonation
 
-.. literalinclude:: ../docs/test_to_docs/aggregate4.yml
+.. literalinclude:: ../tests/yaml/aggregate4.yml
    :language: yaml
 
 Aggregate example 5
@@ -310,5 +310,5 @@ Example using "mean" aggregation, with weights calculated from cell thickness. "
 is used as an alias. The map settings are calculated automatically, with resolution
 determined by "pixel_to_cell_ratio".
 
-.. literalinclude:: ../docs/test_to_docs/aggregate5.yml
+.. literalinclude:: ../tests/yaml/aggregate5.yml
    :language: yaml

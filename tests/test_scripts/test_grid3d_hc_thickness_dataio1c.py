@@ -45,17 +45,33 @@ output:
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
-def test_hc_thickness_1c_add2docs(datatree):
-    """Test HC thickness map piped through dataio, see former yaml hc_thickness2a."""
+@pytest.fixture(name="hcdataio1cconfig", scope="module")
+def fixture_hcdataio1c(datatree):
+    """Fixture to make config."""
+    name = "hcdataio1c.yml"
+    cfg = datatree / name
 
-    cfg = datatree / "hcdataio1c.yml"
     cfg.write_text(YAMLCONTENT)
+
+    # for auto documentation
+    shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
+    return name
+
+
+def test_hc_thickness_1c_add2docs(hcdataio1cconfig):
+    """For using pytest -k add2docs to be ran prior to docs building."""
+    print("Export config to docs folder")
+    assert hcdataio1cconfig is not None
+
+
+def test_hc_thickness_1c(datatree, hcdataio1cconfig):
+    """Test HC thickness map piped through dataio, see former yaml hc_thickness2a."""
 
     os.environ["FMU_GLOBAL_CONFIG"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
     )
     grid3d_hc_thickness.main(
-        ["--config", "hcdataio1c.yml", "--dump", "dump_config.yml"]
+        ["--config", hcdataio1cconfig, "--dump", "dump_config.yml"]
     )
 
     # read result file
@@ -74,6 +90,3 @@ def test_hc_thickness_1c_add2docs(datatree):
 
     assert metadata["data"]["spec"]["ncol"] == 292
     assert metadata["data"]["time"]["t0"]["value"] == "1990-01-01T00:00:00"
-
-    # for auto documentation
-    shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
