@@ -74,7 +74,29 @@ output:
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
-def test_average_map_dataio1a_legacy(datatree):
+@pytest.fixture(name="avgdataio1aconfig", scope="module")
+def fixture_avgdataio1aconfig(datatree):
+    """Fixture to make config."""
+    name = "avgdataio1a.yml"
+    cfg = datatree / name
+
+    content = YAMLCONTENT.replace("MODE", "fmu-dataio")
+
+    cfg.write_text(content)
+
+    # for auto documentation
+    shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
+
+    return name
+
+
+def test_avgmap_dataio1a_add2docs(avgdataio1aconfig):
+    """For using pytest -k add2docs to be ran prior to docs building."""
+    print("Export config to docs folder")
+    assert avgdataio1aconfig is not None
+
+
+def test_average_map_1a_legacy(datatree):
     """Test AVG with YAML config example 3a as legacy example"""
 
     tmp = datatree / "tmp_legacy"
@@ -92,19 +114,14 @@ def test_average_map_dataio1a_legacy(datatree):
     assert out.is_file()
 
 
-def test_average_map_dataio1a_add2docs(datatree):
+def test_average_map_dataio1a(datatree, avgdataio1aconfig):
     """Test AVG with YAML config example 3a piped through dataio"""
-
-    content = YAMLCONTENT.replace("MODE", "fmu-dataio")
-
-    cfg = datatree / "avgdataio1a.yml"
-    cfg.write_text(content)
 
     os.environ["FMU_GLOBAL_CONFIG"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
     )
     grid3d_average_map.main(
-        ["--config", "avgdataio1a.yml", "--dump", "dump_config.yml"]
+        ["--config", avgdataio1aconfig, "--dump", "dump_config.yml"]
     )
 
     # read result file
@@ -135,6 +152,3 @@ def test_average_map_dataio1a_add2docs(datatree):
     if legacy.is_file():
         surf2 = xtgeo.surface_from_file(legacy)
         assert surf2.generate_hash() == surf.generate_hash()
-
-    # for auto documentation
-    shutil.copy2(cfg, SOURCEPATH / "docs" / "test_to_docs")
