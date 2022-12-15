@@ -10,7 +10,7 @@ jobs:
   test_vs_ert:
     strategy:
       matrix:
-        python-version: [3.6, 3.8]
+        python-version: [3.8]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
