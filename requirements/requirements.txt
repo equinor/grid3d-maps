@@ -1,5 +1,5 @@
 numpy<1.24
 pyyaml
-xtgeo
+xtgeo>=2.20.7
 fmu-dataio>=1.3.0
 xtgeoviz
