@@ -1,0 +1,60 @@
+title: Reek
+# Allow Eclipse keywords with spaces (e.g. traces i e100, like "W8 F")
+
+input:
+  eclroot: tests/data/reek/REEK
+  grid: $eclroot.EGRID
+
+  # alternative approach to read a variables and dates:
+  properties:
+    - name: PORO
+      source: $eclroot.INIT
+    - name: PRESSURE
+      source: tests/data/reek/REEK_LETTERS_W_SPACE.UNRST
+      dates: ["19991201"]
+    - name: "W8 F"
+      source: tests/data/reek/REEK_LETTERS_W_SPACE.UNRST
+      dates: ["19991201"]
+
+# For filters, there are properties defined at the same grid layout as
+# the grid read in input
+#
+# If several filters, they will be cumulative.
+#
+# In this case a ZONE filter is used instead of an explicit "zonation" setting; need
+# in most cases to be combined with "prefix" setting under "output"
+
+filters:
+  - name: PORO
+    source: $eclroot.INIT
+    intvrange: [0.0, 1.0] # Filter for a continuous will be an interval
+  - name: FACIES
+    discrete: Yes
+    source: tests/data/reek/reek_sim_facies2.roff
+    discrange: [2] # Filter for a discrete will be spesic number sequence
+  - name: Zone
+    discrete: Yes
+    source: tests/data/reek/reek_sim_zone.roff
+    discrange: [2, 3] # Filter for a discrete will be spesic number sequence
+
+computesettings:
+  zone: No
+  all: Yes
+  mask_zeros: Yes # means that ouput maps will be set to undef where zero
+
+# map definition (unrotated maps only, for rotated maps use a maptemplate...)
+mapsettings:
+  xori: 457000
+  xinc: 50
+  yori: 5927000
+  yinc: 50
+  ncol: 200
+  nrow: 250
+
+output:
+  tag: avg4a # the tag will added to file name as extra info, e.g. as
+  # z1--avg1a_average_poro.gri
+
+  prefix: zone2+3 # replace the default 'all' prefix
+  mapfolder: /tmp
+  plotfolder: /tmp

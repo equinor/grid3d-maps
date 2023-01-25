@@ -176,7 +176,7 @@ def _avg_filesettings(config, zname, pname, mode="root"):
     if prefix == "all" and config["output"]["prefix"]:
         prefix = config["output"]["prefix"]
 
-    xfil = prefix + delim + tag + "average" + "_" + pname
+    xfil = (prefix + delim + tag + "average" + "_" + pname).replace(" ", "")
 
     if mode == "root":
         return xfil
