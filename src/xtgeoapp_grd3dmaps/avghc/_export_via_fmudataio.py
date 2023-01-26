@@ -3,6 +3,7 @@ import json
 import os
 
 import fmu.dataio as dataio
+from fmu.config import utilities as util
 from xtgeo.common import XTGeoDialog
 
 xtg = XTGeoDialog()
@@ -24,7 +25,11 @@ def export_avg_map_dataio(surf, nametuple, config):
     logger.debug("Processed config: \n%s", json.dumps(config, indent=4))
 
     # this routine is dependent that the env variable FMU_GLOBAL_CONFIG is active
-    if "FMU_GLOBAL_CONFIG" not in os.environ:
+    global_config = None
+    if "global_config" in config["output"]:
+        global_config = util.yaml_load(config["output"]["global_config"])
+
+    if not global_config and "FMU_GLOBAL_CONFIG" not in os.environ:
         raise RuntimeError("The env variable FMU_GLOBAL_CONFIG is not set.")
 
     metadata = config["metadata"]
@@ -55,6 +60,7 @@ def export_avg_map_dataio(surf, nametuple, config):
             tdata = [[tt2, "base"]]
 
     edata = dataio.ExportData(
+        config=global_config,
         name=zoneinfo,
         unit=unit,
         content={"property": {"attribute": attribute, "is_discrete": False}},

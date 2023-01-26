@@ -3,3 +3,4 @@ pyyaml
 xtgeo
 fmu-dataio>=1.3.0
 xtgeoviz
+fmu-config
