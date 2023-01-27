@@ -6,8 +6,10 @@ from pathlib import Path
 
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 import yaml
+from fmu.config import utilities as ut
+
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 YAMLCONTENT = """
 title: Reek
@@ -64,12 +66,24 @@ def test_hc_thickness_1c_add2docs(hcdataio1cconfig):
     assert hcdataio1cconfig is not None
 
 
-def test_hc_thickness_1c(datatree, hcdataio1cconfig):
+@pytest.mark.parametrize(
+    "variant",
+    ["inputconfig", "FMU_GLOBAL_CONFIG_GRD3DMAPS", "FMU_GLOBAL_CONFIG"],
+)
+def test_hc_thickness_1c(datatree, hcdataio1cconfig, variant):
     """Test HC thickness map piped through dataio, see former yaml hc_thickness2a."""
 
-    os.environ["FMU_GLOBAL_CONFIG"] = str(
-        datatree / "tests" / "data" / "reek" / "global_variables.yml"
-    )
+    if "FMU" in variant:
+        os.environ[variant] = str(
+            datatree / "tests" / "data" / "reek" / "global_variables.yml"
+        )
+    else:
+        cfg = ut.yaml_load(hcdataio1cconfig)
+        cfg["input"]["fmu_global_config"] = "tests/data/reek/global_variables.yml"
+
+        with open(hcdataio1cconfig, "w", encoding="utf-8") as outfile:
+            yaml.dump(cfg, outfile)
+
     grid3d_hc_thickness.main(
         ["--config", hcdataio1cconfig, "--dump", "dump_config.yml"]
     )

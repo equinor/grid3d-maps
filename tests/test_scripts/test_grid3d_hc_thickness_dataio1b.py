@@ -6,8 +6,9 @@ from pathlib import Path
 
 import pytest
 import xtgeo
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 import yaml
+
+import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 YAMLCONTENT = """
 title: Reek
@@ -68,7 +69,7 @@ def test_hc_thickness_1b_add2docs(hcdataio1bconfig):
 def test_hc_thickness_1b(datatree, hcdataio1bconfig):
     """Test HC thickness map piped through dataio, using 'both' mode"""
 
-    os.environ["FMU_GLOBAL_CONFIG"] = str(
+    os.environ["FMU_GLOBAL_CONFIG_GRD3DMAPS"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
     )
     grid3d_hc_thickness.main(

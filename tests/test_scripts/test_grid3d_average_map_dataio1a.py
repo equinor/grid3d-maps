@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 import xtgeo
 import yaml
+
 from xtgeoapp_grd3dmaps.avghc import grid3d_average_map
 
 YAMLCONTENT = """
@@ -117,7 +118,7 @@ def test_average_map_1a_legacy(datatree):
 def test_average_map_dataio1a(datatree, avgdataio1aconfig):
     """Test AVG with YAML config example 3a piped through dataio"""
 
-    os.environ["FMU_GLOBAL_CONFIG"] = str(
+    os.environ["FMU_GLOBAL_CONFIG_GRD3DMAPS"] = str(
         datatree / "tests" / "data" / "reek" / "global_variables.yml"
     )
     grid3d_average_map.main(
