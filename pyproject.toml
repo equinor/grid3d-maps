@@ -26,10 +26,10 @@ exclude = '''
 
 [build-system]
 requires = [
-    "pip>=19.1.1",
-    "setuptools>=43",
-    "wheel",
-    "setuptools_scm",
-    "Sphinx",
-    "sphinx-rtd-theme",
+  "pip>=19.1.1",
+  "setuptools>=43",
+  "wheel",
+  "setuptools_scm",
+  "Sphinx",
+  "sphinx-rtd-theme",
 ]
