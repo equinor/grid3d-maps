@@ -1,5 +1,7 @@
-.. image:: https://travis-ci.com/equinor/xtgeoapp-grd3dmaps.svg?token=6jQHz1Rt4hEEy4skfFKt&branch=main
-    :target: https://travis-ci.com/equinor/xtgeoapp-grd3dmaps
+.. image:: https://github.com/equinor/xtgeoapp-grd3dmaps/actions/workflows/test_scripts.yml/badge.svg
+    :target: https://github.com/equinor/xtgeoapp-grd3dmaps/actions/workflows/test_scripts.yml
+.. image:: https://github.com/equinor/xtgeoapp-grd3dmaps/actions/workflows/test_vs_ert.yml/badge.svg
+    :target: https://github.com/equinor/xtgeoapp-grd3dmaps/actions/workflows/test_vs_ert.yml
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
