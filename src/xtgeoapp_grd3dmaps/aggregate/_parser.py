@@ -14,7 +14,8 @@ from xtgeoapp_grd3dmaps.aggregate._config import (
     Input,
     Output,
     ComputeSettings,
-    MapSettings, Zonation, ZProperty
+    MapSettings, Zonation, ZProperty,
+    CO2MassSettings,
 )
 
 
@@ -84,12 +85,14 @@ def parse_yaml(
     details.
     """
     config = load_yaml(yaml_file, map_folder, plot_folder, replacements)
+    co2_mass_settings = None if "co2_mass_settings" not in config else CO2MassSettings(**config.get("co2_mass_settings", {}))
     return RootConfig(
         input=Input(**config["input"]),
         output=Output(**config["output"]),
         zonation=Zonation(**config.get("zonation", {})),
         computesettings=ComputeSettings(**config.get("computesettings", {})),
         mapsettings=MapSettings(**config.get("mapsettings", {})),
+        co2_mass_settings=co2_mass_settings,
     )
 
 

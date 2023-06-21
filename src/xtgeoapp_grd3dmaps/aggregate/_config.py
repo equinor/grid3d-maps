@@ -33,13 +33,14 @@ class Property:
 @dataclass
 class Input:
     grid: str
-    properties: List[Property]
+    properties: Optional[List[Property]] = None
     dates: List[str] = field(default_factory=list)
 
     def __post_init__(self):
         self.dates = [str(d).replace("-", "") for d in self.dates]
         if (
-            len(self.properties) > 0
+            self.properties is not None
+            and len(self.properties) > 0
             and isinstance(self.properties[0], dict)
         ):
             self.properties = [Property(**p) for p in self.properties]
@@ -81,6 +82,15 @@ class ComputeSettings:
 
 
 @dataclass
+class CO2MassSettings:
+    unrst_source: str
+    init_source: str
+
+    def __post_init__(self):
+        pass
+
+
+@dataclass
 class MapSettings:
     # pylint: disable=too-many-instance-attributes
     xori: Optional[float] = None
@@ -115,3 +125,4 @@ class RootConfig:
     zonation: Zonation = Zonation()
     computesettings: ComputeSettings = ComputeSettings()
     mapsettings: MapSettings = MapSettings()
+    co2_mass_settings: Optional[CO2MassSettings] = None
