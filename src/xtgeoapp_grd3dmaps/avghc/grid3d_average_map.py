@@ -97,7 +97,7 @@ def import_pdata(config, gfile, initlist, restartlist, dates):
     """Import the data, and represent datas as numpies"""
 
     grd, initobjects, restobjects, dates = _get_grid_props.import_data(
-        config, APPNAME, gfile, initlist, restartlist, dates
+        APPNAME, gfile, initlist, restartlist, dates
     )
     specd, averaged = _get_grid_props.get_numpies_avgprops(
         config, grd, initobjects, restobjects
