@@ -157,7 +157,8 @@ def import_data(appname, gfile, initlist, restartlist, dates):
 
     initdict = defaultdict(list)
     for ipar, ifile in initlist.items():
-
+        if ipar == "fmu_global_config":
+            continue
         if isinstance(ifile, dict):
             lookfor, usefile = list(ifile.keys()), list(ifile.values())
             initdict[usefile[0]].append([ipar, lookfor[0]])
