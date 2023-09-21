@@ -10,7 +10,7 @@ jobs:
   testing:
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ["3.8", "3.9", "3.10"]
         os: [ubuntu-latest]
         include:
           - os: macos-latest
@@ -19,9 +19,13 @@ jobs:
             python-version: 3.8
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - uses: "./.github/actions/test_setup"
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Run test
         run: python -m pytest tests/test_scripts --disable-warnings -x
