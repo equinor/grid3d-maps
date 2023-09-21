@@ -27,12 +27,8 @@ REQUIREMENTS_TESTS = setupx.parse_requirements("requirements/requirements_tests.
 REQUIREMENTS_DOCS = setupx.parse_requirements("requirements/requirements_docs.txt")
 REQUIREMENTS_EXTRAS = {"tests": REQUIREMENTS_TESTS, "docs": REQUIREMENTS_DOCS}
 
-HC_FUNCTION = (
-    "grid3d_hc_thickness=xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
-)
-AVG_FUNCTION = (
-    "grid3d_average_map=xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
-)
+HC_FUNCTION = "grid3d_hc_thickness=xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
+AVG_FUNCTION = "grid3d_average_map=xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
 AGG_FUNCTION = (
     "grid3d_aggregate_map=xtgeoapp_grd3dmaps.aggregate.grid3d_aggregate_map:main"
 )
@@ -41,17 +37,8 @@ MIG_FUNCTION = (
 )
 
 
-def src(anypath):
-    """Find src folders."""
-    return Path(__file__).parent / anypath
-
-
 setup(
     name="xtgeoapp_grd3dmaps",
-    use_scm_version={
-        "root": src(""),
-        "write_to": src("src/xtgeoapp_grd3dmaps/_theversion.py"),
-    },
     description="Make HC thickness, avg maps, etc directly from 3D props",
     long_description=readme + "\n\n" + history,
     author="Equinor R&T",

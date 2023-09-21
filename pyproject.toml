@@ -33,3 +33,6 @@ requires = [
   "Sphinx",
   "sphinx-rtd-theme",
 ]
+
+[tool.setuptools_scm]
+write_to = "src/xtgeoapp_grd3dmaps/_theversion.py"
