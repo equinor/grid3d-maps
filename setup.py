@@ -49,8 +49,9 @@ def src(anypath):
 setup(
     name="xtgeoapp_grd3dmaps",
     use_scm_version={
-        "root": src(""),
-        "write_to": src("src/xtgeoapp_grd3dmaps/_theversion.py"),
+        # "root": src(""),
+        # "write_to": src("src/xtgeoapp_grd3dmaps/_theversion.py"),
+        "write_to": "src/xtgeoapp_grd3dmaps/_theversion.py",
     },
     description="Make HC thickness, avg maps, etc directly from 3D props",
     long_description=readme + "\n\n" + history,
@@ -86,5 +87,5 @@ setup(
     install_requires=REQUIREMENTS,
     tests_require=REQUIREMENTS_TESTS,
     setup_requires=REQUIREMENTS_SETUP,
-    extras_requires=REQUIREMENTS_EXTRAS,
+    extras_require=REQUIREMENTS_EXTRAS,
 )
