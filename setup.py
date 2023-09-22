@@ -73,5 +73,5 @@ setup(
     install_requires=REQUIREMENTS,
     tests_require=REQUIREMENTS_TESTS,
     setup_requires=REQUIREMENTS_SETUP,
-    extras_requires=REQUIREMENTS_EXTRAS,
+    extras_require=REQUIREMENTS_EXTRAS,
 )
