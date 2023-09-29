@@ -125,7 +125,7 @@ def files_to_import(config, appname):
     return gfile, initlist, restartlist, dates
 
 
-def import_data(_, appname, gfile, initlist, restartlist, dates):
+def import_data(appname, gfile, initlist, restartlist, dates):
     """Get the grid and the props data.
     Well get the grid and the propsdata for data to be plotted,
     zonation (if required), filters (if required)
@@ -137,9 +137,7 @@ def import_data(_, appname, gfile, initlist, restartlist, dates):
         appname(str): Name of application
 
     """
-
     logger.info("Import data for %s", appname)
-
     # get the grid data + some geometrics
     grd = xtgeo.grid_from_file(gfile)
 
@@ -159,7 +157,8 @@ def import_data(_, appname, gfile, initlist, restartlist, dates):
 
     initdict = defaultdict(list)
     for ipar, ifile in initlist.items():
-
+        if ipar == "fmu_global_config":
+            continue
         if isinstance(ifile, dict):
             lookfor, usefile = list(ifile.keys()), list(ifile.values())
             initdict[usefile[0]].append([ipar, lookfor[0]])

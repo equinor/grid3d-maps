@@ -44,7 +44,6 @@ logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
-
     args = _configparser.parse_args(args, APPNAME, APPDESCR)
 
     return args
@@ -102,7 +101,7 @@ def import_pdata(config, gfile, initlist, restartlist, dates):
     """Import the data, and represent datas as numpies"""
 
     grd, initobjects, restobjects, dates = _get_grid_props.import_data(
-        config, APPNAME, gfile, initlist, restartlist, dates
+        APPNAME, gfile, initlist, restartlist, dates
     )
 
     # get the numpies
@@ -145,7 +144,6 @@ def get_zranges(config, grd):
 
 
 def compute_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
-
     hcpfzd = _compute_hcpfz.get_hcpfz(
         config, initd, restartd, dates, hcmode, filterarray
     )
@@ -174,7 +172,6 @@ def plotmap(config, grd, initd, hcpfzd, zonation, zoned, hcmode, filtermean=None
 
 
 def main(args=None):
-
     XTGeoDialog.print_xtgeo_header(APPNAME, __version__)
 
     xtg.say("Parse command line")
@@ -218,7 +215,6 @@ def main(args=None):
         hcmodelist = [config["computesettings"]["mode"]]
 
     for hcmode in hcmodelist:
-
         xtg.say("Compute HCPFZ property for {}".format(hcmode))
         hcpfzd = compute_hcpfz(config, initd, restartd, dates, hcmode, filterarray)
 

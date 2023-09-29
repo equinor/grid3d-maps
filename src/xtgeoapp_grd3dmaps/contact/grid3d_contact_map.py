@@ -4,20 +4,18 @@ import sys
 
 from xtgeo.common import XTGeoDialog
 
-from xtgeoapp_grd3dmaps.avghc import _configparser
-from xtgeoapp_grd3dmaps.contact import _get_grid_props
-from xtgeoapp_grd3dmaps.avghc import _get_zonation_filters
-from xtgeoapp_grd3dmaps.contact import _compute_contact
+from xtgeoapp_grd3dmaps.avghc import _configparser, _get_zonation_filters
+from xtgeoapp_grd3dmaps.contact import _compute_contact, _get_grid_props
 
 try:
-    from ..theversion import version as __version__
+    from .._theversion import version as __version__
 except ImportError:
     __version__ = "0.0.0"
 
 
-appname = "grid3d_get_contact"
+APPNAME = "grid3d_get_contact"
 
-appdescr = (
+APPDESCR = (
     "Estimate contact maps directly from 3D grids. Docs:\n"
     + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
 )
@@ -28,8 +26,7 @@ logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
-
-    args = _configparser.parse_args(args, appname, appdescr)
+    args = _configparser.parse_args(args, APPNAME, APPDESCR)
 
     return args
 
@@ -39,12 +36,12 @@ def yamlconfig(inputfile, args):
     config = _configparser.yconfig(inputfile)
 
     # override with command line args
-    config = _configparser.yconfig_override(config, args, appname)
+    config = _configparser.yconfig_override(config, args, APPNAME)
 
-    config = _configparser.yconfig_set_defaults(config, appname)
+    config = _configparser.yconfig_set_defaults(config, APPNAME)
 
     # in case of YAML input (e.g. zonation from file)
-    config = _configparser.yconfig_addons(config, appname)
+    config = _configparser.yconfig_addons(config, APPNAME)
 
     logger.info("Updated config:")
     for name, val in config.items():
@@ -85,7 +82,7 @@ def import_pdata(config, appname, gfile, initlist, restartlist, dates):
     """Import the data, and represent datas as numpies"""
 
     grd, initobjects, restobjects, dates = _get_grid_props.import_data(
-        config, appname, gfile, initlist, restartlist, dates
+        appname, gfile, initlist, restartlist, dates
     )
     # get the numpies
     initd, restartd = _get_grid_props.get_numpies_contact(
@@ -124,8 +121,7 @@ def compute_contact(config, initd, restartd, dates):
 
 
 def main(args=None):
-
-    XTGeoDialog.print_xtgeo_header(appname, __version__)
+    XTGeoDialog.print_xtgeo_header(APPNAME, __version__)
 
     xtg.say("Parse command line")
     args = do_parse_args(args)
@@ -143,16 +139,16 @@ def main(args=None):
 
     # get the files
     xtg.say("Collect files...")
-    gfile, initlist, restartlist, dates = get_grid_props_data(config, appname)
+    gfile, initlist, restartlist, dates = get_grid_props_data(config, APPNAME)
 
     # import data from files and return releavnt numpies
     xtg.say("Import files...")
     grd, initd, restartd, dates = import_pdata(
-        config, appname, gfile, initlist, restartlist, dates
+        config, APPNAME, gfile, initlist, restartlist, dates
     )
 
     # Get the zonations
-    zonation, zoned = get_zranges(config, grd)
+    # zonation, zoned = get_zranges(config, grd)
 
     xtg.say("Grid contact map...")
     compute_contact(config, initd, restartd, dates)

@@ -8,7 +8,6 @@ import xtgeo
 # from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
 from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
-from xtgeo.grid3d import GridProperties
 
 xtg = XTGeoDialog()
 
@@ -64,7 +63,7 @@ def files_to_import(config, appname):
     return gfile, initlist, restartlist, dates
 
 
-def import_data(config, appname, gfile, initlist, restartlist, dates):
+def import_data(appname, gfile, initlist, restartlist, dates):
     """Get the grid and the props data.
     Well get the grid and the propsdata for data to be plotted,
     zonation (if required), filters (if required)
@@ -132,7 +131,7 @@ def import_data(config, appname, gfile, initlist, restartlist, dates):
                 usenames.append(usename)
 
             xtg.say("Import <{}> from <{}> ...".format(lookfornames, inifile))
-            tmp = gridproperties_from_file(
+            tmp = xtgeo.gridproperties_from_file(
                 inifile, names=lookfornames, fformat="init", grid=grd
             )
             for i, name in enumerate(lookfornames):
