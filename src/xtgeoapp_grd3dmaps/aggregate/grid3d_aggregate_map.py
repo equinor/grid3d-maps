@@ -32,7 +32,7 @@ CATEGORY = "modelling.reservoir"
 EXAMPLES = """
 .. code-block:: console
 
-  FORWARD_MODEL GRID3D_AGGREGATE_MAP(<CONFIG_AGGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
+  FORWARD_MODEL GRID3D_AGGREGATE_MAP(<CONFIG_AGGREGATE>=conf.yml, <ECLROOT>=<ECLBASE>)
 """
 
 

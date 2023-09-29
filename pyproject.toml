@@ -1,8 +1,19 @@
-# NOTE: you have to use single-quoted strings in TOML for regular expressions.
+[build-system]
+requires = [
+  "pip>=19.1.1",
+  "setuptools>=43",
+  "wheel",
+  "setuptools_scm",
+  "Sphinx",
+  "sphinx-rtd-theme",
+]
+
+[tool.setuptools_scm]
+write_to = "src/xtgeoapp_grd3dmaps/_theversion.py"
 
 [tool.black]
 line-length = 88
-target-version = ['py36', 'py37', 'py38']
+target-version = ["py38", "py39", "py310"]
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -23,13 +34,3 @@ exclude = '''
   | profiling
 )/
 '''
-
-[build-system]
-requires = [
-  "pip>=19.1.1",
-  "setuptools>=43",
-  "wheel",
-  "setuptools_scm",
-  "Sphinx",
-  "sphinx-rtd-theme",
-]
