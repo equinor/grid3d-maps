@@ -73,16 +73,13 @@ def calculate_mass_property(
         co2_mass_settings.init_source,
         None
     )
-    print(source_data)
+    print(source_data.DATES)
 
     # print("Start fetching properties.")
     # properties, dates = _fetch_properties(
     #     unrst,
     #     PROPERTIES_TO_EXTRACT
     # )
-
-    # print([x for x in properties])
-    # print(dates)
 
     print("END")
     exit()
