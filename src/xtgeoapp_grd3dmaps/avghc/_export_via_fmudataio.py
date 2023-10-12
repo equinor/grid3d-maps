@@ -74,6 +74,7 @@ def export_avg_map_dataio(surf, nametuple, config):
 
     metadata = config["metadata"]
     if nameid not in metadata:
+        logger.info("Dataio: Nameid missing %s", nametuple)
         raise ValueError(
             f"Seems that 'metadata' for {nameid} is missing! Cf. documentation"
         )
