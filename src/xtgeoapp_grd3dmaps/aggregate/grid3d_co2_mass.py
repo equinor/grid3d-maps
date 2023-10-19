@@ -44,19 +44,6 @@ def calculate_mass_property(
     files
     """
     print("calculate_mass_property()")
-    # prop_spec = [
-    #     _config.Property(source=f, name=property_name)
-    #     for f in glob.glob(properties_files, recursive=True)
-    # ]
-    # Property(source='../xtgeoapp-grd3dmaps-as/tests/data/reek/REEK.UNRST', name='SGAS', lower_threshold=None)
-    # <class 'xtgeoapp_grd3dmaps.aggregate._config.Property'>
-    # x = ["SGAS", "SWAT"]  # PROPERTIES_TO_EXTRACT
-    # prop_spec = [_config.Property(source=co2_mass_settings.unrst_source, name=p) for p in x]
-    # grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
-    # properties = _parser.extract_properties(prop_spec, grid, dates)
-    # for x in properties:
-    #     print(x.name)
-    # print(len(properties))
 
     print("Reading files.")
     grid = EclGrid(grid_file)
@@ -74,16 +61,17 @@ def calculate_mass_property(
         None
     )
     print(source_data.DATES)
+    for key, value in source_data.SGAS.items():
+        print(str(key) + ": " + str(value.sum()))
+    for key, value in source_data.PORV.items():
+        print(str(key) + ": " + str(value.sum()))
 
-    # print("Start fetching properties.")
-    # properties, dates = _fetch_properties(
-    #     unrst,
-    #     PROPERTIES_TO_EXTRACT
-    # )
+    # temp_copy = _co2_mass._temp_make_property_copy()
 
+    co2_data = _co2_mass.generate_co2_mass_data(source_data)
+    co2_prop_all_dates = _co2_mass.translate_co2data_to_property(co2_data)
     print("END")
     exit()
-    # co2_prop = _co2_mass.generate_co2_mass_property(properties)
     # return co2_prop
 
 
