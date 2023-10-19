@@ -53,6 +53,7 @@ def calculate_mass_property(
     init = EclFile(co2_mass_settings.init_source)
     print(init)
 
+    # POINT 2:
     source_data = _extract_source_data(
         grid_file,
         co2_mass_settings.unrst_source,
@@ -60,19 +61,16 @@ def calculate_mass_property(
         co2_mass_settings.init_source,
         None
     )
-    print(source_data.DATES)
-    for key, value in source_data.SGAS.items():
-        print(str(key) + ": " + str(value.sum()))
-    for key, value in source_data.PORV.items():
-        print(str(key) + ": " + str(value.sum()))
 
-    # temp_copy = _co2_mass._temp_make_property_copy()
 
+    # POINT 3:
     co2_data = _co2_mass.generate_co2_mass_data(source_data)
+
+    # POINT 4:
+    # temp_copy = _co2_mass._temp_make_property_copy(co2_mass_settings.unrst_source, grid_file, dates)
     co2_prop_all_dates = _co2_mass.translate_co2data_to_property(co2_data)
-    print("END")
-    exit()
-    # return co2_prop
+
+    # return co2_prop_all_dates
 
 
 def main(arguments=None):
@@ -95,14 +93,10 @@ def main(arguments=None):
         config_.co2_mass_settings,
         config_.input.dates
     )
-    # t_prop = calculate_migration_time_property(
-    #     p_spec.source,
-    #     p_spec.name,
-    #     p_spec.lower_threshold,
-    #     config_.input.grid,
-    #     config_.input.dates,
-    # )
-    # migration_time_property_to_map(config_, t_prop)
+
+    # POINT 5:
+    # Similar to migration_time_property_to_map:
+    # co2_mass_property_to_map(config_, mass_prop)
 
 
 if __name__ == '__main__':

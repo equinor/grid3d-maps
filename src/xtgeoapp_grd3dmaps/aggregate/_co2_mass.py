@@ -459,22 +459,31 @@ def translate_co2data_to_property(co2_data: Co2Data) -> List[xtgeo.GridProperty]
     for x in co2_data.data_list:
         print(f"date = {x.date}")
         mass = x.total_mass()
+        print("")
         print(type(mass))
-        print(mass.sum())
+        print(f"sum of co2 mass: {mass.sum()}")
+        print(len(mass))
         # a = xtgeo.GridProperty(values=mass)
     pass
 
-def _temp_make_property_copy() -> xtgeo.GridProperty:
-    spec = [
-        _config.Property(source=f, name="SGAS")
-        for f in glob.glob(properties_files, recursive=True)
-    ]
+def _temp_make_property_copy(source: str, grid_file: Optional[str], dates: List[str]) -> xtgeo.GridProperty:
+    # Calculate sgas_prop:
     try:
-        names = "all" if spec.name is None else [spec.name]
+        grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
+        print("AAA")
+        print(grid)
+        # props = xtgeo.gridproperty_from_file(
+        #     source, names="SGAS", grid=grid, dates=dates or "all",
+        # ).props
         props = xtgeo.gridproperties_from_file(
-            spec.source, names=names, grid=grid, dates=dates or "all",
-        ).props
+            source, grid=grid,
+        )
+        b = props.props
+        print("BBB")
+        print(props)
     except (RuntimeError, ValueError):
-        props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
-    # co2_props[0].copy(newname="co2_mass")
-    pass
+        print("ERROR")
+        exit()
+        # props = [xtgeo.gridproperty_from_file(source, name="SGAS")]
+
+    # return sgas_prop.copy(newname="co2_mass")
