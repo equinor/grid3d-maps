@@ -1,6 +1,7 @@
 import importlib
 import os
-from pkg_resources import resource_filename
+import sys
+from pathlib import Path
 
 try:
     from ert.shared.plugins.plugin_manager import hook_implementation
@@ -13,7 +14,7 @@ PLUGIN_NAME = "xtgeoapp_grd3dmaps"
 
 
 def _get_jobs_from_directory(directory):
-    resource_directory = resource_filename(PLUGIN_NAME, directory)
+    resource_directory = Path(sys.modules[PLUGIN_NAME].__file__).parent / directory
 
     all_files = [
         os.path.join(resource_directory, f)
