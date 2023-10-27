@@ -454,11 +454,66 @@ def generate_co2_mass_data(
     )
 
 
-def translate_co2data_to_property(co2_data: Co2Data) -> List[xtgeo.GridProperty]:
+def translate_co2data_to_property(
+    co2_data: Co2Data,
+    grid_file: str,
+    unrst_file: str,
+    out_file: str,
+    properties_to_extract: List[str]
+) -> List[xtgeo.GridProperty]:
     print("translate_co2data_to_property")
+
+    #Not-so-nice block
+    grid = EclGrid(grid_file)
+    grid_pf = xtgeo.grid_from_file(grid_file)
+    grid_pf = xtgeo.grid_from_file(grid_file)
+    unrst = EclFile(unrst_file)
+    properties, dates = _fetch_properties(unrst, properties_to_extract)
+    gdf = grid_pf.get_dataframe()
+    gdf = (gdf.sort_values(by=['KZ','JY','IX']))
+
+    active = np.where(grid.export_actnum().numpy_copy() > 0)[0]
+    
+    if _is_subset(["SGAS", "AMFG"], list(properties.keys())):
+        gasless = _identify_gas_less_cells(properties["SGAS"], properties["AMFG"])
+    elif _is_subset(["SGAS", "XMF2"], list(properties.keys())):
+        gasless = _identify_gas_less_cells(properties["SGAS"], properties["XMF2"])
+    else:
+        error_text = "CO2 containment calculation failed. Cannot find required properties "
+        error_text += "SGAS+AMFG or SGAS+XMF2."
+        raise RuntimeError(error_text)
+    
+    gdf = gdf.loc[~gasless]
+    
+    triplets = []
+
+    for index,row in gdf.iterrows():
+        triplet = (row['IX'], row['JY'], row['KZ'])
+        triplets.append(triplet)
+
+    triplets = [(int(x-1), int(y-1), int(z-1)) for x, y, z in triplets]
+
+    mask = np.ones((grid_pf.ncol,grid_pf.nrow,grid_pf.nlay),dtype=bool)
+
+    for x in triplets:
+        mask[x] = False
+
+    mask_date_prop_list = []
     for x in co2_data.data_list:
         print(f"date = {x.date}")
         mass = x.total_mass()
+        gdf['mass'] = mass
+        mass_array = np.zeros((grid_pf.ncol,grid_pf.nrow,grid_pf.nlay))
+        for i in range(len(triplets)):
+            mass_array[triplets[i]]=mass[i]
+        
+        ## -999 or 0 for cells without CO2?
+        #result_array = np.ma.masked_array(mass_array, mask=mask)
+        result_array = mass_array
+        test_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=result_array,name="CO2_MASS"+str(x.date))
+        test_prop.to_file(out_file + "MASS_"+str(x.date)+".roff", fformat="roff")
+        mask_date_prop_list.append(test_prop)#Sure?
+
         print("")
         print(type(mass))
         print(f"sum of co2 mass: {mass.sum()}")
