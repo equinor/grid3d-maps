@@ -38,6 +38,7 @@ def calculate_mass_property(
     grid_file: Optional[str],
     co2_mass_settings: CO2MassSettings,
     dates: List[str],
+    out_folder: str
 ):
     """
     Calculates a 3D CO2 mass property from the provided grid and grid property
@@ -68,7 +69,7 @@ def calculate_mass_property(
 
     # POINT 4:
     # temp_copy = _co2_mass._temp_make_property_copy(co2_mass_settings.unrst_source, grid_file, dates)
-    co2_prop_all_dates = _co2_mass.translate_co2data_to_property(co2_data)
+    co2_prop_all_dates = _co2_mass.translate_co2data_to_property(co2_data,grid_file,co2_mass_settings.unrst_source,PROPERTIES_TO_EXTRACT,out_folder.mapfolder)
 
     # return co2_prop_all_dates
 
@@ -91,7 +92,8 @@ def main(arguments=None):
     mass_prop = calculate_mass_property(
         config_.input.grid,
         config_.co2_mass_settings,
-        config_.input.dates
+        config_.input.dates,
+        config_.output
     )
 
     # POINT 5:
