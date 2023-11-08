@@ -115,7 +115,8 @@ def main(arguments=None):
 
     # POINT 5:
     # Similar to migration_time_property_to_map:
-    co2_mass_property_to_map(config_, mass_prop)
+    for x in mass_prop:
+        co2_mass_property_to_map(config_,x)
 
 
 if __name__ == '__main__':
