@@ -71,7 +71,7 @@ def calculate_mass_property(
     # temp_copy = _co2_mass._temp_make_property_copy(co2_mass_settings.unrst_source, grid_file, dates)
     co2_prop_all_dates = _co2_mass.translate_co2data_to_property(co2_data,grid_file,co2_mass_settings.unrst_source,PROPERTIES_TO_EXTRACT,out_folder.mapfolder)
 
-    # return co2_prop_all_dates
+    return co2_prop_all_dates
 
 def co2_mass_property_to_map(
     config_: _config.RootConfig,
