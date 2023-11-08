@@ -458,14 +458,13 @@ def translate_co2data_to_property(
     co2_data: Co2Data,
     grid_file: str,
     unrst_file: str,
-    out_file: str,
-    properties_to_extract: List[str]
+    properties_to_extract: List[str],
+    out_file: str
 ) -> List[xtgeo.GridProperty]:
     print("translate_co2data_to_property")
 
     #Not-so-nice block
     grid = EclGrid(grid_file)
-    grid_pf = xtgeo.grid_from_file(grid_file)
     grid_pf = xtgeo.grid_from_file(grid_file)
     unrst = EclFile(unrst_file)
     properties, dates = _fetch_properties(unrst, properties_to_extract)
@@ -510,7 +509,7 @@ def translate_co2data_to_property(
         ## -999 or 0 for cells without CO2?
         #result_array = np.ma.masked_array(mass_array, mask=mask)
         result_array = mass_array
-        test_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=result_array,name="CO2_MASS"+str(x.date))
+        test_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=result_array,name="CO2_MASS"+str(x.date),date=str(x.date))
         test_prop.to_file(out_file + "MASS_"+str(x.date)+".roff", fformat="roff")
         mask_date_prop_list.append(test_prop)#Sure?
 
@@ -519,14 +518,13 @@ def translate_co2data_to_property(
         print(f"sum of co2 mass: {mass.sum()}")
         print(len(mass))
         # a = xtgeo.GridProperty(values=mass)
-    pass
+    return mask_date_prop_list
 
 def _temp_make_property_copy(source: str, grid_file: Optional[str], dates: List[str]) -> xtgeo.GridProperty:
     # Calculate sgas_prop:
     try:
         grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
-        print("AAA")
-        print(grid)
+        
         # props = xtgeo.gridproperty_from_file(
         #     source, names="SGAS", grid=grid, dates=dates or "all",
         # ).props
@@ -534,8 +532,6 @@ def _temp_make_property_copy(source: str, grid_file: Optional[str], dates: List[
             source, grid=grid,
         )
         b = props.props
-        print("BBB")
-        print(props)
     except (RuntimeError, ValueError):
         print("ERROR")
         exit()
