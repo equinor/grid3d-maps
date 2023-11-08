@@ -296,7 +296,7 @@ def _property_to_map(
     assert weights is None or weights.shape == prop.shape
     if weights is not None:
         assert method in [AggregationMethod.MEAN, AggregationMethod.SUM]
-    data = prop[cols]
+    data = prop[0][cols] # Necessary change for the code to work
     weights = np.ones_like(data) if weights is None else weights[cols]
     if data.mask.any():
         invalid = data.mask
