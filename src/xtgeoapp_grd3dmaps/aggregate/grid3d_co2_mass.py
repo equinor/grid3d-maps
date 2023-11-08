@@ -73,6 +73,23 @@ def calculate_mass_property(
 
     # return co2_prop_all_dates
 
+def co2_mass_property_to_map(
+    config_: _config.RootConfig,
+    t_prop: xtgeo.GridProperty,
+):
+    """
+    Aggregates and writes a migration time property to file using `grid3d_aggragte_map`.
+    The migration time property is written to a temporary file while performing the
+    aggregation.
+    """
+    config_.input.properties = []
+    config_.computesettings.aggregation = _config.AggregationMethod.SUM
+    config_.output.aggregation_tag = False
+    temp_file, temp_path = tempfile.mkstemp()
+    config_.input.properties.append(_config.Property(temp_path, t_prop.name,None))
+    t_prop.to_file(temp_path)
+    grid3d_aggregate_map.generate_from_config(config_)
+    os.unlink(temp_path)
 
 def main(arguments=None):
     """
@@ -98,7 +115,7 @@ def main(arguments=None):
 
     # POINT 5:
     # Similar to migration_time_property_to_map:
-    # co2_mass_property_to_map(config_, mass_prop)
+    co2_mass_property_to_map(config_, mass_prop)
 
 
 if __name__ == '__main__':
