@@ -35,22 +35,20 @@ def parse_arguments(arguments):
     parser.add_argument(
         "--mapfolder",
         help="Path to output map folder (overrides yaml file)",
-        default=None
+        default=None,
     )
     parser.add_argument(
         "--plotfolder",
         help="Path to output plot folder (overrides yaml file)",
-        default=None
+        default=None,
     )
     parser.add_argument(
-        "--eclroot",
-        help="Eclipse root name (includes case name)",
-        default=None
+        "--eclroot", help="Eclipse root name (includes case name)", default=None
     )
     parser.add_argument(
         "--folderroot",
         help="Folder root name ($-alias available in config file)",
-        default=None
+        default=None,
     )
     return parser.parse_args(arguments)
 
@@ -155,7 +153,10 @@ def extract_properties(
         try:
             names = "all" if spec.name is None else [spec.name]
             props = xtgeo.gridproperties_from_file(
-                spec.source, names=names, grid=grid, dates=dates or "all",
+                spec.source,
+                names=names,
+                grid=grid,
+                dates=dates or "all",
             ).props
         except (RuntimeError, ValueError):
             props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
@@ -181,8 +182,7 @@ def extract_properties(
 
 
 def extract_zonations(
-    zonation: Zonation,
-    grid: xtgeo.Grid
+    zonation: Zonation, grid: xtgeo.Grid
 ) -> List[Tuple[str, np.ndarray]]:
     """
     Extract boolean zonation arrays and corresponding names based on `zonation`
@@ -203,8 +203,7 @@ def _zonation_from_zranges(grid: xtgeo.Grid, z_ranges) -> List[Tuple[str, np.nda
 
 
 def _zonation_from_zproperty(
-    grid: xtgeo.Grid,
-    zproperty: ZProperty
+    grid: xtgeo.Grid, zproperty: ZProperty
 ) -> List[Tuple[str, np.ndarray]]:
     actnum = grid.actnum_indices
     prop = xtgeo.gridproperty_from_file(
@@ -226,7 +225,7 @@ def _zonation_from_zproperty(
 
 
 def create_map_template(
-    map_settings: _config.MapSettings
+    map_settings: _config.MapSettings,
 ) -> Union[xtgeo.RegularSurface, float]:
     """
     Creates the map template to use based on the provided settings. May instead return a

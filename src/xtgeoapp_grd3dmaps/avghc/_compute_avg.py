@@ -49,7 +49,6 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
         raise RuntimeError("The dictionary <propd> or <zoned> is zero. Stop")
 
     for zname, zrange in zoned.items():
-
         logger.info("ZNAME and ZRANGE are %s:  %s", zname, zrange)
         usezonation = zonation
         usezrange = zrange
@@ -77,7 +76,6 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
                 continue
 
         for propname, pvalues in propd.items():
-
             # filters get into effect by multyplying with DZ weight
             usedz = specd["idz"] * filterarray
 
@@ -117,7 +115,6 @@ def do_avg_plotting(config, avgd):
     xtg.say("Plotting ...")
 
     for names, xmap in avgd.items():
-
         # 'names' is a tuple as (zname, pname)
         zname = names[0]
         pname = names[1]
@@ -227,7 +224,6 @@ def _avg_plotsettings(config, zname, pname):
 
     # there may be individual plotsettings per property per zone...
     if pname is not None and pname in config["plotsettings"]:
-
         pfg = config["plotsettings"][pname]
 
         if "valuerange" in pfg:
@@ -246,7 +242,6 @@ def _avg_plotsettings(config, zname, pname):
             fpolyfile = pfg["faultpolygons"]
 
         if zname is not None and zname in config["plotsettings"][pname]:
-
             zfg = config["plotsettings"][pname][zname]
 
             if "valuerange" in zfg:
