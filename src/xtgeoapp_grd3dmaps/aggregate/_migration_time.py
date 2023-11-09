@@ -1,8 +1,8 @@
-from typing import List
 import datetime
+from typing import List
+
 import numpy as np
 import xtgeo
-
 
 MIGRATION_TIME_PNAME = "MigrationTime"
 

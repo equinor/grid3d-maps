@@ -1,5 +1,6 @@
 """Testing contacts, not finished!"""
 import pytest
+
 import xtgeoapp_grd3dmaps.contact.grid3d_contact_map as grid3d_contacts
 
 # =============================================================================

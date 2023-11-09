@@ -1,7 +1,7 @@
 import argparse
 import datetime
 import pathlib
-from typing import List, Optional, Tuple, Union, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import xtgeo
@@ -9,12 +9,14 @@ import yaml
 
 from xtgeoapp_grd3dmaps.aggregate import _config
 from xtgeoapp_grd3dmaps.aggregate._config import (
+    ComputeSettings,
+    Input,
+    MapSettings,
+    Output,
     Property,
     RootConfig,
-    Input,
-    Output,
-    ComputeSettings,
-    MapSettings, Zonation, ZProperty
+    Zonation,
+    ZProperty,
 )
 
 

@@ -1,11 +1,12 @@
 import dataclasses
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
+
 import numpy as np
-import xtgeo
 import scipy.interpolate
-import scipy.spatial
 import scipy.sparse
+import scipy.spatial
+import xtgeo
 
 from xtgeoapp_grd3dmaps.aggregate._config import AggregationMethod
 

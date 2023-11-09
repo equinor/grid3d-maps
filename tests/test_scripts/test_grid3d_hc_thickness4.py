@@ -1,6 +1,7 @@
 """Test suite hc 4."""
 import pytest
 import xtgeo
+
 import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 
