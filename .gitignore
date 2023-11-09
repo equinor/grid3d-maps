@@ -44,6 +44,7 @@ coverage.xml
 .hypothesis/
 TMP/
 src/xtgeoapp_grd3dmaps/_theversion.py
+src/xtgeoapp_grd3dmaps/version.py
 
 # Translations
 *.mo
