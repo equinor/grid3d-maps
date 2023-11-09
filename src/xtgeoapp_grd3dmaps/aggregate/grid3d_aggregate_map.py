@@ -67,11 +67,12 @@ def write_plot_using_plotly(surf: xtgeo.RegularSurface, filename):
     """
     # pylint: disable=import-outside-toplevel
     import plotly.express as px
+
     x_nodes = surf.xori + np.arange(0, surf.ncol) * surf.xinc
     y_nodes = surf.yori + np.arange(0, surf.nrow) * surf.yinc
     px.imshow(
         surf.values.filled(np.nan).T, x=x_nodes, y=y_nodes, origin="lower"
-    ).write_html(filename.with_suffix('.html'), include_plotlyjs="cdn")
+    ).write_html(filename.with_suffix(".html"), include_plotlyjs="cdn")
 
 
 def write_plot_using_quickplot(surface, filename):
@@ -80,7 +81,8 @@ def write_plot_using_quickplot(surface, filename):
     """
     # pylint: disable=import-outside-toplevel
     from xtgeoviz import quickplot
-    quickplot(surface, filename=filename.with_suffix('.png'))
+
+    quickplot(surface, filename=filename.with_suffix(".png"))
 
 
 def generate_maps(
@@ -186,7 +188,7 @@ def generate_from_config(config: _config.RootConfig):
         config.zonation,
         config.computesettings,
         config.mapsettings,
-        config.output
+        config.output,
     )
 
 
@@ -199,5 +201,5 @@ def main(arguments=None):
     generate_from_config(process_arguments(arguments))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

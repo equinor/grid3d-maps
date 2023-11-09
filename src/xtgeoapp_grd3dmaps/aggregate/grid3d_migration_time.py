@@ -90,5 +90,5 @@ def main(arguments=None):
     migration_time_property_to_map(config_, t_prop)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
