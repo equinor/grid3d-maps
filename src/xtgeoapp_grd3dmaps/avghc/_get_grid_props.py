@@ -1,4 +1,3 @@
-import pprint
 from collections import defaultdict
 
 import numpy as np
@@ -8,7 +7,6 @@ import xtgeo
 # from xtgeo.common.exceptions import KeywordNotFoundError
 from xtgeo.common import XTGeoDialog
 from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
-from xtgeo.grid3d import GridProperties, GridProperty
 
 xtg = XTGeoDialog()
 
@@ -47,7 +45,6 @@ def files_to_import(config, appname):
         gfile = config["input"]["grid"]
 
     if appname == "grid3d_hc_thickness":
-
         if config["computesettings"]["mode"] == "rock":
             return gfile, initlist, restartlist, dates
 
@@ -76,7 +73,6 @@ def files_to_import(config, appname):
                     dates.append(date.split("-")[1])
 
     if appname == "grid3d_average_map":
-
         # Put things in initlist or restart list. Only Eclipse
         # UNRST comes in the restartlist, all other in the initlist.
         # For instance, a ROFF parameter PRESSURE_20110101 will
@@ -282,7 +278,6 @@ def import_filters(config, appname, grd):
         return filterarray
 
     for flist in config["filters"]:
-
         if "name" in flist:
             name = flist["name"]
             logger.info("Filter name: %s", name)
@@ -406,7 +401,6 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
         initd.update({"xhcpv": xhcpv})
 
     else:
-
         if xmethod == "use_poro" or xmethod == "use_porv":
             # initobjects is a list of GridProperty objects (single)
             for prop in initobjects:
