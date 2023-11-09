@@ -1,5 +1,5 @@
 name: Build
-description: builds xtgeoapp-grd3dmaps
+description: Builds xtgeoapp-grd3dmaps
 
 inputs:
   python-version:
@@ -9,14 +9,16 @@ runs:
   using: "composite"
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Upgrade pip
-      run: python -m pip install "pip<22.0.4"
+    - name: Install xtgeoapp-grd3maps
+      run: |
+        python -m pip install -U pip
+        pip install .
       shell: bash
 
-    - name: install xtgeoapp-grd3maps
-      run: pip install .
+    - name: List all installed packages
+      run: pip freeze
       shell: bash
