@@ -2,23 +2,26 @@ import pathlib
 import sys
 from typing import List
 
-import xtgeo
 import numpy as np
+import xtgeo
 from xtgeo.common import XTGeoDialog
 
 from xtgeoapp_grd3dmaps.aggregate._config import (
+    AggregationMethod,
+    ComputeSettings,
     Input,
     MapSettings,
+    Output,
     Zonation,
-    ComputeSettings,
-    Output, AggregationMethod,
 )
 from xtgeoapp_grd3dmaps.aggregate._parser import (
+    create_map_template,
     extract_properties,
+    extract_zonations,
     process_arguments,
-    create_map_template, extract_zonations,
 )
-from . import _grid_aggregation, _config
+
+from . import _config, _grid_aggregation
 
 _XTG = XTGeoDialog()
 

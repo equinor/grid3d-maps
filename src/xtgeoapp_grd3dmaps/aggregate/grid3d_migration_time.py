@@ -1,17 +1,17 @@
+import glob
 import os
 import sys
-import glob
 import tempfile
-from typing import Optional, List
+from typing import List, Optional
+
 import xtgeo
 
 from xtgeoapp_grd3dmaps.aggregate import (
-    grid3d_aggregate_map,
-    _migration_time,
     _config,
+    _migration_time,
     _parser,
+    grid3d_aggregate_map,
 )
-
 
 # Module variables for ERT hook implementation:
 DESCRIPTION = (

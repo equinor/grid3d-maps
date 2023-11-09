@@ -1,4 +1,5 @@
 import copy
+
 import xtgeo
 
 xtg = xtgeo.common.XTGeoDialog()

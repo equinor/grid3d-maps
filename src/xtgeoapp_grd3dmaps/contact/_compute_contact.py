@@ -1,5 +1,4 @@
 import numpy as np
-
 import xtgeo
 from xtgeo.common import XTGeoDialog
 from xtgeo.surface import RegularSurface
