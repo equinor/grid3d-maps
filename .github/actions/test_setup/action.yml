@@ -11,5 +11,5 @@ runs:
     - uses: "./.github/actions/build-xtgeoapp-grd3dmaps"
       with:
         python-version: ${{ inputs.python-version }}
-    - run: pip install -r requirements/requirements_tests.txt
+    - run: pip install ".[tests]"
       shell: bash
