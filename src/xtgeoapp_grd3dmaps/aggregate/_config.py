@@ -6,13 +6,14 @@ explicitly provided.
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, List, Tuple, Dict
+from typing import Dict, List, Optional, Tuple
 
 
 class AggregationMethod(Enum):
     """
     Enum representing the available aggregation methods for `grid3d_aggregate_map`
     """
+
     MAX = "max"
     MIN = "min"
     MEAN = "mean"
@@ -38,10 +39,7 @@ class Input:
 
     def __post_init__(self):
         self.dates = [str(d).replace("-", "") for d in self.dates]
-        if (
-            len(self.properties) > 0
-            and isinstance(self.properties[0], dict)
-        ):
+        if len(self.properties) > 0 and isinstance(self.properties[0], dict):
             self.properties = [Property(**p) for p in self.properties]
 
 
@@ -112,6 +110,6 @@ class Output:
 class RootConfig:
     input: Input
     output: Output
-    zonation: Zonation = Zonation()
-    computesettings: ComputeSettings = ComputeSettings()
-    mapsettings: MapSettings = MapSettings()
+    zonation: Zonation = field(default_factory=Zonation)
+    computesettings: ComputeSettings = field(default_factory=ComputeSettings)
+    mapsettings: MapSettings = field(default_factory=MapSettings)
