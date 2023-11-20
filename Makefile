@@ -30,7 +30,7 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 
-APPLICATION := xtgeoapp_grd3dmaps
+APPLICATION := grid3d_maps
 DOCSINSTALL := /project/sdpdocs/XTGeo/apps
 
 BROWSER := firefox

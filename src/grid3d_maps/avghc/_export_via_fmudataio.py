@@ -114,7 +114,7 @@ def export_avg_map_dataio(surf, nametuple, config):
         is_observation=False,
         tagname=globaltag + "average_" + name,
         verbosity="WARNING",
-        workflow="xtgeoapp-grd3dmaps script average maps",
+        workflow="grid3d-maps script average maps",
     )
     fname = edata.export(surf)
     xtg.say(f"Output as fmu-dataio: {fname}")
@@ -169,7 +169,7 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
         unit=unit,
         tagname=globaltag + name,
         verbosity="WARNING",
-        workflow="xtgeoapp-grd3dmaps script hc thickness maps",
+        workflow="grid3d-maps script hc thickness maps",
     )
     fname = edata.export(surf)
     xtg.say(f"Output as fmu-dataio: {fname}")

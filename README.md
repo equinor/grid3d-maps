@@ -1,8 +1,8 @@
-# xtgeoapp-grd3dmaps
+# grid3d-maps
 
-[![tests](https://github.com/equinor/xtgeoapp-grd3dmaps/actions/workflows/test.yml/badge.svg)](https://github.com/equinor/xtgeoapp-grd3dmaps/actions/workflows/test.yml)
+[![tests](https://github.com/equinor/grid3d-maps/actions/workflows/test.yml/badge.svg)](https://github.com/equinor/grid3d-maps/actions/workflows/test.yml)
 ![Python Version](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11-blue.svg)
-[![License: GPL v3](https://img.shields.io/github/license/equinor/subscript)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/github/license/equinor/grid3d-maps)](https://www.gnu.org/licenses/gpl-3.0)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Various scripts for generating maps from 3D grid properties.

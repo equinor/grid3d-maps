@@ -8,7 +8,7 @@ import pytest
 import xtgeo
 import yaml
 
-from xtgeoapp_grd3dmaps.avghc import grid3d_average_map
+from grid3d_maps.avghc import grid3d_average_map
 
 YAMLCONTENT = """
 title: Reek

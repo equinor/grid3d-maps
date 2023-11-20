@@ -7,8 +7,8 @@ import numpy as np
 import xtgeo
 import yaml
 
-from xtgeoapp_grd3dmaps.aggregate import _config
-from xtgeoapp_grd3dmaps.aggregate._config import (
+from grid3d_maps.aggregate import _config
+from grid3d_maps.aggregate._config import (
     ComputeSettings,
     Input,
     MapSettings,

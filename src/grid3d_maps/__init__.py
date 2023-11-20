@@ -1,4 +1,4 @@
-"""Top-level package for xtgeoapp_grd3dmaps"""
+"""Top-level package for grid3d_maps"""
 
 try:
     from ._theversion import version

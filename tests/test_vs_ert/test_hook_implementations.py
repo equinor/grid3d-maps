@@ -15,7 +15,7 @@ except ImportError:
             "Not testing ERT hooks when ERT is not installed", allow_module_level=True
         )
 
-import xtgeoapp_grd3dmaps.hook_implementations.jobs as jobs
+import grid3d_maps.hook_implementations.jobs as jobs
 
 try:
     from ert.shared.plugins.plugin_manager import ErtPluginManager
@@ -23,10 +23,10 @@ except ModuleNotFoundError:
     from ert_shared.plugins.plugin_manager import ErtPluginManager
 
 EXPECTED_JOBS = {
-    "GRID3D_AVERAGE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AVERAGE_MAP",
-    "GRID3D_HC_THICKNESS": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_HC_THICKNESS",
-    "GRID3D_AGGREGATE_MAP": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_AGGREGATE_MAP",
-    "GRID3D_MIGRATION_TIME": "xtgeoapp_grd3dmaps/config_jobs/GRID3D_MIGRATION_TIME",
+    "GRID3D_AVERAGE_MAP": "grid3d_maps/config_jobs/GRID3D_AVERAGE_MAP",
+    "GRID3D_HC_THICKNESS": "grid3d_maps/config_jobs/GRID3D_HC_THICKNESS",
+    "GRID3D_AGGREGATE_MAP": "grid3d_maps/config_jobs/GRID3D_AGGREGATE_MAP",
+    "GRID3D_MIGRATION_TIME": "grid3d_maps/config_jobs/GRID3D_MIGRATION_TIME",
 }
 
 SRC_PATH = Path(__file__).absolute().parent.parent.parent / "src"

@@ -7,7 +7,7 @@ import sys
 import yaml
 from xtgeo.common import XTGeoDialog
 
-from xtgeoapp_grd3dmaps.avghc._loader import ConstructorError, YamlXLoader
+from grid3d_maps.avghc._loader import ConstructorError, YamlXLoader
 
 xtg = XTGeoDialog()
 

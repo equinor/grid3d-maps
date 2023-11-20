@@ -6,10 +6,10 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/xtgeoapp_grd3dmaps/version.py"
+write_to = "src/grid3d_maps/version.py"
 
 [project]
-name = "xtgeoapp_grd3dmaps"
+name = "grid3d_maps"
 description = "Make HC thickness, avg maps, etc directly from 3D props"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -79,18 +79,18 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/equinor/xtgeoapp-grd3dmaps"
-Repository = "https://github.com/equinor/xtgeoapp-grd3dmaps"
-Documentation = "https://equinor.github.io/xtgeoapp-grd3dmaps"
+Homepage = "https://github.com/equinor/grid3d-maps"
+Repository = "https://github.com/equinor/grid3d-maps"
+Documentation = "https://equinor.github.io/grid3d-maps"
 
 [project.scripts]
-grid3d_hc_thickness = "xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
-grid3d_average_map = "xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
-grid3d_aggregate_map = "xtgeoapp_grd3dmaps.aggregate.grid3d_aggregate_map:main"
-grid3d_migration_time = "xtgeoapp_grd3dmaps.aggregate.grid3d_migration_time:main"
+grid3d_hc_thickness = "grid3d_maps.avghc.grid3d_hc_thickness:main"
+grid3d_average_map = "grid3d_maps.avghc.grid3d_average_map:main"
+grid3d_aggregate_map = "grid3d_maps.aggregate.grid3d_aggregate_map:main"
+grid3d_migration_time = "grid3d_maps.aggregate.grid3d_migration_time:main"
 
 [project.entry-points.ert]
-xtgeoapp_grd3dmaps_jobs = "xtgeoapp_grd3dmaps.hook_implementations.jobs"
+grid3d_maps_jobs = "grid3d_maps.hook_implementations.jobs"
 
 [tool.black]
 line-length = 88

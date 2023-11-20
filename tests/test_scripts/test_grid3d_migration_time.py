@@ -1,7 +1,7 @@
 import pytest
 import xtgeo
 
-from xtgeoapp_grd3dmaps.aggregate import grid3d_migration_time
+from grid3d_maps.aggregate import grid3d_migration_time
 
 
 def test_migration_time1(datatree):

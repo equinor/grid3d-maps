@@ -1,4 +1,4 @@
-Welcome to xtgeoapp_grd3dmaps' documentation!
+Welcome to grid3d_maps' documentation!
 =============================================
 
 Contents:

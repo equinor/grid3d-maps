@@ -3,7 +3,7 @@ import numpy.testing as nptest
 import pytest
 import xtgeo
 
-import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_average_map
+import grid3d_maps.avghc.grid3d_average_map as grid3d_average_map
 
 # =============================================================================
 # Do tests
