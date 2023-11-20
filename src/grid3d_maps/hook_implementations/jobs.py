@@ -10,7 +10,7 @@ except ModuleNotFoundError:
     from ert_shared.plugins.plugin_manager import hook_implementation
     from ert_shared.plugins.plugin_response import plugin_response
 
-PLUGIN_NAME = "xtgeoapp_grd3dmaps"
+PLUGIN_NAME = "grid3d_maps"
 
 
 def _get_jobs_from_directory(directory):

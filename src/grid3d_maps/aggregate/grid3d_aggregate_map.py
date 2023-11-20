@@ -6,7 +6,7 @@ import numpy as np
 import xtgeo
 from xtgeo.common import XTGeoDialog
 
-from xtgeoapp_grd3dmaps.aggregate._config import (
+from grid3d_maps.aggregate._config import (
     AggregationMethod,
     ComputeSettings,
     Input,
@@ -14,7 +14,7 @@ from xtgeoapp_grd3dmaps.aggregate._config import (
     Output,
     Zonation,
 )
-from xtgeoapp_grd3dmaps.aggregate._parser import (
+from grid3d_maps.aggregate._parser import (
     create_map_template,
     extract_properties,
     extract_zonations,
@@ -29,7 +29,7 @@ _XTG = XTGeoDialog()
 # Module variables for ERT hook implementation:
 DESCRIPTION = (
     "Aggregate property maps from 3D grids. Docs:\n"
-    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
+    + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
 CATEGORY = "modelling.reservoir"
 EXAMPLES = """

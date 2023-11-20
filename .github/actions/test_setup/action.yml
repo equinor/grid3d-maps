@@ -1,5 +1,5 @@
 name: "Set up for tests"
-description: "Set up the xtgeoapp-grd3dmaps test environment"
+description: "Set up the grid3d-maps test environment"
 
 inputs:
   python-version:
@@ -8,7 +8,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: "./.github/actions/build-xtgeoapp-grd3dmaps"
+    - uses: "./.github/actions/build-grid3d-maps"
       with:
         python-version: ${{ inputs.python-version }}
     - run: pip install ".[tests]"

@@ -9,7 +9,7 @@ import xtgeo
 import yaml
 from fmu.config import utilities as ut
 
-import xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
+import grid3d_maps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 YAMLCONTENT = """
 title: Reek

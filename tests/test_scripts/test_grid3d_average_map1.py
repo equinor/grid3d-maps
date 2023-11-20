@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 import xtgeo
 
-import xtgeoapp_grd3dmaps.avghc.grid3d_average_map as grid3d_hc_thickness
+import grid3d_maps.avghc.grid3d_average_map as grid3d_hc_thickness
 
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 

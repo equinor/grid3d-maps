@@ -9,7 +9,7 @@ XTGEOTESTDATA = "tests/data/reek"
 
 
 @pytest.mark.requires_ert
-def test_xtgeoapps_through_ert(datatree):
+def test_grid3d_maps_through_ert(datatree):
     """Test through ERT."""
     print(f"ERT run on {datatree}")
 
@@ -67,7 +67,7 @@ def test_xtgeoapps_through_ert(datatree):
         + ")"
     )
 
-    ert_config_filename = Path(datatree) / "xtgeoapps_test.ert"
+    ert_config_filename = Path(datatree) / "grid3d_maps_test.ert"
     ert_config_filename.write_text("\n".join(ert_config))
 
     subprocess.call(["ert", "test_run", ert_config_filename])

@@ -4,8 +4,8 @@ import sys
 
 from xtgeo.common import XTGeoDialog
 
-from xtgeoapp_grd3dmaps.avghc import _configparser, _get_zonation_filters
-from xtgeoapp_grd3dmaps.contact import _compute_contact, _get_grid_props
+from grid3d_maps.avghc import _configparser, _get_zonation_filters
+from grid3d_maps.contact import _compute_contact, _get_grid_props
 
 try:
     from .._theversion import version as __version__
@@ -17,7 +17,7 @@ APPNAME = "grid3d_get_contact"
 
 APPDESCR = (
     "Estimate contact maps directly from 3D grids. Docs:\n"
-    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
+    + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
 
 xtg = XTGeoDialog()

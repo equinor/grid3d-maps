@@ -6,7 +6,7 @@ from typing import List, Optional
 
 import xtgeo
 
-from xtgeoapp_grd3dmaps.aggregate import (
+from grid3d_maps.aggregate import (
     _config,
     _migration_time,
     _parser,
@@ -16,7 +16,7 @@ from xtgeoapp_grd3dmaps.aggregate import (
 # Module variables for ERT hook implementation:
 DESCRIPTION = (
     "Generate migration time property maps. Docs:\n"
-    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
+    + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
 CATEGORY = "modelling.reservoir"
 EXAMPLES = """

@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/equinor/xtgeoapp-grd3dmaps/issues.
+Report bugs at https://github.com/equinor/grid3d-maps/issues.
 
 If you are reporting a bug, please include:
 
@@ -38,15 +38,15 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-xtgeoapp-grd3dmaps could always use more documentation, whether as part of the
-official xtgeoapp-grd3dmaps docs, in docstrings, or even on the web in blog posts,
+grid3d-maps could always use more documentation, whether as part of the
+official grid3d-maps docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
 The best way to send feedback is to file an issue
-at https://github.com/equinor/xtgeoapp-grd3dmaps/issues.
+at https://github.com/equinor/grid3d-maps/issues.
 
 If you are proposing a feature:
 
@@ -58,18 +58,18 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `xtgeoapp-grd3dmaps` for local development.
+Ready to contribute? Here's how to set up `grid3d-maps` for local development.
 
-1. Fork the `xtgeoapp-grd3dmaps` repo on Github equinor
+1. Fork the `grid3d-maps` repo on Github equinor
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/xtgeoapp-grd3dmaps.git
+    $ git clone git@github.com:your_name_here/grid3d-maps.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed,
    this is how you set up your fork for local development::
 
-    $ mkvirtualenv xtgeoapp-grd3dmaps
-    $ cd xtgeoapp-grd3dmaps/
+    $ mkvirtualenv grid3d-maps
+    $ cd grid3d-maps/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -81,7 +81,7 @@ Ready to contribute? Here's how to set up `xtgeoapp-grd3dmaps` for local develop
 5. When you're done making changes, check that your changes pass flake8 and the tests,
    including testing other Python versions with tox::
 
-    $ flake8 xtgeoapp-grd3dmaps tests
+    $ flake8 grid3d-maps tests
     $ python setup.py test or py.test
 
    To get flake8 etc, just pip install them into your virtualenv.

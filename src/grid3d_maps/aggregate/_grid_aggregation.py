@@ -8,7 +8,7 @@ import scipy.sparse
 import scipy.spatial
 import xtgeo
 
-from xtgeoapp_grd3dmaps.aggregate._config import AggregationMethod
+from grid3d_maps.aggregate._config import AggregationMethod
 
 
 def aggregate_maps(

@@ -3,7 +3,7 @@ import numpy.testing as npt
 import pytest
 import xtgeo
 
-from xtgeoapp_grd3dmaps.aggregate import AggregationMethod, aggregate_maps
+from grid3d_maps.aggregate import AggregationMethod, aggregate_maps
 
 
 @pytest.fixture(name="example_grid")

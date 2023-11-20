@@ -18,7 +18,7 @@ from . import (
 )
 
 try:
-    from xtgeoapp_grd3dmaps._theversion import version as __version__
+    from grid3d_maps._theversion import version as __version__
 except ImportError:
     __version__ = "0.0.0"
 
@@ -26,7 +26,7 @@ APPNAME = "grid3d_hc_thickness"
 
 APPDESCR = (
     "Make HC thickness maps directly from 3D grids. Docs:\n"
-    + "https://fmu-docs.equinor.com/docs/xtgeoapp-grd3dmaps/"
+    + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
 
 # Module variables for ERT hook implementation:

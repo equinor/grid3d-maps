@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import xtgeo
 
-from xtgeoapp_grd3dmaps.aggregate import grid3d_aggregate_map
+from grid3d_maps.aggregate import grid3d_aggregate_map
 
 
 def test_aggregated_map1(datatree):
