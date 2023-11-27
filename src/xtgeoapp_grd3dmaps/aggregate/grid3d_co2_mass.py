@@ -16,7 +16,7 @@ from xtgeoapp_grd3dmaps.aggregate._config import CO2MassSettings
 from ecl.eclfile import EclFile
 from ecl.grid import EclGrid
 
-from ._co2_mass import _extract_source_data
+from _co2_mass import _extract_source_data
 
 PROPERTIES_TO_EXTRACT = ["RPORV", "PORV", "SGAS", "DGAS", "BGAS", "DWAT",
                          "BWAT", "AMFG", "YMFG", "XMF2", "YMF2"]
