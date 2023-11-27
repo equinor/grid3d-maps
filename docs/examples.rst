@@ -312,3 +312,11 @@ determined by "pixel_to_cell_ratio".
 
 .. literalinclude:: ../tests/yaml/aggregate5.yml
    :language: yaml
+
+Aggregate example 6
+"""""""""""""""""""
+
+Example using date and zone filters
+
+.. literalinclude:: ../tests/yaml/aggregate6.yml
+   :language: yaml
