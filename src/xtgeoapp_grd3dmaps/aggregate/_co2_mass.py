@@ -2,6 +2,7 @@ from dataclasses import dataclass, fields
 import glob
 from typing import Dict, List, Literal, Optional, Tuple
 import numpy as np
+import os
 
 from ecl.eclfile import EclFile
 from ecl.grid import EclGrid
@@ -521,6 +522,12 @@ def translate_co2data_to_property(
             mass_total_array[triplets[i]]=mass_total[i]
             mass_aqu_phase_array[triplets[i]]=mass_aqu_phase[i]
             mass_gas_phase_array[triplets[i]]=mass_gas_phase[i]
+
+        ## Setting up the grid folder to store the gridproperties
+        grid_out_dir = out_file+"/grid"
+        if not os.path.exists(grid_out_dir):
+            os.makedirs(grid_out_dir)
+
         
         ## -999 or 0 for cells without CO2?
         #result_array = np.ma.masked_array(mass_array, mask=mask)
@@ -529,17 +536,17 @@ def translate_co2data_to_property(
 
         mass_total_name = "co2_mass_total--"+str(x.date)
         mass_total_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_total_array,name=mass_total_name,date=str(x.date))
-        mass_total_prop.to_file(out_file + "MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
+        mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
         mass_total_prop_list.append(mass_total_prop)
 
         mass_aqu_phase_name = "co2_mass_aqu_phase--"+str(x.date)
         mass_aqu_phase_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_aqu_phase_array,name=mass_aqu_phase_name,date=str(x.date))
-        mass_aqu_phase_prop.to_file(out_file + "MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
+        mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
         mass_aqu_phase_prop_list.append(mass_aqu_phase_prop)
 
         mass_gas_phase_name = "co2_mass_gas_phase--"+str(x.date)
         mass_gas_phase_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_gas_phase_array,name=mass_gas_phase_name,date=str(x.date))
-        mass_aqu_phase_prop.to_file(out_file + "MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
+        mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
         mass_gas_phase_prop_list.append(mass_gas_phase_prop)
 
         
