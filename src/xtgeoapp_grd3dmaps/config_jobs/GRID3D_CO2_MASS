@@ -1,0 +1,5 @@
+EXECUTABLE grid3d_co2_mass
+ARGLIST "--config"  <CONFIG_CO2_MASS> "--eclroot" <ECLROOT>
+
+STDERR GRID3D_CO2_MASS.stderr
+STDOUT GRID3D_CO2_MASS.stdout
