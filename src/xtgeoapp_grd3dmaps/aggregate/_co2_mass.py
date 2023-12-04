@@ -531,8 +531,6 @@ def translate_co2data_to_property(
         
         ## -999 or 0 for cells without CO2?
         #result_array = np.ma.masked_array(mass_array, mask=mask)
-        name = "mass--"+str(x.date)
-        test_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=result_array,name=name,date=str(x.date))
 
         mass_total_name = "co2_mass_total--"+str(x.date)
         mass_total_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_total_array,name=mass_total_name,date=str(x.date))
