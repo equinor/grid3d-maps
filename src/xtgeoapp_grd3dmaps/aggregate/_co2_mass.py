@@ -550,7 +550,7 @@ def translate_co2data_to_property(
         
         print("")
         print(type(mass_total))
-        print(f"sum of co2 mass: {mass.sum()}")
+        print(f"sum of co2 mass: {mass_total.sum()}")
         print(f"sum of co2 mass aqueous phase: {mass_aqu_phase.sum()}")
         print(f"sum of co2 mass gaseous phase: {mass_gas_phase.sum()}")        
         print(len(mass_total))
