@@ -560,7 +560,7 @@ def translate_co2data_to_property(
         if maps is None:
             maps = []
         elif isinstance(maps,str):
-            maps = []
+            maps = [maps]
         maps = [map_name.lower() for map_name in maps]
         
         if "all" in maps or len(maps)==0:
@@ -571,13 +571,13 @@ def translate_co2data_to_property(
             mass_aqu_phase_prop_list.append(mass_aqu_phase_prop)
             mass_gas_phase_prop_list.append(mass_gas_phase_prop)
             all_maps_bool = True
-        if "free_CO2" in maps and all_maps_bool==False:
+        if "free_co2" in maps and all_maps_bool==False:
             mass_gas_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_gas_phase_prop_list.append(mass_gas_phase_prop)
-        if "dissolved_CO2" in maps and all_maps_bool==False:
+        if "dissolved_co2" in maps and all_maps_bool==False:
             mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_aqu_phase_prop_list.append(mass_aqu_phase_prop)
-        if "total_CO2" in maps and all_maps_bool==False:
+        if "total_co2" in maps and all_maps_bool==False:
             mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
             mass_total_prop_list.append(mass_total_prop)
 
