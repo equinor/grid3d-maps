@@ -559,7 +559,11 @@ def translate_co2data_to_property(
         # a = xtgeo.GridProperty(values=mass)
         if maps is None:
             maps = []
-        if maps == "all" or len(maps)==0:
+        elif isinstance(maps,str):
+            maps = []
+        maps = [map_name.lower() for map_name in maps]
+        
+        if "all" in maps or len(maps)==0:
             mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
             mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_gas_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
