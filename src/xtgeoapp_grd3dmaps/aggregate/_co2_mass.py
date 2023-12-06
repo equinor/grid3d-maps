@@ -463,7 +463,7 @@ def translate_co2data_to_property(
     unrst_file: str,
     properties_to_extract: List[str],
     out_file: str,
-    mode: List[str]
+    maps: List[str]
 ) -> List[List[xtgeo.GridProperty]]:
     print("translate_co2data_to_property")
 
@@ -558,7 +558,7 @@ def translate_co2data_to_property(
         print(len(mass_total))
         # a = xtgeo.GridProperty(values=mass)
         ## Name of the property recommended by Maria
-        if mode == "all" or mode is None:
+        if maps == "all" or maps is None:
             mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
             mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_gas_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
@@ -566,13 +566,13 @@ def translate_co2data_to_property(
             mass_aqu_phase_prop_list.append(mass_aqu_phase_prop)
             mass_gas_phase_prop_list.append(mass_gas_phase_prop)
             all_maps_bool = True
-        if "free_CO2" in mode and all_maps_bool==False:
+        if "free_CO2" in maps and all_maps_bool==False:
             mass_gas_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_gas_phase_prop_list.append(mass_gas_phase_prop)
-        if "dissolved_CO2" in mode and all_maps_bool==False:
+        if "dissolved_CO2" in maps and all_maps_bool==False:
             mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_aqu_phase_prop_list.append(mass_aqu_phase_prop)
-        if "total_CO2" in mode and all_maps_bool==False:
+        if "total_CO2" in maps and all_maps_bool==False:
             mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
             mass_total_prop_list.append(mass_total_prop)
 
