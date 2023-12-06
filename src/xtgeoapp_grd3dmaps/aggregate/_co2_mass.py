@@ -557,8 +557,9 @@ def translate_co2data_to_property(
         print(f"sum of co2 mass gaseous phase: {mass_gas_phase.sum()}")        
         print(len(mass_total))
         # a = xtgeo.GridProperty(values=mass)
-        ## Name of the property recommended by Maria
-        if maps == "all" or maps is None:
+        if maps is None:
+            maps = []
+        if maps == "all" or len(maps)==0:
             mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
             mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
             mass_gas_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
