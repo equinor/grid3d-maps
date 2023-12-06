@@ -535,17 +535,17 @@ def translate_co2data_to_property(
         ## -999 or 0 for cells without CO2?
         #result_array = np.ma.masked_array(mass_array, mask=mask)
 
-        #mass_total_name = "co2_mass_total--"+str(x.date)
+        mass_total_name = "co2_mass_total--"+str(x.date)
         mass_total_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_total_array,name=mass_total_name,date=str(x.date))
         #mass_total_prop.to_file(grid_out_dir + "/MASS_TOTAL_"+str(x.date)+".roff", fformat="roff")
         #mass_total_prop_list.append(mass_total_prop)
 
-        #mass_aqu_phase_name = "co2_mass_aqu_phase--"+str(x.date)
+        mass_aqu_phase_name = "co2_mass_aqu_phase--"+str(x.date)
         mass_aqu_phase_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_aqu_phase_array,name=mass_aqu_phase_name,date=str(x.date))
         #mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_AQU_PHASE_"+str(x.date)+".roff", fformat="roff")
         #mass_aqu_phase_prop_list.append(mass_aqu_phase_prop)
 
-        #mass_gas_phase_name = "co2_mass_gas_phase--"+str(x.date)
+        mass_gas_phase_name = "co2_mass_gas_phase--"+str(x.date)
         mass_gas_phase_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_gas_phase_array,name=mass_gas_phase_name,date=str(x.date))
         #mass_aqu_phase_prop.to_file(grid_out_dir + "/MASS_GAS_PHASE_"+str(x.date)+".roff", fformat="roff")
         #mass_gas_phase_prop_list.append(mass_gas_phase_prop)
