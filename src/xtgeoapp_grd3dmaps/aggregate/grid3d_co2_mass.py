@@ -45,17 +45,10 @@ def calculate_mass_property(
     Calculates a 3D CO2 mass property from the provided grid and grid property
     files
     """
-    print("calculate_mass_property()")
-
-    print("Reading files.")
     grid = EclGrid(grid_file)
-    print(grid)
     unrst = EclFile(co2_mass_settings.unrst_source)
-    print(unrst)
     init = EclFile(co2_mass_settings.init_source)
-    print(init)
-
-    # POINT 2:
+    
     source_data = _extract_source_data(
         grid_file,
         co2_mass_settings.unrst_source,
@@ -64,15 +57,10 @@ def calculate_mass_property(
         None
     )
 
-
-    # POINT 3:
     co2_data = _co2_mass.generate_co2_mass_data(source_data)
 
-    # POINT 4:
-    # temp_copy = _co2_mass._temp_make_property_copy(co2_mass_settings.unrst_source, grid_file, dates)
-    co2_mass_total_prop, co2_mass_aqu_phase_prop, co2_mass_gas_phase_prop = _co2_mass.translate_co2data_to_property(co2_data,grid_file,co2_mass_settings.unrst_source,PROPERTIES_TO_EXTRACT,out_folder.mapfolder)
-
-    return co2_mass_total_prop, co2_mass_aqu_phase_prop, co2_mass_gas_phase_prop
+    out_property_list = _co2_mass.translate_co2data_to_property(co2_data,grid_file,co2_mass_settings.unrst_source,PROPERTIES_TO_EXTRACT,out_folder.mapfolder,co2_mass_settings.maps)
+    return out_property_list
 
 def co2_mass_property_to_map(
     config_: _config.RootConfig,
@@ -107,20 +95,16 @@ def main(arguments=None):
         raise ValueError(
             "CO2 mass computation needs co2_mass_settings as input"
         )
-    co2_mass_total_prop, co2_mass_aqu_phase_prop, co2_mass_gas_phase_prop = calculate_mass_property(
+    out_property_list = calculate_mass_property(
         config_.input.grid,
         config_.co2_mass_settings,
         config_.input.dates,
         config_.output
     )
 
-    # POINT 5:
-    # Similar to migration_time_property_to_map:
-    for x,y,z in zip(co2_mass_total_prop, co2_mass_aqu_phase_prop, co2_mass_gas_phase_prop):
-        co2_mass_property_to_map(config_,x)
-        co2_mass_property_to_map(config_,y)
-        co2_mass_property_to_map(config_,z)
-
+    for x in out_property_list:
+        for y in x:
+            co2_mass_property_to_map(config_,y)
 
 if __name__ == '__main__':
     main()
