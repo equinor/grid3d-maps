@@ -207,6 +207,19 @@ def _zonation_from_zproperty(
     grid: xtgeo.Grid,
     zproperty: ZProperty
 ) -> List[Tuple[str, np.ndarray]]:
+    if zproperty.source.split(".")[-1] in ["yml", "yaml"]:
+        with open(zproperty.source, "r", encoding="utf8") as stream:
+            try:
+                zfile = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+                exit()
+        if 'zranges' not in zfile:
+            error_text = ("The yaml zone file must be in the format:\nzranges:\
+            \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])")
+            raise InputError(error_text)
+        zranges = zfile['zranges']
+        return _zonation_from_zranges(grid, zranges)
     actnum = grid.actnum_indices
     prop = xtgeo.gridproperty_from_file(
         zproperty.source, grid=grid, name=zproperty.name
