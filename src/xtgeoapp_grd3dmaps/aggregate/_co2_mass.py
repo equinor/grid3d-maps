@@ -517,13 +517,13 @@ def translate_co2data_to_property(
         grid_out_dir = out_file+"/grid"
         if not os.path.exists(grid_out_dir):
             os.makedirs(grid_out_dir)
-        mass_total_name = "co2_mass_total--"+str(x.date)
+        mass_total_name = "co2-mass-total--"+str(x.date)
         mass_total_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_total_array,name=mass_total_name,date=str(x.date))
 
-        mass_aqu_phase_name = "co2_mass_aqu_phase--"+str(x.date)
+        mass_aqu_phase_name = "co2-mass-aqu-phase--"+str(x.date)
         mass_aqu_phase_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_aqu_phase_array,name=mass_aqu_phase_name,date=str(x.date))
 
-        mass_gas_phase_name = "co2_mass_gas_phase--"+str(x.date)
+        mass_gas_phase_name = "co2-mass-gas-phase--"+str(x.date)
         mass_gas_phase_prop = xtgeo.grid3d.GridProperty(ncol=grid_pf.ncol,nrow=grid_pf.nrow,nlay=grid_pf.nlay,values=mass_gas_phase_array,name=mass_gas_phase_name,date=str(x.date))
 
         if maps is None:
