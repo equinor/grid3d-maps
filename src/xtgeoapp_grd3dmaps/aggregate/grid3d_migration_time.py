@@ -1,17 +1,17 @@
+import glob
 import os
 import sys
-import glob
 import tempfile
-from typing import Optional, List
+from typing import List, Optional
+
 import xtgeo
 
 from xtgeoapp_grd3dmaps.aggregate import (
-    grid3d_aggregate_map,
-    _migration_time,
     _config,
+    _migration_time,
     _parser,
+    grid3d_aggregate_map,
 )
-
 
 # Module variables for ERT hook implementation:
 DESCRIPTION = (
@@ -62,7 +62,8 @@ def migration_time_property_to_map(
     config_.output.aggregation_tag = False
     temp_file, temp_path = tempfile.mkstemp()
     os.close(temp_file)
-    config_.input.properties.append(_config.Property(temp_path, None, None))
+    if config_.input.properties is not None:
+        config_.input.properties.append(_config.Property(temp_path, None, None))
     t_prop.to_file(temp_path)
     grid3d_aggregate_map.generate_from_config(config_)
     os.unlink(temp_path)
@@ -90,5 +91,5 @@ def main(arguments=None):
     migration_time_property_to_map(config_, t_prop)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

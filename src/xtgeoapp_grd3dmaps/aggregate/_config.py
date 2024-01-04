@@ -6,13 +6,14 @@ explicitly provided.
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, List, Tuple, Dict
+from typing import Dict, List, Optional, Tuple
 
 
 class AggregationMethod(Enum):
     """
     Enum representing the available aggregation methods for `grid3d_aggregate_map`
     """
+
     MAX = "max"
     MIN = "min"
     MEAN = "mean"

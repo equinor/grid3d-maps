@@ -1,11 +1,12 @@
 import dataclasses
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
+
 import numpy as np
-import xtgeo
 import scipy.interpolate
-import scipy.spatial
 import scipy.sparse
+import scipy.spatial
+import xtgeo
 
 from xtgeoapp_grd3dmaps.aggregate._config import AggregationMethod
 
@@ -76,8 +77,7 @@ def _read_properties_and_find_active_cells(
     active[active] = ~all_masked
     props = [p[~all_masked] for p in props]
     inclusion_filters = [
-        None if inc is None else inc[~all_masked]
-        for inc in inclusion_filters
+        None if inc is None else inc[~all_masked] for inc in inclusion_filters
     ]
     return props, active, inclusion_filters
 
@@ -87,6 +87,7 @@ class _ConnectionData:
     """
     Helper dataclass containing information connecting map nodes to grid cells
     """
+
     x_nodes: np.ndarray
     y_nodes: np.ndarray
     node_indices: np.ndarray
@@ -100,13 +101,11 @@ def _find_connections(
 ) -> _ConnectionData:
     footprints_x, footprints_y = _cell_footprints(grid, active_cells)
     if isinstance(map_template, xtgeo.RegularSurface):
-        x_nodes = (
-            map_template.xori
-            + map_template.xinc * np.arange(0, map_template.ncol, dtype=float)
+        x_nodes = map_template.xori + map_template.xinc * np.arange(
+            0, map_template.ncol, dtype=float
         )
-        y_nodes = (
-            map_template.yori
-            + map_template.yinc * np.arange(0, map_template.nrow, dtype=float)
+        y_nodes = map_template.yori + map_template.yinc * np.arange(
+            0, map_template.nrow, dtype=float
         )
     else:
         x_nodes, y_nodes = _derive_map_nodes(
@@ -144,14 +143,16 @@ def _extract_all_overlaps(i_starts, i_range, j_starts, j_range):
             for qi in range(ni):
                 for qj in range(nj):
                     ij_pairs.append(
-                        np.column_stack((
-                            i0 + qi,
-                            j0 + qj,
-                        ))
+                        np.column_stack(
+                            (
+                                i0 + qi,
+                                j0 + qj,
+                            )
+                        )
                     )
-            indices.append(np.kron(
-                np.ones(ni * nj, dtype=int), np.argwhere(ix).flatten()
-            ))
+            indices.append(
+                np.kron(np.ones(ni * nj, dtype=int), np.argwhere(ix).flatten())
+            )
     return np.vstack(ij_pairs), np.hstack(indices)
 
 
@@ -249,7 +250,7 @@ def _point_in_quadrangle(
     rx = (point_x - quad_x[:-1]) / dx
     interp_y = (1 - rx) * quad_y[:-1] + rx * quad_y[1:]
     overlap_x = (rx <= 1.0) & (rx >= 0.0)
-    overlap_y = (interp_y >= point_y)
+    overlap_y = interp_y >= point_y
     crosses = (overlap_x & overlap_y).astype(int).sum(axis=0)
     return (crosses % 2) == 1
 
@@ -261,7 +262,7 @@ def _properties_to_maps(
     method: AggregationMethod,
     conn_data: _ConnectionData,
 ):
-    results = []
+    results: List[Any] = []
     for incl in inclusion_filters:
         map_ix = conn_data.node_indices
         grd_ix = conn_data.grid_indices
@@ -271,16 +272,18 @@ def _properties_to_maps(
             grd_ix = grd_ix[~to_remove]
         results.append([])
         for prop in properties:
-            results[-1].append(_property_to_map(
-                dataclasses.replace(
-                    conn_data,
-                    node_indices=map_ix,
-                    grid_indices=grd_ix,
-                ),
-                prop,
-                weights,
-                method,
-            ))
+            results[-1].append(
+                _property_to_map(
+                    dataclasses.replace(
+                        conn_data,
+                        node_indices=map_ix,
+                        grid_indices=grd_ix,
+                    ),
+                    prop,
+                    weights,
+                    method,
+                )
+            )
     return results
 
 
@@ -297,7 +300,8 @@ def _property_to_map(
     if weights is not None:
         assert method in [AggregationMethod.MEAN, AggregationMethod.SUM]
     data = prop[0][cols] if len(prop) == 1 else prop[cols]
-    # Small hack due to a slight difference between calculating mass and other properties
+    # Small hack due to a small difference between calculating mass and other properties
+    # pylint: disable=fixme
     # TODO: Implement a better solution
     weights = np.ones_like(data) if weights is None else weights[cols]
     if data.mask.any():
@@ -324,9 +328,7 @@ def _property_to_map(
         values=scipy.sparse.coo_matrix(
             (data - shift, (rows, cols)), shape=shape
         ).tocsc(),
-        weight=scipy.sparse.coo_matrix(
-            (weights, (rows, cols)), shape=shape
-        ).tocsc(),
+        weight=scipy.sparse.coo_matrix((weights, (rows, cols)), shape=shape).tocsc(),
         method=method,
     )
     res += shift

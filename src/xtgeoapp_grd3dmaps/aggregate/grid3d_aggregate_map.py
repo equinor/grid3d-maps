@@ -1,24 +1,27 @@
 import pathlib
 import sys
-from typing import List
+from typing import List, Optional
 
-import xtgeo
 import numpy as np
+import xtgeo
 from xtgeo.common import XTGeoDialog
 
 from xtgeoapp_grd3dmaps.aggregate._config import (
+    AggregationMethod,
+    ComputeSettings,
     Input,
     MapSettings,
+    Output,
     Zonation,
-    ComputeSettings,
-    Output, AggregationMethod,
 )
 from xtgeoapp_grd3dmaps.aggregate._parser import (
+    create_map_template,
     extract_properties,
+    extract_zonations,
     process_arguments,
-    create_map_template, extract_zonations,
 )
-from . import _grid_aggregation, _config
+
+from . import _config, _grid_aggregation
 
 _XTG = XTGeoDialog()
 
@@ -64,11 +67,12 @@ def write_plot_using_plotly(surf: xtgeo.RegularSurface, filename):
     """
     # pylint: disable=import-outside-toplevel
     import plotly.express as px
+
     x_nodes = surf.xori + np.arange(0, surf.ncol) * surf.xinc
     y_nodes = surf.yori + np.arange(0, surf.nrow) * surf.yinc
     px.imshow(
         surf.values.filled(np.nan).T, x=x_nodes, y=y_nodes, origin="lower"
-    ).write_html(filename.with_suffix('.html'), include_plotlyjs="cdn")
+    ).write_html(filename.with_suffix(".html"), include_plotlyjs="cdn")
 
 
 def write_plot_using_quickplot(surface, filename):
@@ -77,7 +81,8 @@ def write_plot_using_quickplot(surface, filename):
     """
     # pylint: disable=import-outside-toplevel
     from xtgeoviz import quickplot
-    quickplot(surface, filename=filename.with_suffix('.png'))
+
+    quickplot(surface, filename=filename.with_suffix(".png"))
 
 
 def generate_maps(
@@ -127,6 +132,7 @@ def _property_tag(prop: str, agg_method: AggregationMethod, agg_tag: bool):
     return f"{agg}{prop.replace('_', '--')}"
 
 
+# pylint: disable=too-many-arguments
 def _ndarray_to_regsurfs(
     filter_names: List[str],
     prop_names: List[str],
@@ -161,7 +167,7 @@ def _deduce_surface_name(filter_name, property_name, lowercase):
 def _write_surfaces(
     surfaces: List[xtgeo.RegularSurface],
     map_folder: str,
-    plot_folder: str,
+    plot_folder: Optional[str],
     use_plotly: bool,
 ):
     for surface in surfaces:
@@ -183,7 +189,7 @@ def generate_from_config(config: _config.RootConfig):
         config.zonation,
         config.computesettings,
         config.mapsettings,
-        config.output
+        config.output,
     )
 
 
@@ -196,5 +202,5 @@ def main(arguments=None):
     generate_from_config(process_arguments(arguments))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

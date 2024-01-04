@@ -1,7 +1,8 @@
 import argparse
 import datetime
 import pathlib
-from typing import List, Optional, Tuple, Union, Dict, Any
+import sys
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import xtgeo
@@ -9,13 +10,15 @@ import yaml
 
 from xtgeoapp_grd3dmaps.aggregate import _config
 from xtgeoapp_grd3dmaps.aggregate._config import (
+    CO2MassSettings,
+    ComputeSettings,
+    Input,
+    MapSettings,
+    Output,
     Property,
     RootConfig,
-    Input,
-    Output,
-    ComputeSettings,
-    MapSettings, Zonation, ZProperty,
-    CO2MassSettings,
+    Zonation,
+    ZProperty,
 )
 
 
@@ -34,22 +37,20 @@ def parse_arguments(arguments):
     parser.add_argument(
         "--mapfolder",
         help="Path to output map folder (overrides yaml file)",
-        default=None
+        default=None,
     )
     parser.add_argument(
         "--plotfolder",
         help="Path to output plot folder (overrides yaml file)",
-        default=None
+        default=None,
     )
     parser.add_argument(
-        "--eclroot",
-        help="Eclipse root name (includes case name)",
-        default=None
+        "--eclroot", help="Eclipse root name (includes case name)", default=None
     )
     parser.add_argument(
         "--folderroot",
         help="Folder root name ($-alias available in config file)",
-        default=None
+        default=None,
     )
     return parser.parse_args(arguments)
 
@@ -85,7 +86,11 @@ def parse_yaml(
     details.
     """
     config = load_yaml(yaml_file, map_folder, plot_folder, replacements)
-    co2_mass_settings = None if "co2_mass_settings" not in config else CO2MassSettings(**config.get("co2_mass_settings", {}))
+    co2_mass_settings = (
+        None
+        if "co2_mass_settings" not in config
+        else CO2MassSettings(**config.get("co2_mass_settings", {}))
+    )
     return RootConfig(
         input=Input(**config["input"]),
         output=Output(**config["output"]),
@@ -146,17 +151,24 @@ def load_yaml(
 
 
 def extract_properties(
-    property_spec: List[Property], grid: Optional[xtgeo.Grid], dates: List[str]
+    property_spec: Optional[List[Property]],
+    grid: Optional[xtgeo.Grid],
+    dates: List[str],
 ) -> List[xtgeo.GridProperty]:
     """
     Extract 3D grid properties based on the provided property specification
     """
-    properties = []
+    properties: List[Property] = []
+    if property_spec is None:
+        return properties
     for spec in property_spec:
         try:
             names = "all" if spec.name is None else [spec.name]
             props = xtgeo.gridproperties_from_file(
-                spec.source, names=names, grid=grid, dates=dates or "all",
+                spec.source,
+                names=names,
+                grid=grid,
+                dates=dates or "all",
             ).props
         except (RuntimeError, ValueError):
             props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
@@ -182,8 +194,7 @@ def extract_properties(
 
 
 def extract_zonations(
-    zonation: Zonation,
-    grid: xtgeo.Grid
+    zonation: Zonation, grid: xtgeo.Grid
 ) -> List[Tuple[str, np.ndarray]]:
     """
     Extract boolean zonation arrays and corresponding names based on `zonation`
@@ -204,8 +215,7 @@ def _zonation_from_zranges(grid: xtgeo.Grid, z_ranges) -> List[Tuple[str, np.nda
 
 
 def _zonation_from_zproperty(
-    grid: xtgeo.Grid,
-    zproperty: ZProperty
+    grid: xtgeo.Grid, zproperty: ZProperty
 ) -> List[Tuple[str, np.ndarray]]:
     if zproperty.source.split(".")[-1] in ["yml", "yaml"]:
         with open(zproperty.source, "r", encoding="utf8") as stream:
@@ -213,12 +223,12 @@ def _zonation_from_zproperty(
                 zfile = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
-                exit()
-        if 'zranges' not in zfile:
-            error_text = ("The yaml zone file must be in the format:\nzranges:\
-            \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])")
-            raise InputError(error_text)
-        zranges = zfile['zranges']
+                sys.exit()
+        if "zranges" not in zfile:
+            error_text = "The yaml zone file must be in the format:\nzranges:\
+            \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])"
+            raise Exception(error_text)
+        zranges = zfile["zranges"]
         return _zonation_from_zranges(grid, zranges)
     actnum = grid.actnum_indices
     prop = xtgeo.gridproperty_from_file(
@@ -240,7 +250,7 @@ def _zonation_from_zproperty(
 
 
 def create_map_template(
-    map_settings: _config.MapSettings
+    map_settings: _config.MapSettings,
 ) -> Union[xtgeo.RegularSurface, float]:
     """
     Creates the map template to use based on the provided settings. May instead return a

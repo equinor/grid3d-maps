@@ -1,8 +1,8 @@
-from typing import List
 import datetime
+from typing import List
+
 import numpy as np
 import xtgeo
-
 
 MIGRATION_TIME_PNAME = "MigrationTime"
 
@@ -17,10 +17,7 @@ def generate_migration_time_property(
     `lower_threshold`.
     """
     # Calculate time since simulation start
-    times = [
-        datetime.datetime.strptime(_prop.date, '%Y%m%d')
-        for _prop in co2_props
-    ]
+    times = [datetime.datetime.strptime(_prop.date, "%Y%m%d") for _prop in co2_props]
     time_since_start = [(t - times[0]).days / 365 for t in times]
     # Duplicate first property to ensure equal actnum
     t_prop = co2_props[0].copy(newname=MIGRATION_TIME_PNAME)
