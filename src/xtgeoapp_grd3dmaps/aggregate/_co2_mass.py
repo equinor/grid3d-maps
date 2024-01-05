@@ -1,5 +1,4 @@
 import os
-import sys
 from dataclasses import dataclass, fields
 from typing import Dict, List, Literal, Optional, Tuple
 
@@ -200,52 +199,6 @@ def _fetch_properties(
 ) -> Tuple[Dict[str, Dict[str, List[np.ndarray]]], List[str]]:
     dates = [d.strftime("%Y%m%d") for d in unrst.report_dates]
     properties = _read_props(unrst, properties_to_extract)
-    # pylint: disable=pointless-string-statement
-    """
-    ################# HACK START #################
-    if False:
-        print("\nBefore:")
-        for x in properties:
-            print(x)
-        properties["AMFG"] = []
-        properties["PORV"] = []
-        properties["DGAS"] = []
-        properties["DWAT"] = []
-        properties["YMFG"] = []
-        for x in properties["SGAS"]:
-            properties["AMFG"].append(x.copy())
-            properties["PORV"].append(x.copy())
-            properties["DGAS"].append(x.copy())
-            properties["DWAT"].append(x.copy())
-            properties["YMFG"].append(x.copy())
-        for y in properties["AMFG"]:
-            a = y.numpy_view()
-            for i in range(0, len(a)):
-                a[i] = a[i] * 0.02
-        for y in properties["PORV"]:
-            a = y.numpy_view()
-            for i in range(0, len(a)):
-                a[i] = 0.3
-        for y in properties["DGAS"]:
-            a = y.numpy_view()
-            for i in range(0, len(a)):
-                a[i] = 100.0
-        for y in properties["DWAT"]:
-            a = y.numpy_view()
-            for i in range(0, len(a)):
-                a[i] = 1000.0
-        for y in properties["YMFG"]:
-            a = y.numpy_view()
-            for i in range(0, len(a)):
-                a[i] = 0.99
-        print("\nAfter:")
-        for x in properties:
-            print(x)
-        print("")
-    else:
-        print("Skip HACK")
-    ################# HACK END  ###################
-    """
     properties = {
         p: {d[1]: properties[p][d[0]].numpy_copy() for d in enumerate(dates)}
         for p in properties
@@ -574,19 +527,3 @@ def _convert_to_grid(
             date=date,
         )
     return grids
-
-
-def _temp_make_property_copy(
-    source: str, grid_file: Optional[str]
-) -> xtgeo.GridProperty:
-    try:
-        grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
-        props = xtgeo.gridproperties_from_file(
-            source,
-            grid=grid,
-        )
-        b = props.props
-        print("Success" if b is not None else "Properties not found")
-    except (RuntimeError, ValueError):
-        print("ERROR")
-        sys.exit()

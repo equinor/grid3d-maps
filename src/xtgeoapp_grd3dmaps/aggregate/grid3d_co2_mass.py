@@ -14,10 +14,6 @@ from xtgeoapp_grd3dmaps.aggregate import (
 )
 from xtgeoapp_grd3dmaps.aggregate._config import CO2MassSettings
 
-# from ecl.eclfile import EclFile
-# from ecl.grid import EclGrid
-
-
 PROPERTIES_TO_EXTRACT = [
     "RPORV",
     "PORV",
@@ -55,10 +51,6 @@ def calculate_mass_property(
     Calculates a 3D CO2 mass property from the provided grid and grid property
     files
     """
-    # grid = EclGrid(grid_file)
-    # unrst = EclFile(co2_mass_settings.unrst_source)
-    # init = EclFile(co2_mass_settings.init_source)
-
     source_data = extract_source_data(
         grid_file,
         co2_mass_settings.unrst_source,
