@@ -132,6 +132,11 @@ def test_average_map_dataio1a(datatree, avgdataio1aconfig):
     )
     assert surf.values.mean() == pytest.approx(0.035489, rel=0.01)
 
+    surf2 = xtgeo.surface_from_file(
+        res / "myzone1--avgdataio1a_average_swat--20030101_20010101.gri"
+    )
+    assert surf2.values.mean() == pytest.approx(0.113534, rel=0.01)
+
     # read metadatafile
     with open(
         res / ".myzone1--avgdataio1a_average_swat--20010101_19991201.gri.yml",

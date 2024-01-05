@@ -6,6 +6,7 @@ import sys
 
 import yaml
 from xtgeo.common import XTGeoDialog
+
 from xtgeoapp_grd3dmaps.avghc._loader import ConstructorError, YamlXLoader
 
 xtg = XTGeoDialog()
@@ -79,7 +80,6 @@ def parse_args(args, appname, appdescr):
     )
 
     if appname == "grid3d_hc_thickness":
-
         parser.add_argument(
             "-d",
             "--dates",
@@ -149,12 +149,12 @@ def prepare_metadata(config):
     look like this:
 
     "metadata": {
-        "SWAT--19991201": {               # identifier name in this package
+        "SWAT--19991201-20010101": {      # identifier name in this package
             "name": "SWAT",               # generic property name
             "nameinfo"                    # e.g. "oilthickness"
             "source": "$eclroot.UNRST",   # info
-            "t1": "20010101",             # timedata entry 1
-            "t2": "19991201",             # timedata entry 2
+            "t1": "19991201",             # timedata entry 1
+            "t2": "20010101",             # timedata entry 2
             "content": "saturation",      # content info for sumo
             "unit": "fraction",           # unit info
             "globaltag": "avg2c"          # a global tag from output.tag
@@ -274,7 +274,6 @@ def propformatting(config):
                     newdates.append(entry.strftime("%Y%m%d"))
                 else:
                     newdates.append(entry)
-                fetched_metadata.update({"t1": entry})
 
         if "diffdates" in prop:
             for entry in prop["diffdates"]:
@@ -285,8 +284,6 @@ def propformatting(config):
                     if isinstance(dd2, datetime.date):
                         dd2 = dd2.strftime("%Y%m%d")
                     newdates.append(dd1 + "-" + dd2)
-                    fetched_metadata.update({"t1": dd1})
-                    fetched_metadata.update({"t2": dd2})
 
         # get the addional metadata privded by user input under properties:
         if "metadata" in prop:
@@ -294,11 +291,19 @@ def propformatting(config):
 
         namekey = prop["name"]
         namekeys = []
+        datekeys = {}
         if newdates:
             for mydate in newdates:
                 namekey = prop["name"] + "--" + mydate
                 newconfig["input"][namekey] = prop["source"]
                 namekeys.append(namekey)
+                if len(mydate) == 8:
+                    datekeys[namekey] = {"t1": mydate}
+                else:
+                    dd1 = mydate[:8]
+                    dd2 = mydate[9:]
+                    datekeys[namekey] = {"t1": dd1, "t2": dd2}
+
         else:
             newconfig["input"][namekey] = prop["source"]
             namekeys.append(namekey)
@@ -307,7 +312,9 @@ def propformatting(config):
             fetched_metadata.update({"globaltag": config["output"]["tag"]})
 
         for nkey in namekeys:
-            newconfig["metadata"][nkey] = fetched_metadata
+            newconfig["metadata"][nkey] = copy.deepcopy(fetched_metadata)
+            if nkey in datekeys:
+                newconfig["metadata"][nkey].update(datekeys[nkey])
 
     del newconfig["input"]["properties"]
 
@@ -363,7 +370,6 @@ def yconfig_override(config, args, appname):
         newconfig["output"]["legacydateformat"] = args.legacydateformat
 
     if appname == "grid3d_hc_thickness":
-
         if args.dates:
             newconfig["input"]["dates"] = args.dates
 
@@ -440,7 +446,6 @@ def yconfig_set_defaults(config, appname):
         newconfig["computesettings"]["tuning"]["coarsen"] = 1
 
     if appname == "grid3d_hc_thickness":
-
         if "dates" not in newconfig["input"]:
             if newconfig["computesettings"]["mode"] in "rock":
                 xtg.say('No date give, probably OK since "rock" mode)')
@@ -500,7 +505,6 @@ def yconfig_addons(config, appname):
     newconfig = copy.deepcopy(config)
 
     if config["zonation"]["yamlfile"] is not None:
-
         # re-use yconfig:
         zconfig = yconfig(config["zonation"]["yamlfile"])
         if "zranges" in zconfig:
@@ -530,4 +534,5 @@ def yconfig_metadata_hc(config):
     newconfig["metadata"]["unit"] = config["computesettings"]["unit"]
     newconfig["metadata"]["globaltag"] = config["output"].get("tag", "")
 
+    return newconfig
     return newconfig

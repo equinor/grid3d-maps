@@ -1,36 +1,114 @@
 [build-system]
 requires = [
-  "pip>=19.1.1",
-  "setuptools>=43",
-  "wheel",
-  "setuptools_scm",
-  "Sphinx",
-  "sphinx-rtd-theme",
+    "setuptools>=45.0",
+    "setuptools_scm[toml]>=6.2",
 ]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/xtgeoapp_grd3dmaps/_theversion.py"
+write_to = "src/xtgeoapp_grd3dmaps/version.py"
+
+[project]
+name = "xtgeoapp_grd3dmaps"
+description = "Make HC thickness, avg maps, etc directly from 3D props"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Equinor", email = "fg_fmu-atlas@equinor.com" },
+]
+keywords = [
+    "energy", 
+    "subsurface", 
+    "reservoir", 
+    "scientific", 
+    "engineering",
+    "maps",
+    "xtgeo",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Natural Language :: English",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+dynamic = ["version"]
+dependencies = [
+    "fmu-config",
+    "fmu-dataio>=1.3.0",
+    "numpy<2",
+    "pyyaml",
+    "xtgeo>=2.20.7",
+    "xtgeoviz",
+]
+
+
+[project.optional-dependencies]
+tests = [
+    "black",
+    "coverage>=4.1",
+    "flake8",
+    "isort",
+    "mypy",
+    "pylint",
+    "pytest",
+    "pytest-cov",
+    "pytest-runner",
+    "pytest-xdist",
+    "rstcheck",
+    "types-PyYAML",
+]
+docs = [
+    "sphinx",
+    "sphinx-argparse",
+    "sphinx-autodoc-typehints",
+    "sphinx-copybutton",
+    "sphinx-togglebutton",
+    "sphinx_rtd_theme",
+]
+
+[project.urls]
+Homepage = "https://github.com/equinor/xtgeoapp-grd3dmaps"
+Repository = "https://github.com/equinor/xtgeoapp-grd3dmaps"
+Documentation = "https://equinor.github.io/xtgeoapp-grd3dmaps"
+
+[project.scripts]
+grid3d_hc_thickness = "xtgeoapp_grd3dmaps.avghc.grid3d_hc_thickness:main"
+grid3d_average_map = "xtgeoapp_grd3dmaps.avghc.grid3d_average_map:main"
+grid3d_aggregate_map = "xtgeoapp_grd3dmaps.aggregate.grid3d_aggregate_map:main"
+grid3d_migration_time = "xtgeoapp_grd3dmaps.aggregate.grid3d_migration_time:main"
+
+[project.entry-points.ert]
+xtgeoapp_grd3dmaps_jobs = "xtgeoapp_grd3dmaps.hook_implementations.jobs"
 
 [tool.black]
 line-length = 88
-target-version = ["py38", "py39", "py310"]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-  # The following are specific to Black, you probably don't want those.
-  | blib2to3
-  | tests/data
-  | tests/yaml
-  | profiling
-)/
-'''
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--verbose"
+log_cli = "False"
+log_cli_format = "%(levelname)8s (%(relativeCreated)6.0fms) %(filename)44s [%(funcName)40s()] %(lineno)4d >>   %(message)s"
+log_cli_level = "INFO"
+testpaths = "tests"
+markers = [
+    "integration: Integration tests",
+    "requires_ert: A test requiring ert in the environment",
+]

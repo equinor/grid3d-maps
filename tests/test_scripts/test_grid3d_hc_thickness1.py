@@ -1,6 +1,5 @@
 "Suite for HC thickness test set 1."
 import shutil
-import warnings
 from pathlib import Path
 
 import numpy as np

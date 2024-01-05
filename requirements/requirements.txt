@@ -1,6 +1,0 @@
-numpy
-pyyaml
-xtgeo>=2.20.7
-fmu-dataio>=1.3.0
-xtgeoviz
-fmu-config

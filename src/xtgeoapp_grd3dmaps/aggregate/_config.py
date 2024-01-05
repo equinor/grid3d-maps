@@ -124,7 +124,7 @@ class Output:
 class RootConfig:
     input: Input
     output: Output
-    zonation: Zonation = Zonation()
-    computesettings: ComputeSettings = ComputeSettings()
-    mapsettings: MapSettings = MapSettings()
+    zonation: Zonation = field(default_factory=Zonation)
+    computesettings: ComputeSettings = field(default_factory=ComputeSettings)
+    mapsettings: MapSettings = field(default_factory=MapSettings)
     co2_mass_settings: Optional[CO2MassSettings] = None

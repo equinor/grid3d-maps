@@ -44,7 +44,6 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
     mymaskoutside = config["computesettings"]["mask_outside"]
 
     for zname, zrange in zoned.items():
-
         usezonation = zonation.copy()
         usezrange = zrange
 
@@ -111,9 +110,7 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
     xtg.say("Plotting ...")
 
     for zname, mapd in mapzd.items():
-
         for date, xmap in mapd.items():
-
             plotfile = _hc_filesettings(config, zname, date, hcmode, mode="plot")
 
             pcfg = _hc_plotsettings(config, zname, date, filtermean)
@@ -271,7 +268,6 @@ def _hc_plotsettings(config, zname, date, filtermean):
 
     # there may be individual plotsettings for zname
     if zname is not None and zname in config["plotsettings"]:
-
         zfg = config["plotsettings"][zname]
 
         if "valuerange" in zfg:

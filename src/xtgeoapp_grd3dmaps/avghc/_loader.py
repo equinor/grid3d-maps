@@ -1,13 +1,13 @@
 """Loading nested config files"""
 
+import io
 import os.path
 from collections import OrderedDict
-import io
+
 import yaml
+from xtgeo.common import XTGeoDialog
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
-
-from xtgeo.common import XTGeoDialog
 
 file_types = (io.IOBase,)
 
