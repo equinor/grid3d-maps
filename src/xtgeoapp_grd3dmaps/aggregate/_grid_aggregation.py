@@ -301,8 +301,6 @@ def _property_to_map(
         assert method in [AggregationMethod.MEAN, AggregationMethod.SUM]
     data = prop[0][cols] if len(prop) == 1 else prop[cols]
     # Small hack due to a small difference between calculating mass and other properties
-    # pylint: disable=fixme
-    # TODO: Implement a better solution
     weights = np.ones_like(data) if weights is None else weights[cols]
     if data.mask.any():
         invalid = data.mask
