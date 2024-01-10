@@ -5,14 +5,14 @@ import os.path
 from collections import OrderedDict
 
 import yaml
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
 file_types = (io.IOBase,)
 
 xtg = XTGeoDialog()
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 
 class YamlXLoader(yaml.Loader):

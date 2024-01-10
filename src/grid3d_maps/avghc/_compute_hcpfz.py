@@ -1,9 +1,9 @@
 import numpy.ma as ma
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 
 xtg = XTGeoDialog()
 
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 
 def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):

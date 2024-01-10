@@ -5,14 +5,14 @@ from time import localtime, strftime
 import numpy as np
 import numpy.ma as ma
 import xtgeo
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.surface import RegularSurface
 from xtgeoviz import quickplot
 
 from ._export_via_fmudataio import export_avg_map_dataio
 
 xtg = XTGeoDialog()
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 
 def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):

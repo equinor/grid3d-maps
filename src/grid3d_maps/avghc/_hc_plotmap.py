@@ -6,7 +6,7 @@ from time import localtime, strftime
 
 import numpy as np
 import xtgeo
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.surface import RegularSurface
 from xtgeoviz import quickplot
 
@@ -14,7 +14,7 @@ from ._export_via_fmudataio import export_hc_map_dataio
 
 xtg = XTGeoDialog()
 
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 
 def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):

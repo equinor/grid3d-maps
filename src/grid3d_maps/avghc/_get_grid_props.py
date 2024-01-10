@@ -5,12 +5,12 @@ import numpy.ma as ma
 import xtgeo
 
 # from xtgeo.common.exceptions import KeywordNotFoundError
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
 
 xtg = XTGeoDialog()
 
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 # Heavy need for reprogramming...:
 # pylint: disable=logging-format-interpolation
