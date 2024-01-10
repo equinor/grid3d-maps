@@ -5,11 +5,11 @@ from pathlib import Path
 
 import fmu.dataio as dataio
 from fmu.config import utilities as ut
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 
 xtg = XTGeoDialog()
 
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 
 def _get_global_config(thisconfig):

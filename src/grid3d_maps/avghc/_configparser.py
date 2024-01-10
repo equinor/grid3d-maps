@@ -5,13 +5,13 @@ import os.path
 import sys
 
 import yaml
-from xtgeo.common import XTGeoDialog
+from xtgeo.common import XTGeoDialog, null_logger
 
 from grid3d_maps.avghc._loader import ConstructorError, YamlXLoader
 
 xtg = XTGeoDialog()
 
-logger = xtg.functionlogger(__name__)
+logger = null_logger(__name__)
 
 
 def parse_args(args, appname, appdescr):
