@@ -1,0 +1,21 @@
+input:
+  eclroot: tests/data/reek/REEK
+  grid: $eclroot.EGRID
+
+  
+  properties: 
+    #- source: $eclroot.UNRST
+    #  name: "SWAT"
+    #  lower_threshold: 1e-12
+
+co2_mass_settings:
+  unrst_source: $eclroot.UNRST
+  init_source: $eclroot.INIT
+  maps: "dissolved_co2"
+
+output:
+  mapfolder: tmp
+
+computesettings:
+  aggregation: "sum"
+
