@@ -128,7 +128,7 @@ def _get_dimensions_and_triplets(
     """
     grid_pf = xtgeo.grid_from_file(grid_file)
     dimensions = (grid_pf.ncol, grid_pf.nrow, grid_pf.nlay)
-    unrst = EclFile(unrst_file)
+    unrst = ResdataFile(unrst_file)
     properties, _ = _fetch_properties(unrst, properties_to_extract)
     gdf = grid_pf.get_dataframe()
     gdf = gdf.sort_values(by=["KZ", "JY", "IX"])
