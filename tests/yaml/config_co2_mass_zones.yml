@@ -1,0 +1,30 @@
+input:
+  eclroot: tests/data/reek/REEK
+  grid: $eclroot.EGRID
+  
+co2_mass_settings:
+  unrst_source: $eclroot.UNRST
+  init_source: $eclroot.INIT
+  maps: "dissolved_co2"
+  zones: ["Sognefjord","Johansen"]
+
+
+zonation:
+  zranges:
+     - Sognefjord: [1, 24]
+     - Fensfjord: [25, 54]
+     - Krossfjord: [55, 60]
+     - Heather_A: [61, 61]
+     - Brent: [62, 63]
+     - Drake: [64, 67]
+     - Johansen: [68, 192]
+     - AmundsenStatfjord: [193, 196]
+     - UpperLunde: [197, 310]
+     - LowerLunde: [311, 311]
+
+output:
+  mapfolder: tmp
+
+computesettings:
+  zone: Yes
+  all: No
