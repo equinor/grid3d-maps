@@ -43,32 +43,17 @@ def aggregate_maps(
         and the second index to `grid_props`.
     """
     # pylint: disable=too-many-arguments
-
-    print("----------------------------------------------")
-    print("Here we could have some problems ... this is how properties enter in aggregate_maps")
-    print(grid_props)
-
-    print("And this is how inclusion_filters look like")
-    print(inclusion_filters)
-
     props, active_cells, inclusion_filters = _read_properties_and_find_active_cells(
         grid, grid_props, inclusion_filters
     )
-
-
     weights = grid.get_dz().values1d[active_cells] if weight_by_dz else None
     # Map nodes (pixel locations) and connections
-    print("Double checking active_cells")
-    print(active_cells)
     conn_data = _find_connections(
         grid,
         active_cells,
         map_template,
     )
-    print("Done with find_connections")
-
     # Iterate filters
-    print(props)
     results = _properties_to_maps(
         inclusion_filters,	
         props,
@@ -86,27 +71,11 @@ def _read_properties_and_find_active_cells(
 ):
     active = grid.actnum_array.flatten().astype(bool)
     props = [p.values1d[active] for p in grid_props]
-    print("-----------------------------")
-    print("We are in _read_properties_and_find_active_cells and this how props look like")
-    print(props)
-
     all_masked = np.all([p.mask for p in props], axis=0)
-    print("The logical condition not any(i is None for i in inclusion_filters) evaluates to: ")
-    print(not any(i is None for i in inclusion_filters))
-
     if not any(i is None for i in inclusion_filters):
         all_masked |= ~np.any(inclusion_filters, axis=0)
     active[active] = ~all_masked
-
-    print("-----------------------------")
-    print("This is how all_masked looks like. This will impact props")
-    print(all_masked)
-    print("Props looks like this before applying all_masked")
-    print(props)
-
     props = [p[~all_masked] for p in props]
-    print("Props looks like this after applying all_masked")
-    print(props)
     inclusion_filters = [
         None if inc is None else inc[~all_masked] for inc in inclusion_filters
     ]
@@ -139,11 +108,6 @@ def _find_connections(
             0, map_template.nrow, dtype=float
         )
     else:
-        print("Solving issues with mass maps")
-        print(footprints_x)
-        print(footprints_y)
-        print(map_template)
-
         x_nodes, y_nodes = _derive_map_nodes(
             footprints_x, footprints_y, pixel_to_cell_size_ratio=map_template
         )
@@ -222,10 +186,7 @@ def _find_overlapped_nodes(nodes, cell_lower, cell_upper):
 
 def _cell_footprints(grid: xtgeo.Grid, active_cells):
     corners = grid.get_xyz_corners()
-    print("Printing the corners")
-    print(corners)
     xyz = [c.values1d[active_cells] for c in corners]
-    print(xyz)
     avg_xyz = [(xyz[i] + xyz[i + 12]) / 2 for i in range(12)]
     x_corners = avg_xyz[::3]
     y_corners = avg_xyz[1::3]
@@ -310,10 +271,6 @@ def _properties_to_maps(
             map_ix = map_ix[~to_remove]
             grd_ix = grd_ix[~to_remove]
         results.append([])
-        print("--------------------------------------------")
-        print("****We are in _properties_to_maps and this is how the properties object looks like****")
-        print(properties)
-
         for prop in properties:
             results[-1].append(
                 _property_to_map(
@@ -338,29 +295,11 @@ def _property_to_map(
 ):
     rows = conn_data.node_indices
     cols = conn_data.grid_indices
-
-    print("----------------------------")
-
-    print("*** Here we have the problem ***")
-
-    print("This is cols")
-    print(cols)
-    print("With size")
-    print(len(cols))
-
-    print("... and this is prop")
-    print(prop)
-    print("With size")
-    print(prop.shape)
-
     assert rows.shape == cols.shape
     assert weights is None or weights.shape == prop.shape
     if weights is not None:
         assert method in [AggregationMethod.MEAN, AggregationMethod.SUM]
-    #data = prop[0][cols] if len(prop) == 1 else prop[cols]
     data = prop[cols]
-
-    # Small hack due to a small difference between calculating mass and other properties
     weights = np.ones_like(data) if weights is None else weights[cols]
     if data.mask.any():
         invalid = data.mask

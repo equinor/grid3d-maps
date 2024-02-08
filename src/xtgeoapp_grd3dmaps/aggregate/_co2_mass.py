@@ -65,27 +65,9 @@ def translate_co2data_to_property(
         grid_file, co2_mass_settings.unrst_source, properties_to_extract
     )
 
-    print(dimensions)
     # Setting up the grid folder to store the gridproperties
     if not os.path.exists(grid_out_dir):
         os.makedirs(grid_out_dir)
-
-    #Patch
-    """
-    zones = co2_mass_settings.zones
-    if zones is None:
-        zones = []
-    elif isinstance(zones, str):
-        zones = [zones]
-    
-    zones = [zone_name.lower() for zone_name in zones]
-    """
-
-    #keep_zone_idx = [i for index,zone in enumerate(co2_data.zone) if zone in zones]
-
-    total_mass_list = []
-    dissolved_mass_list = []
-    free_mass_list = []
 
     maps = co2_mass_settings.maps
     if maps is None:
@@ -100,11 +82,8 @@ def translate_co2data_to_property(
 
     store_all = "all" in maps or len(maps) == 0
     for co2_at_date in co2_data.data_list:
-        date = str(co2_at_date.date)#Interesting here
+        date = str(co2_at_date.date)
         mass_as_grids = _convert_to_grid(co2_at_date, dimensions, triplets)
-        print("Printing mass_as_grids...")
-        print(mass_as_grids["MASS-TOTAL"].date)
-
         if store_all or "total_co2" in maps:
             mass_as_grids["MASS-TOTAL"].to_file(
                 grid_out_dir + "/CO2-MASS-TOTAL--" + date + ".roff", fformat="roff",
@@ -122,23 +101,6 @@ def translate_co2data_to_property(
                 fformat="roff",
             )
             free_mass_list.append(mass_as_grids["MASS-GAS-PHASE"])
-
-
-    print("Printing property list...")
-    print(dissolved_mass_list[0].date)
-    #print(type(free_mass_list[0]))
-    print("Trying to export gridproperties")
-    grd_props = xtgeo.GridProperties(props=dissolved_mass_list)
-    print(grd_props)
-    print(dir(grd_props))
-    print(grd_props.dates)
-    print(grd_props.props)
-    print(type(grd_props.props))
-  
-    print("Done trying to export gridproperties")
-
-    #print(type(total_mass_list[0]))
-
 
     return [
         free_mass_list,
@@ -200,13 +162,12 @@ def _convert_to_grid(
     date = str(co2_at_date.date)
     for mass, name in zip(
         [co2_at_date.total_mass(), co2_at_date.aqu_phase, co2_at_date.gas_phase],
-        #["mass-total", "mass-aqu-phase", "mass-gas-phase"],
         ["MASS-TOTAL", "MASS-AQU-PHASE", "MASS-GAS-PHASE"],
     ):
         mass_array = np.zeros(dimensions)
         for i, triplet in enumerate(triplets):
             mass_array[triplet] = mass[i]
-        mass_name = "CO2-" + name #+ "--" + date
+        mass_name = "CO2-" + name
         grids[name] = xtgeo.grid3d.GridProperty(
             ncol=dimensions[0],
             nrow=dimensions[1],

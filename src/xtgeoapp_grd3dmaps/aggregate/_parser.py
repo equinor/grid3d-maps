@@ -159,38 +159,25 @@ def extract_properties(
     Extract 3D grid properties based on the provided property specification
     """
     properties: List[Property] = []
-    print("Property_spec is: ")
-    print(property_spec)
-
     if property_spec is None:
         return properties
     for spec in property_spec:
-        print(spec)
         try:
             names = "all" if spec.name is None else [spec.name]
-            print("names= " + str(names))
-            print("dates or all means:" + str(dates or "all"))
             props = xtgeo.gridproperties_from_file(
                 spec.source,
                 names=names,
                 grid=grid,
                 dates=dates or "all",
             ).props
-            print(sum(props[0].values1d))
-            print(dir(props[0]))
         except (RuntimeError, ValueError):
             props = [xtgeo.gridproperty_from_file(spec.source, name=spec.name)]
-        print("Line 183 and props is:")
-        print(props)
-
         if spec.lower_threshold is not None:
             for prop in props:
                 prop.values.mask[prop.values < spec.lower_threshold] = True
         # Check if any of the properties missing a date had date as part of the file
         # stem, separated by a "--"
         for prop in props:
-            print(prop.date)
-            print(spec.source)
             if prop.date is None and "--" in spec.source:
                 date = pathlib.Path(spec.source.split("--")[-1]).stem
                 try:
@@ -199,7 +186,6 @@ def extract_properties(
                 except ValueError:
                     continue
                 prop.date = date
-                print("The assigned prop.date is: "+ str(prop.date))
                 prop.name += f"--{date}"
         if len(dates) > 0:
             props = [p for p in props if p.date in dates]
