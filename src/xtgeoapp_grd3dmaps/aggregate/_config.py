@@ -6,7 +6,7 @@ explicitly provided.
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 
 class AggregationMethod(Enum):
@@ -87,6 +87,7 @@ class CO2MassSettings:
     unrst_source: str
     init_source: str
     maps: Optional[List[str]] = None
+    zones: Optional[List[str]] = None
 
     def __post_init__(self):
         pass

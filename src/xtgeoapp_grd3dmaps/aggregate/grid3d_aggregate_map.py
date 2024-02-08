@@ -97,13 +97,29 @@ def generate_maps(
     """
     _XTG.say("Reading grid, properties and zone(s)")
     grid = xtgeo.grid_from_file(input_.grid)
+    print(input_.properties)
+    print(grid)
+    print(input_.dates)
+    print("-------------------------")
+
     properties = extract_properties(input_.properties, grid, input_.dates)
+    print(properties)
+
     _filters = []
     if computesettings.all:
         _filters.append(("all", None))
     if computesettings.zone:
         _filters += extract_zonations(zonation, grid)
+    print(_filters)
     _XTG.say("Generating Property Maps")
+    print("These are the inputs of aggregate maps")
+    print("grid:")
+    print(grid)
+    print("properties")
+    print(properties)
+    print("[f[1] for f in _filters]")
+    print([f[1] for f in _filters])
+
     xn, yn, p_maps = _grid_aggregation.aggregate_maps(
         create_map_template(map_settings),
         grid,
@@ -112,10 +128,12 @@ def generate_maps(
         computesettings.aggregation,
         computesettings.weight_by_dz,
     )
+    print("a")
     prop_tags = [
         _property_tag(p.name, computesettings.aggregation, output.aggregation_tag)
         for p in properties
     ]
+    print("b")
     surfs = _ndarray_to_regsurfs(
         [f[0] for f in _filters],
         prop_tags,
@@ -124,6 +142,8 @@ def generate_maps(
         p_maps,
         output.lowercase,
     )
+    print("c")
+
     _write_surfaces(surfs, output.mapfolder, output.plotfolder, output.use_plotly)
 
 
@@ -184,6 +204,10 @@ def generate_from_config(config: _config.RootConfig):
     """
     Wrapper around `generate_maps` based on a configuration object (RootConfig)
     """
+    print("Generating from config_")
+    print(config.zonation)
+    print(config.input)
+
     generate_maps(
         config.input,
         config.zonation,
