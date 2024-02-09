@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import xtgeo
+import yaml
 from typing import List, Optional
 from xtgeoapp_grd3dmaps.aggregate import (
     _co2_mass,
@@ -87,8 +88,9 @@ def generate_co2_mass_maps(config_) :
         else:
             all_zrange = find_all_zrange(grid_file=grid_file)
 
-    if len(zonation.zranges)>0:       
+    if len(zonation.zranges)>0 or zonation.zproperty is not None:       
         config_.zonation.zranges = define_zones_to_plot(zonation,co2_mass_settings)
+        config_.zonation.zproperty = None
 
     if config_.computesettings.all:
         config_.zonation.zranges.append({'all':all_zrange})
@@ -133,11 +135,11 @@ def define_zones_to_plot(
     Based on the zones defined in CO2MassSettings determine for which zones maps are produced
     """
 
-    if zonation.zranges is not None :
+    if len(zonation.zranges) > 0 :
         zone_names = [list(item.keys())[0] for item in zonation.zranges]    
-    elif zonation.Property is not None :
-        if zproperty.source.split(".")[-1] in ["yml", "yaml"]:
-            with open(zproperty.source, "r", encoding="utf8") as stream:
+    elif zonation.zproperty is not None :
+        if zonation.zproperty.source.split(".")[-1] in ["yml", "yaml"]:
+            with open(zonation.zproperty.source, "r", encoding="utf8") as stream:
                 try:
                     zfile = yaml.safe_load(stream)
                 except yaml.YAMLError as exc:
@@ -146,8 +148,9 @@ def define_zones_to_plot(
             if "zranges" not in zfile:
                 error_text = "The yaml zone file must be in the format:\nzranges:\
                 \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])"
-                raise Exception(error_text)            
-            zone_names = [list(item.keys())[0] for item in zfile.zranges]    
+                raise Exception(error_text) 
+            zonation.zranges = zfile['ranges']
+            zone_names = [list(item.keys())[0] for item in zonation.zranges]    
         
 
     if co2_mass_settings.zones is not None:
@@ -164,11 +167,11 @@ def find_all_zrange(
         grid_file: Optional[str] = None,
 ):
     if zonation is not None:
-        if zonation.zranges is not None:
+        if len(zonation.zranges) > 0:
             zranges_limits = [list(d.values())[0] for d in zonation.zranges]
-        elif zonation.Property is not None:
-            if zproperty.source.split(".")[-1] in ["yml", "yaml"]:
-                with open(zproperty.source, "r", encoding="utf8") as stream:
+        elif zonation.zproperty is not None:
+            if zonation.zproperty.source.split(".")[-1] in ["yml", "yaml"]:
+                with open(zonation.zproperty.source, "r", encoding="utf8") as stream:
                     try:
                         zfile = yaml.safe_load(stream)
                     except yaml.YAMLError as exc:
@@ -178,7 +181,7 @@ def find_all_zrange(
                     error_text = "The yaml zone file must be in the format:\nzranges:\
                     \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])"
                     raise Exception(error_text)            
-            zranges_limits = [list(d.values())[0] for d in zonation.zranges]
+            zranges_limits = [list(d.values())[0] for d in zfile.zranges]
     elif grid_file is not None:
         grid_pf = xtgeo.grid_from_file(grid_file)
         dimensions = (grid_pf.ncol, grid_pf.nrow, grid_pf.nlay)
