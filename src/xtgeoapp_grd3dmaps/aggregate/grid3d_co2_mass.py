@@ -149,7 +149,7 @@ def define_zones_to_plot(
                 error_text = "The yaml zone file must be in the format:\nzranges:\
                 \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])"
                 raise Exception(error_text) 
-            zonation.zranges = zfile['ranges']
+            zonation.zranges = zfile['zranges']
             zone_names = [list(item.keys())[0] for item in zonation.zranges]    
         
 
