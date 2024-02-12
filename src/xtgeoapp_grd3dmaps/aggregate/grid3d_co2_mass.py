@@ -82,15 +82,20 @@ def generate_co2_mass_maps(config_) :
         config_.output.mapfolder + "/grid",
     )
 
-    if config_.computesettings.all: 
+    config_.zonation.zranges, all_zrange = process_zonation(co2_mass_settings,zonation,grid_file)
+
+    """
+    if config_.computesettings.all :
         if len(zonation.zranges)>0:             
             all_zrange = find_all_zrange(zonation=zonation)
         else:
             all_zrange = find_all_zrange(grid_file=grid_file)
+    """
 
-    if len(zonation.zranges)>0 or zonation.zproperty is not None:       
-        config_.zonation.zranges = define_zones_to_plot(zonation,co2_mass_settings)
+    if len(config_.zonation.zranges)>0:
         config_.zonation.zproperty = None
+
+
 
     if config_.computesettings.all:
         config_.zonation.zranges.append({'all':all_zrange})
@@ -126,14 +131,11 @@ def co2_mass_property_to_map(
                 
     grid3d_aggregate_map.generate_from_config(config_)
 
-
+"""
 def define_zones_to_plot(
         zonation: _config.Zonation,
         co2_mass_settings: _config.CO2MassSettings,
 ):
-    """
-    Based on the zones defined in CO2MassSettings determine for which zones maps are produced
-    """
 
     if len(zonation.zranges) > 0 :
         zone_names = [list(item.keys())[0] for item in zonation.zranges]    
@@ -161,7 +163,8 @@ def define_zones_to_plot(
             return([item for item in zonation.zranges if list(item.keys())[0] in zones_to_plot])
     else:
         return(zonation.zranges)
-
+"""
+"""
 def find_all_zrange(
         zonation: Optional[_config.Zonation] = None,
         grid_file: Optional[str] = None,
@@ -194,7 +197,55 @@ def find_all_zrange(
     min_zvalue = min(sublist[0] for sublist in zranges_limits)
     all_zrange = [min_zvalue, max_zvalue]
     return(all_zrange)                      
-    
+"""
+def process_zonation(co2_mass_settings: _config.CO2MassSettings,
+                     zonation: Optional[_config.Zonation]=None,
+                     grid_file: Optional[str] = None):
+    if zonation is not None:
+        if zonation.zproperty is not None:
+            if zonation.zproperty.source.split(".")[-1] in ["yml", "yaml"]:
+                zfile = read_yml_file(zonation.zproperty.source)
+                zonation.zranges = zfile['ranges']
+        if len(zonation.zranges) > 0:
+            zone_names = [list(item.keys())[0] for item in zonation.zranges]
+            zranges_limits = [list(d.values())[0] for d in zonation.zranges]
+    elif grid_file is not None:
+        grid_pf = xtgeo.grid_from_file(grid_file)
+        zranges_limits = [[1,grid_pf.nlay]]
+    else:
+        error_text = "Either zonation or grid_file need to be provided"
+        raise Exception(error_text)
+    max_zvalue = max(sublist[-1] for sublist in zranges_limits)
+    min_zvalue = min(sublist[0] for sublist in zranges_limits)
+    all_zrange = [min_zvalue, max_zvalue]
+
+    if zone_names is not None:
+        if co2_mass_settings.zones is not None:
+            zones_to_plot = [zone for zone in co2_mass_settings.zones if zone in zone_names]
+            if len(zones_to_plot) == 0:
+                print(
+                    "The zones specified in CO2 mass settings are not part of the zonation provided \n maps will be exported for all the existing zones")
+                return zonation.zranges,all_zrange
+            else:
+                return [item for item in zonation.zranges if list(item.keys())[0] in zones_to_plot],all_zrange
+        else:
+            return zonation.zranges,all_zrange
+    else:
+        return [], all_zrange
+
+def read_yml_file(file_path: str):
+    with open(file_path, "r", encoding="utf8") as stream:
+        try:
+            zfile = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+            sys.exit()
+    if "zranges" not in zfile:
+        error_text = "The yaml zone file must be in the format:\nzranges:\
+        \n    - Zone1: [1, 5]\n    - Zone2: [6, 10]\n    - Zone3: [11, 14])"
+        raise Exception(error_text)
+    return zfile
+
 def main(arguments=None):
     """
     Takes input arguments and calculates co2 mass as a property and aggregates it to a 2D map
