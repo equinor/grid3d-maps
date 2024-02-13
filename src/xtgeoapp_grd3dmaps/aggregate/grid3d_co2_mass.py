@@ -68,7 +68,7 @@ def generate_co2_mass_maps(config_) :
         PROPERTIES_TO_EXTRACT,
         config_.output.mapfolder + "/grid",
     )
-    config_.zonation.zranges, all_zrange = process_zonation(co2_mass_settings,zonation,grid_file)
+    config_.zonation.zranges, all_zrange = process_zonation(co2_mass_settings,grid_file,zonation)
     if len(config_.zonation.zranges)>0:
         config_.zonation.zproperty = None
     if config_.computesettings.all:
