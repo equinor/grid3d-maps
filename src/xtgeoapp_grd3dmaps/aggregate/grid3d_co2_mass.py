@@ -148,7 +148,7 @@ def process_zonation(co2_mass_settings: _config.CO2MassSettings,
     else:
         return [], all_zrange
 
-def read_yml_file(file_path: str) -> Dict[List]:
+def read_yml_file(file_path: str) -> Dict[str,List]:
     """
     Reads a yml from a given path in file_path argument
     """
