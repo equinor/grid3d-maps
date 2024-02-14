@@ -85,22 +85,22 @@ def translate_co2data_to_property(
         date = str(co2_at_date.date)
         mass_as_grids = _convert_to_grid(co2_at_date, dimensions, triplets)
         if store_all or "total_co2" in maps:
-            mass_as_grids["mass-total"].to_file(
-                grid_out_dir + "/MASS_TOTAL_" + date + ".roff", fformat="roff"
+            mass_as_grids["MASS-TOTAL"].to_file(
+                grid_out_dir + "/CO2-MASS-TOTAL--" + date + ".roff", fformat="roff",
             )
-            total_mass_list.append(mass_as_grids["mass-total"])
+            total_mass_list.append(mass_as_grids["MASS-TOTAL"])
         if store_all or "dissolved_co2" in maps:
-            mass_as_grids["mass-aqu-phase"].to_file(
-                grid_out_dir + "/MASS_AQU_PHASE_" + date + ".roff",
+            mass_as_grids["MASS-AQU-PHASE"].to_file(
+                grid_out_dir + "/CO2-MASS-AQU-PHASE--" + date + ".roff",
                 fformat="roff",
             )
-            dissolved_mass_list.append(mass_as_grids["mass-aqu-phase"])
+            dissolved_mass_list.append(mass_as_grids["MASS-AQU-PHASE"])
         if store_all or "free_co2" in maps:
-            mass_as_grids["mass-gas-phase"].to_file(
-                grid_out_dir + "/MASS_GAS_PHASE_" + date + ".roff",
+            mass_as_grids["MASS-GAS-PHASE"].to_file(
+                grid_out_dir + "/CO2-MASS-GAS-PHASE--" + date + ".roff",
                 fformat="roff",
             )
-            free_mass_list.append(mass_as_grids["mass-gas-phase"])
+            free_mass_list.append(mass_as_grids["MASS-GAS-PHASE"])
 
     return [
         free_mass_list,
@@ -162,12 +162,12 @@ def _convert_to_grid(
     date = str(co2_at_date.date)
     for mass, name in zip(
         [co2_at_date.total_mass(), co2_at_date.aqu_phase, co2_at_date.gas_phase],
-        ["mass-total", "mass-aqu-phase", "mass-gas-phase"],
+        ["MASS-TOTAL", "MASS-AQU-PHASE", "MASS-GAS-PHASE"],
     ):
         mass_array = np.zeros(dimensions)
         for i, triplet in enumerate(triplets):
             mass_array[triplet] = mass[i]
-        mass_name = "co2-" + name + "--" + date
+        mass_name = "CO2-" + name
         grids[name] = xtgeo.grid3d.GridProperty(
             ncol=dimensions[0],
             nrow=dimensions[1],

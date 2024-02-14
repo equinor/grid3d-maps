@@ -1,0 +1,24 @@
+input:
+  eclroot: tests/data/reek/REEK
+  grid: $eclroot.EGRID
+  dates:
+     - 21901113
+
+co2_mass_settings:
+  unrst_source: $eclroot.UNRST
+  init_source: $eclroot.INIT
+  maps: "dissolved_co2"
+  zones: ["UPPER","ZERO"]
+
+zonation:
+  zranges:
+    - UPPER: [1, 6]
+    - LOWER: [8, 14]
+    - ZERO: [15, 15]
+
+output:
+  mapfolder: tmp
+
+computesettings:
+  zone: Yes
+  all: No

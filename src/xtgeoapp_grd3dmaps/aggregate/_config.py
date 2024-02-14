@@ -87,6 +87,7 @@ class CO2MassSettings:
     unrst_source: str
     init_source: str
     maps: Optional[List[str]] = None
+    zones: Optional[List[str]] = None
 
     def __post_init__(self):
         pass
