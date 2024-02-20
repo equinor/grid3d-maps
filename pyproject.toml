@@ -56,10 +56,8 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "black",
     "coverage>=4.1",
-    "flake8",
-    "isort",
+    "ruff",
     "mypy",
     "pylint",
     "pytest",
@@ -92,12 +90,6 @@ grid3d_migration_time = "grid3d_maps.aggregate.grid3d_migration_time:main"
 [project.entry-points.ert]
 grid3d_maps_jobs = "grid3d_maps.hook_implementations.jobs"
 
-[tool.black]
-line-length = 88
-
-[tool.isort]
-profile = "black"
-
 [tool.mypy]
 ignore_missing_imports = true
 
@@ -112,3 +104,29 @@ markers = [
     "integration: Integration tests",
     "requires_ert: A test requiring ert in the environment",
 ]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+    "C901",
+    "C408",
+]
+select = [
+    "C",
+    "E",
+    "F",
+    "I",
+    "PIE",
+    "Q",
+    "RET",
+    "RSE",
+    "SIM",
+    "TCH",
+    "TID",
+    "W",
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true

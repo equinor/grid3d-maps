@@ -43,10 +43,9 @@ def calculate_migration_time_property(
     ]
     grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
     properties = _parser.extract_properties(prop_spec, grid, dates)
-    t_prop = _migration_time.generate_migration_time_property(
+    return _migration_time.generate_migration_time_property(
         properties, lower_threshold
     )
-    return t_prop
 
 
 def migration_time_property_to_map(

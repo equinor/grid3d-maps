@@ -2,7 +2,6 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 import xtgeo
-
 from grid3d_maps.aggregate import AggregationMethod, aggregate_maps
 
 

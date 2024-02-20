@@ -99,9 +99,7 @@ def parse_args(args, appname, appdescr):
         print("QUIT")
         raise SystemExit
 
-    args = parser.parse_args(args)
-
-    return args
+    return parser.parse_args(args)
 
 
 # =============================================================================

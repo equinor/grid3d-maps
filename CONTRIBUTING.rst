@@ -78,13 +78,13 @@ Ready to contribute? Here's how to set up `grid3d-maps` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the tests,
+5. When you're done making changes, check that your changes pass ruff and the tests,
    including testing other Python versions with tox::
 
-    $ flake8 grid3d-maps tests
+    $ ruff check .
     $ python setup.py test or py.test
 
-   To get flake8 etc, just pip install them into your virtualenv.
+   To get ruff, just pip install ruff into your virtualenv.
 
 6. Commit your changes and push your branch to GitHub::
 
