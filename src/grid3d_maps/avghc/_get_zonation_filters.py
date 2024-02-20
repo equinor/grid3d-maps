@@ -35,9 +35,8 @@ def zonation(config, grd):
     superzoned = OrderedDict()
 
     eclroot = None
-    if "eclroot" in config["input"]:
-        if config["input"]["eclroot"] is not None:
-            eclroot = config["input"]["eclroot"]
+    if "eclroot" in config["input"] and config["input"]["eclroot"] is not None:
+        eclroot = config["input"]["eclroot"]
 
     if "zproperty" in config["zonation"]:
         zcfg = config["zonation"]["zproperty"]

@@ -2,7 +2,6 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 import xtgeo
-
 from grid3d_maps.aggregate import AggregationMethod, aggregate_maps
 
 
@@ -40,14 +39,14 @@ def fixture_example_property(example_grid):
 
 @pytest.fixture(name="default_args")
 def fixture_default_args(example_grid, example_property):
-    return dict(
-        map_template=1.0,
-        grid=example_grid,
-        grid_props=[example_property],
-        inclusion_filters=[None],
-        method=AggregationMethod.MAX,
-        weight_by_dz=False,
-    )
+    return {
+        "map_template": 1.0,
+        "grid": example_grid,
+        "grid_props": [example_property],
+        "inclusion_filters": [None],
+        "method": AggregationMethod.MAX,
+        "weight_by_dz": False,
+    }
 
 
 def generate_example_property(grid):
@@ -96,7 +95,7 @@ def test_with_exclusions(default_args, example_grid, example_property):
     includes = [~ex.flatten() for ex in excludes]
     kwargs = {**default_args, "inclusion_filters": includes}
     _, _, maps = aggregate_maps(**kwargs)
-    tols = dict(atol=1e-12, rtol=0)
+    tols = {"atol": 1e-12, "rtol": 0}
     npt.assert_allclose(maps[0][0], example_property.values[:, :, 0], **tols)
     npt.assert_allclose(maps[1][0], example_property.values[:, :, 1], **tols)
     assert np.all(np.isnan(maps[2][0]))

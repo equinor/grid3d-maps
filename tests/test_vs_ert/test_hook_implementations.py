@@ -1,4 +1,5 @@
 """Test suite for hook implementation."""
+
 import os
 import shutil
 from pathlib import Path
@@ -86,6 +87,6 @@ def test_hook_implementations_job_docs():
 
     assert set(docs.keys()) == set(installable_jobs.keys())
 
-    for job_name in installable_jobs.keys():
+    for job_name in installable_jobs:
         assert docs[job_name]["description"] != ""
         assert docs[job_name]["category"] != "other"

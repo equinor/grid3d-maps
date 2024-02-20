@@ -64,13 +64,12 @@ def process_arguments(arguments) -> RootConfig:
         replacements["eclroot"] = parsed_args.eclroot
     if parsed_args.folderroot is not None:
         replacements["folderroot"] = parsed_args.folderroot
-    config = parse_yaml(
+    return parse_yaml(
         parsed_args.config,
         parsed_args.mapfolder,
         parsed_args.plotfolder,
         replacements,
     )
-    return config
 
 
 def parse_yaml(
@@ -116,7 +115,7 @@ def load_yaml(
         # Re-parse file content after replacements and remove keywords from "input" to
         # avoid unintended usages beyond this point
         config = yaml.safe_load(content)
-        for key in replacements.keys():
+        for key in replacements:
             config["input"].pop(key, None)
     if map_folder is not None:
         config["output"]["mapfolder"] = map_folder
@@ -238,14 +237,14 @@ def create_map_template(
             raise NotImplementedError("Rotated surfaces are not handled correctly yet")
         return surf
     if map_settings.xori is not None:
-        surf_kwargs = dict(
-            ncol=map_settings.ncol,
-            nrow=map_settings.nrow,
-            xinc=map_settings.xinc,
-            yinc=map_settings.yinc,
-            xori=map_settings.xori,
-            yori=map_settings.yori,
-        )
+        surf_kwargs = {
+            "ncol": map_settings.ncol,
+            "nrow": map_settings.nrow,
+            "xinc": map_settings.xinc,
+            "yinc": map_settings.yinc,
+            "xori": map_settings.xori,
+            "yori": map_settings.yori,
+        }
         if not all((s is not None for s in surf_kwargs.values())):
             missing = [k for k, v in surf_kwargs.items() if v is None]
             raise ValueError(

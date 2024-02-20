@@ -1,14 +1,14 @@
 """Testing suite hc, using dataio output."""
+
 import json
 import os
 import shutil
 from pathlib import Path
 
+import grid3d_maps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 import pytest
 import xtgeo
 import yaml
-
-import grid3d_maps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
 
 YAMLCONTENT = """
 title: Reek

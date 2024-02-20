@@ -99,9 +99,7 @@ def parse_args(args, appname, appdescr):
         print("QUIT")
         raise SystemExit
 
-    args = parser.parse_args(args)
-
-    return args
+    return parser.parse_args(args)
 
 
 # =============================================================================
@@ -193,7 +191,7 @@ def dateformatting(config):
     if "input" not in config:
         return newconfig
 
-    newdates = list()
+    newdates = []
     update = False
 
     if "dates" in config["input"]:
@@ -267,7 +265,7 @@ def propformatting(config):
         # new metadata block
         fetched_metadata = {"name": prop["name"], "source": prop["source"]}
 
-        newdates = list()
+        newdates = []
         if "dates" in prop:
             for entry in prop["dates"]:
                 if isinstance(entry, datetime.date):
@@ -369,9 +367,8 @@ def yconfig_override(config, args, appname):
     if args.legacydateformat:
         newconfig["output"]["legacydateformat"] = args.legacydateformat
 
-    if appname == "grid3d_hc_thickness":
-        if args.dates:
-            newconfig["input"]["dates"] = args.dates
+    if appname == "grid3d_hc_thickness" and args.dates:
+        newconfig["input"]["dates"] = args.dates
 
     return newconfig
 
@@ -386,19 +383,19 @@ def yconfig_set_defaults(config, appname):
         newconfig["title"] = "SomeField"
 
     if "computesettings" not in newconfig:
-        newconfig["computesettings"] = dict()
+        newconfig["computesettings"] = {}
 
     if "plotsettings" not in newconfig:
-        newconfig["plotsettings"] = dict()
+        newconfig["plotsettings"] = {}
 
     if "zonation" not in newconfig:
-        newconfig["zonation"] = dict()
+        newconfig["zonation"] = {}
 
     if "mapsettings" not in newconfig:
         newconfig["mapsettings"] = None
 
     if "output" not in newconfig:
-        newconfig["output"] = dict()
+        newconfig["output"] = {}
 
     if "mapfile" not in newconfig["output"]:
         newconfig["output"]["mapfile"] = "hc_thickness"
@@ -425,7 +422,7 @@ def yconfig_set_defaults(config, appname):
         newconfig["output"]["lowercase"] = True
 
     if "tuning" not in newconfig["computesettings"]:
-        newconfig["computesettings"]["tuning"] = dict()
+        newconfig["computesettings"]["tuning"] = {}
 
     if "mask_zeros" not in newconfig["computesettings"]:
         newconfig["computesettings"]["mask_zeros"] = False
@@ -482,7 +479,7 @@ def yconfig_set_defaults(config, appname):
             newconfig["computesettings"]["all"] = True
 
         # be generic if direct calculation is applied
-        xlist = set(["stooip", "goip", "hcpv", "stoiip", "giip"])
+        xlist = ("stooip", "goip", "hcpv", "stoiip", "giip")
         for xword in xlist:
             if xword in newconfig["input"]:
                 newconfig["input"]["xhcpv"] = newconfig["input"][xword]

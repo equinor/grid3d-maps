@@ -24,18 +24,16 @@ def files_to_import(config, appname):
     """Get a list of files to import, based on config"""
 
     folderroot = None
-    if "folderroot" in config["input"]:
-        if config["input"]["folderroot"] is not None:
-            folderroot = config["input"]["folderroot"]
+    if "folderroot" in config["input"] and config["input"]["folderroot"] is not None:
+        folderroot = config["input"]["folderroot"]
 
     eclroot = None
-    if "eclroot" in config["input"]:
-        if config["input"]["eclroot"] is not None:
-            eclroot = config["input"]["eclroot"]
+    if "eclroot" in config["input"] and config["input"]["eclroot"] is not None:
+        eclroot = config["input"]["eclroot"]
 
     gfile = ""
-    initlist = dict()
-    restartlist = dict()
+    initlist = {}
+    restartlist = {}
     dates = []
 
     if eclroot:
@@ -83,7 +81,7 @@ def files_to_import(config, appname):
                 continue
             if item == "eclroot":
                 continue
-            elif item == "grid":
+            if item == "grid":
                 gfile = config["input"]["grid"]
                 if "$folderroot" in gfile:
                     gfile = gfile.replace("$folderroot", folderroot)
@@ -116,7 +114,7 @@ def files_to_import(config, appname):
                         ifile = ifile.replace("$eclroot", eclroot)
                     initlist[item] = ifile
 
-    dates = list(sorted(set(dates)))  # to get a list with unique dates
+    dates = sorted(set(dates))  # to get a list with unique dates
 
     return gfile, initlist, restartlist, dates
 
@@ -311,7 +309,7 @@ def import_filters(config, appname, grd):
                 if drange and irange is None:
                     filterinfo = filterinfo + ":" + str(drangetxt)
                     for ival in drange:
-                        if ival not in gprop.codes.keys():
+                        if ival not in gprop.codes:
                             xtg.warn(
                                 "Filter codevalue {} is not present in "
                                 "discrete property {}".format(ival, gprop.name)
@@ -439,9 +437,9 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
 
     restartd = {}
 
-    sgas = dict()
-    swat = dict()
-    soil = dict()
+    sgas = {}
+    swat = {}
+    soil = {}
 
     for date in dates:
         nsoil = 0
@@ -505,7 +503,7 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects):
 
     for pname in config["input"]:
         usepname = pname
-        if pname in set(["folderroot", "eclroot", "grid"]):
+        if pname in ("folderroot", "eclroot", "grid"):
             continue
 
         # initdata may also contain date if ROFF is input!

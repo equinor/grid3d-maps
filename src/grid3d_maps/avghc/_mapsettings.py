@@ -48,7 +48,7 @@ def estimate_mapsettings(config, grd):
 
     newconfig = copy.deepcopy(config)
 
-    newconfig["mapsettings"] = dict()
+    newconfig["mapsettings"] = {}
 
     ggeom = grd.get_geometrics(return_dict=True, cellcenter=False)
 

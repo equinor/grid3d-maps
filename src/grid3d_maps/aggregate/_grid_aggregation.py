@@ -329,8 +329,7 @@ def _property_to_map(
         method=method,
     )
     res += shift
-    res = res.reshape(nx, ny)
-    return res
+    return res.reshape(nx, ny)
 
 
 def _aggregate_sparse_data(

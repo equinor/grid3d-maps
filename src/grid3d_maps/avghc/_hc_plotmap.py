@@ -70,7 +70,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
                 logger.info("Skip <%s> (cf. computesettings: zone)", zname)
                 continue
 
-        mapd = dict()
+        mapd = {}
 
         for date, hcpfz in hcpfzd.items():
             logger.info("Mapping <%s> for date <%s> ...", zname, date)

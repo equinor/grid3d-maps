@@ -1,4 +1,5 @@
 """General functions that exports maps / plots using fmu-dataio."""
+
 import json
 import os
 from pathlib import Path
@@ -46,10 +47,10 @@ def _get_global_config(thisconfig):
             cfg = ut.yaml_load(alternative)
             logger.info("Global no %s config from %s", alternative, description)
             break
-        else:
-            raise IOError(
-                f"Config file does not exist: {alternative}, source is {description}"
-            )
+
+        raise IOError(
+            f"Config file does not exist: {alternative}, source is {description}"
+        )
 
     if not cfg:
         raise RuntimeError("Not able lo load the global config!")

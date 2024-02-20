@@ -84,7 +84,8 @@ class YamlXLoader(yaml.Loader):
 
         if isinstance(node, yaml.ScalarNode):
             filename, val = self.construct_scalar(node).split("::")
-            result = yaml.safe_load(open(filename, "r"))
+            with open(filename, "r") as fp:
+                result = yaml.safe_load(fp)
             self._root = oldroot
 
             fields = val.strip().split(".")
@@ -97,7 +98,6 @@ class YamlXLoader(yaml.Loader):
                         "Level %s key, field name not found %s", ilev + 1, field
                     )
                     raise yaml.constructor.ConstructorError
-            return result
 
         else:
             print("Error:: unrecognised node type in !include_from statement")
@@ -123,7 +123,7 @@ class YamlXLoader(yaml.Loader):
                 node.start_mark,
             )
 
-        mapping = dict()
+        mapping = {}
         if self._ordered:
             mapping = OrderedDict()
 
@@ -200,6 +200,7 @@ class YLoader(yaml.Loader):
         oldroot = self.root
         filename = os.path.join(self.root, loader.construct_scalar(node))
         self.root = os.path.dirname(filename)
-        data = yaml.load(open(filename, "r"))
+        with open(filename, "r") as fp:
+            data = yaml.load(fp)
         self.root = oldroot
         return data
