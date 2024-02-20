@@ -18,7 +18,7 @@ jobs:
   style:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.12"]
     runs-on: ubuntu-latest
 
     steps:
@@ -30,14 +30,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Lint with isort
+      - name: ruff check
         if: ${{ always() }}
-        run: isort --check-only --profile black src tests
+        run: ruff check .
 
-      - name: Lint with black
+      - name: ruff format
         if: ${{ always() }}
-        run: black --check src tests
-
-      - name: Lint with flake8
-        if: ${{ always() }}
-        run: flake8 src tests
+        run: ruff format . --check

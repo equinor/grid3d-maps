@@ -1,8 +1,8 @@
 """Testing suite avg4."""
-import pytest
-import xtgeo
 
 import grid3d_maps.avghc.grid3d_average_map as grid3d_average_map
+import pytest
+import xtgeo
 
 # =============================================================================
 # Do tests

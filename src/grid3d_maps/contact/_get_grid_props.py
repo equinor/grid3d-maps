@@ -18,13 +18,12 @@ def files_to_import(config, appname):
     """Get a list of files to import, based on config"""
 
     eclroot = None
-    if "eclroot" in config["input"]:
-        if config["input"]["eclroot"] is not None:
-            eclroot = config["input"]["eclroot"]
+    if "eclroot" in config["input"] and config["input"]["eclroot"] is not None:
+        eclroot = config["input"]["eclroot"]
 
     gfile = ""
-    initlist = dict()
-    restartlist = dict()
+    initlist = {}
+    restartlist = {}
     dates = []
 
     if eclroot:
@@ -49,7 +48,7 @@ def files_to_import(config, appname):
                 dates.append(date.split("-")[0])
                 dates.append(date.split("-")[1])
 
-    dates = list(sorted(set(dates)))  # to get a list with unique dates
+    dates = sorted(set(dates))  # to get a list with unique dates
 
     ppinit = pprint.PrettyPrinter(indent=4)
     pprestart = pprint.PrettyPrinter(indent=4)
@@ -267,9 +266,9 @@ def get_numpies_contact(config, grd, initobjects, restobjects, dates):
 
     restartd = {}
 
-    sgas = dict()
-    swat = dict()
-    soil = dict()
+    sgas = {}
+    swat = {}
+    soil = {}
 
     for date in dates:
         nsoil = 0

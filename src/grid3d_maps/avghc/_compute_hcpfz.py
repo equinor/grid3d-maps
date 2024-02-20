@@ -21,7 +21,7 @@ def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
             if isinstance(val, ma.MaskedArray):
                 raise ValueError("Item {} is masked".format(key))
 
-    hcpfzd = dict()
+    hcpfzd = {}
 
     # use the given date from config if stoiip, giip, etc as info
     gdate = str(config["input"]["dates"][0])  # will give 'unknowndate' if unset
@@ -43,7 +43,7 @@ def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
 def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
     # local function, get data from Eclipse INIT and RESTART
 
-    hcpfzd = dict()
+    hcpfzd = {}
 
     shcintv = config["computesettings"]["shc_interval"]
     hcmethod = config["computesettings"]["method"]

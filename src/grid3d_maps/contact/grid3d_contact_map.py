@@ -8,7 +8,9 @@ from grid3d_maps.avghc import _configparser, _get_zonation_filters
 from grid3d_maps.contact import _compute_contact, _get_grid_props
 
 try:
-    from .._theversion import version as __version__
+    # @ecs: TODO: is this change OK?
+    from grid3d_maps.contact import version as __version__
+    # from .._theversion import version as __version__
 except ImportError:
     __version__ = "0.0.0"
 
@@ -26,9 +28,7 @@ logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
-    args = _configparser.parse_args(args, APPNAME, APPDESCR)
-
-    return args
+    return _configparser.parse_args(args, APPNAME, APPDESCR)
 
 
 def yamlconfig(inputfile, args):
