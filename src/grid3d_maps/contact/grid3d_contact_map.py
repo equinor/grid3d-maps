@@ -26,9 +26,7 @@ logger = xtg.basiclogger(__name__)
 
 
 def do_parse_args(args):
-    args = _configparser.parse_args(args, APPNAME, APPDESCR)
-
-    return args
+    return _configparser.parse_args(args, APPNAME, APPDESCR)
 
 
 def yamlconfig(inputfile, args):

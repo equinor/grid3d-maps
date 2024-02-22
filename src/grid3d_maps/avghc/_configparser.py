@@ -367,9 +367,8 @@ def yconfig_override(config, args, appname):
     if args.legacydateformat:
         newconfig["output"]["legacydateformat"] = args.legacydateformat
 
-    if appname == "grid3d_hc_thickness":
-        if args.dates:
-            newconfig["input"]["dates"] = args.dates
+    if appname == "grid3d_hc_thickness" and args.dates:
+        newconfig["input"]["dates"] = args.dates
 
     return newconfig
 

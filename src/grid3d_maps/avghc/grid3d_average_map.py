@@ -44,9 +44,7 @@ logger = xtg.basiclogger(__name__)
 
 def do_parse_args(args):
     """Parse command line arguments that will override config."""
-    args = _configparser.parse_args(args, APPNAME, APPDESCR)
-
-    return args
+    return _configparser.parse_args(args, APPNAME, APPDESCR)
 
 
 def yamlconfig(inputfile, args):
@@ -111,9 +109,7 @@ def import_pdata(config, gfile, initlist, restartlist, dates):
 def import_filters(config, grd):
     """Import the filter data properties, process and return a filter mask"""
 
-    filter_mask = _get_grid_props.import_filters(config, APPNAME, grd)
-
-    return filter_mask
+    return _get_grid_props.import_filters(config, APPNAME, grd)
 
 
 def get_zranges(config, grd):

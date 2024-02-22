@@ -97,7 +97,6 @@ class YamlXLoader(yaml.Loader):
                         "Level %s key, field name not found %s", ilev + 1, field
                     )
                     raise yaml.constructor.ConstructorError
-            return result
 
         else:
             print("Error:: unrecognised node type in !include_from statement")
