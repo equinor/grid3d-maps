@@ -57,7 +57,16 @@ def generate_co2_mass_maps(config_) :
     if zones is not None and isinstance(zones, str):
         co2_mass_settings.zones = [zones]
     grid_file = config_.input.grid
-    co2_data = calculate_co2(grid_file,co2_mass_settings.unrst_source,"mass",co2_mass_settings.init_source,None)
+    zone_info = {"source": None, "zranges": None}
+    region_info = {"source": None, "property_name": None}
+    co2_data = calculate_co2(
+        grid_file=grid_file,
+        unrst_file=co2_mass_settings.unrst_source,
+        calc_type_input="mass",
+        init_file=co2_mass_settings.init_source,
+        zone_info=zone_info,
+        region_info=region_info,
+    )
     dates = config_.input.dates
     if len(dates)>0:
         co2_data.data_list = [x for x in co2_data.data_list if x.date in dates]

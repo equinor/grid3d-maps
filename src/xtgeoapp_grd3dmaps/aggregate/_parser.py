@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import logging
 import pathlib
 import sys
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -21,6 +22,8 @@ from xtgeoapp_grd3dmaps.aggregate._config import (
     ZProperty,
 )
 
+xtgeo_logger = logging.getLogger("xtgeo")
+xtgeo_logger.setLevel(logging.WARNING)
 
 def parse_arguments(arguments):
     """
