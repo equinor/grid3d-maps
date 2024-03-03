@@ -4,6 +4,7 @@ A typical scenario is to create HC thickness maps directly from Eclipse
 simulation files (or eventually other similators).
 
 """
+
 import sys
 
 from xtgeo.common import XTGeoDialog

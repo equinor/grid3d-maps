@@ -1,4 +1,5 @@
 """Testing contacts, not finished!"""
+
 import pytest
 
 import grid3d_maps.contact.grid3d_contact_map as grid3d_contacts

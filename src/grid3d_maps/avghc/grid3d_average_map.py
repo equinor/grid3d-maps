@@ -4,6 +4,7 @@ A typical scenario is to create average maps directly from Eclipse
 simulation files (or eventually other similators), but ROFF files
 are equally supported.
 """
+
 import sys
 
 from xtgeo.common import XTGeoDialog

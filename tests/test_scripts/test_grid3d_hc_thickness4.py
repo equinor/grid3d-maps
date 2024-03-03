@@ -1,4 +1,5 @@
 """Test suite hc 4."""
+
 import pytest
 import xtgeo
 

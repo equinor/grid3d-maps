@@ -1,4 +1,5 @@
 "Suite for HC thickness test set 1."
+
 import shutil
 from pathlib import Path
 

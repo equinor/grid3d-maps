@@ -1,4 +1,5 @@
 """Testing suite avg4."""
+
 import pytest
 import xtgeo
 

@@ -4,6 +4,7 @@ Configuration for the `aggregate` module. Starting from `RootConfig`, it is poss
 deduce mandatory and optional parameters, as well as default values for whatever is not
 explicitly provided.
 """
+
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Tuple

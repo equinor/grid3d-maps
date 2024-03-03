@@ -1,4 +1,5 @@
 """Test suite for hook implementation."""
+
 import os
 import shutil
 from pathlib import Path

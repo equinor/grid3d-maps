@@ -1,4 +1,5 @@
 """General functions that exports maps / plots using fmu-dataio."""
+
 import json
 import os
 from pathlib import Path

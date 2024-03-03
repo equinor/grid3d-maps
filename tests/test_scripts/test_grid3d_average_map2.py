@@ -1,4 +1,5 @@
 """Testing suite avg2."""
+
 import numpy.testing as nptest
 import pytest
 import xtgeo

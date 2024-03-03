@@ -1,4 +1,5 @@
 """Suite for testing through ERT."""
+
 import subprocess
 from pathlib import Path
 

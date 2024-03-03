@@ -1,4 +1,5 @@
 """Testing suite average_map1."""
+
 import shutil
 from pathlib import Path
 

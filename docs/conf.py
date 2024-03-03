@@ -59,8 +59,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"grid3d_maps"
-copyright = u"equinor (contact person: Jan C. Rivenæs, JRIV@equinor.com)"
+project = "grid3d_maps"
+copyright = "equinor (contact person: Jan C. Rivenæs, JRIV@equinor.com)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -213,8 +213,8 @@ latex_documents = [
     (
         "index",
         "grid3d_maps.tex",
-        u"grid3d_maps Documentation",
-        u"Jan C. Rivenaes",
+        "grid3d_maps Documentation",
+        "Jan C. Rivenaes",
         "manual",
     ),
 ]
@@ -248,8 +248,8 @@ man_pages = [
     (
         "index",
         "grid3d_maps",
-        u"grid3d_maps Documentation",
-        [u"Jan C. Rivenaes"],
+        "grid3d_maps Documentation",
+        ["Jan C. Rivenaes"],
         1,
     )
 ]
@@ -267,8 +267,8 @@ texinfo_documents = [
     (
         "index",
         "grid3d_maps",
-        u"grid3d_maps Documentation",
-        u"Jan C. Rivenaes",
+        "grid3d_maps Documentation",
+        "Jan C. Rivenaes",
         "grid3d_maps",
         "One line description of project.",
         "Miscellaneous",
