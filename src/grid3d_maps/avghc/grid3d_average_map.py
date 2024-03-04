@@ -18,7 +18,7 @@ from . import (
 )
 
 try:
-    from grid3d_maps._theversion import version as __version__
+    from grid3d_maps.version import __version__
 except ImportError:
     __version__ = "0.0.0"
 

@@ -8,9 +8,7 @@ from grid3d_maps.avghc import _configparser, _get_zonation_filters
 from grid3d_maps.contact import _compute_contact, _get_grid_props
 
 try:
-    # @ecs: TODO: is this change OK?
-    from grid3d_maps.contact import version as __version__
-    # from .._theversion import version as __version__
+    from grid3d_maps.version import __version__
 except ImportError:
     __version__ = "0.0.0"
 
