@@ -7,7 +7,7 @@ import sys
 import yaml
 from xtgeo.common import XTGeoDialog, null_logger
 
-from grid3d_maps.avghc._loader import ConstructorError, YamlXLoader
+from grid3d_maps.avghc._loader import ConstructorError, FMUYamlSafeLoader
 
 xtg = XTGeoDialog()
 
@@ -119,7 +119,7 @@ def yconfig(inputfile, tmp=False, standard=False):
             config = yaml.safe_load(stream)
         else:
             try:
-                config = yaml.load(stream, Loader=YamlXLoader)
+                config = yaml.load(stream, Loader=FMUYamlSafeLoader)
             except ConstructorError as errmsg:
                 xtg.error(errmsg)
                 raise SystemExit from errmsg
