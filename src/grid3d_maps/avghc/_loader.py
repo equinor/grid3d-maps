@@ -15,7 +15,7 @@ xtg = XTGeoDialog()
 logger = null_logger(__name__)
 
 
-class YamlXLoader(yaml.Loader):
+class FMUYamlSafeLoader(yaml.SafeLoader):
     """Class for making it possible to use nested YAML files.
 
     Code is borrowed from David Hall (but extended later):
@@ -29,14 +29,16 @@ class YamlXLoader(yaml.Loader):
         self._root = os.path.split(stream.name)[0]
         super().__init__(stream)
 
-        YamlXLoader.add_constructor(
+        FMUYamlSafeLoader.add_constructor(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            YamlXLoader.construct_mapping,
+            FMUYamlSafeLoader.construct_mapping,
         )
 
-        YamlXLoader.add_constructor("!include", YamlXLoader.include)
-        YamlXLoader.add_constructor("!import", YamlXLoader.include)
-        YamlXLoader.add_constructor("!include_from", YamlXLoader.include_from)
+        FMUYamlSafeLoader.add_constructor("!include", FMUYamlSafeLoader.include)
+        FMUYamlSafeLoader.add_constructor("!import", FMUYamlSafeLoader.include)
+        FMUYamlSafeLoader.add_constructor(
+            "!include_from", FMUYamlSafeLoader.include_from
+        )
         # if root:
         #     self.root = root
         # elif isinstance(self.stream, file_types):
@@ -110,7 +112,7 @@ class YamlXLoader(yaml.Loader):
 
         filepath = os.path.join(self._root, filename)
         with open(filepath, "r") as yfile:
-            return yaml.load(yfile, YamlXLoader)
+            return yaml.safe_load(yfile)
 
     # from https://gist.github.com/pypt/94d747fe5180851196eb
     # but changed mapping to OrderedDict
@@ -201,6 +203,6 @@ class YLoader(yaml.Loader):
         filename = os.path.join(self.root, loader.construct_scalar(node))
         self.root = os.path.dirname(filename)
         with open(filename, "r") as fp:
-            data = yaml.load(fp)
+            data = yaml.safe_load(fp)
         self.root = oldroot
         return data
