@@ -2,7 +2,6 @@
 
 import io
 import os.path
-from collections import OrderedDict
 
 import yaml
 from xtgeo.common import XTGeoDialog, null_logger
@@ -24,8 +23,7 @@ class FMUYamlSafeLoader(yaml.SafeLoader):
 
     # pylint: disable=too-many-ancestors
 
-    def __init__(self, stream, ordered=False):
-        self._ordered = ordered  # for OrderedDict
+    def __init__(self, stream):
         self._root = os.path.split(stream.name)[0]
         super().__init__(stream)
 
@@ -115,7 +113,6 @@ class FMUYamlSafeLoader(yaml.SafeLoader):
             return yaml.safe_load(yfile)
 
     # from https://gist.github.com/pypt/94d747fe5180851196eb
-    # but changed mapping to OrderedDict
     def construct_mapping(self, node, deep=False):
         if not isinstance(node, MappingNode):
             raise ConstructorError(
@@ -126,8 +123,6 @@ class FMUYamlSafeLoader(yaml.SafeLoader):
             )
 
         mapping = {}
-        if self._ordered:
-            mapping = OrderedDict()
 
         for key_node, value_node in node.value:
             key = self.construct_object(key_node, deep=deep)

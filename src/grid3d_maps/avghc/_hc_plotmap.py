@@ -1,7 +1,6 @@
 """Private module for HC thickness functions."""
 
 import getpass
-from collections import OrderedDict
 from time import localtime, strftime
 
 import numpy as np
@@ -20,7 +19,7 @@ logger = null_logger(__name__)
 def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
     """Do the actual map gridding, for zones and groups of zones"""
 
-    mapzd = OrderedDict()
+    mapzd = {}
 
     if "templatefile" in config["mapsettings"]:
         basemap = xtgeo.surface_from_file(config["mapsettings"]["templatefile"])
