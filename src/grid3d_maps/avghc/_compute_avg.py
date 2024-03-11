@@ -1,5 +1,4 @@
 import getpass
-from collections import OrderedDict
 from time import localtime, strftime
 
 import numpy as np
@@ -22,7 +21,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
     """
     logger.info("Dates is unused %s", dates)
 
-    avgd = OrderedDict()
+    avgd = {}
 
     myavgzon = config["computesettings"]["tuning"]["zone_avg"]
     mycoarsen = config["computesettings"]["tuning"]["coarsen"]

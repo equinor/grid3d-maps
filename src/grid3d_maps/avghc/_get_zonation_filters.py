@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 import numpy as np
 import xtgeo
 from xtgeo.common import XTGeoDialog, null_logger
@@ -31,8 +29,8 @@ def zonation(config, grd):
         raise ValueError('Cannot have both "zproperty" and "zranges" in ' '"zonation"')
 
     usezonation = np.zeros(grd.dimensions, dtype=np.int32)
-    zoned = OrderedDict()
-    superzoned = OrderedDict()
+    zoned = {}
+    superzoned = {}
 
     eclroot = None
     if "eclroot" in config["input"] and config["input"]["eclroot"] is not None:
