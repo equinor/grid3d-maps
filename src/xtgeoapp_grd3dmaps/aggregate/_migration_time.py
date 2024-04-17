@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Union
 
 import numpy as np
 import xtgeo
@@ -9,7 +9,7 @@ MIGRATION_TIME_PNAME = "MigrationTime"
 
 def generate_migration_time_property(
     co2_props: List[xtgeo.GridProperty],
-    co2_threshold: float,
+    co2_threshold: Union[float,List],
 ):
     """
     Calculates a 3D grid property reflecting the migration time. Migration time is

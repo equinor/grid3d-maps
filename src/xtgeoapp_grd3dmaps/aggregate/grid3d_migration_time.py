@@ -2,7 +2,7 @@ import glob
 import os
 import sys
 import tempfile
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import xtgeo
 
@@ -29,7 +29,7 @@ EXAMPLES = """
 def calculate_migration_time_property(
     properties_files: str,
     property_name: Optional[str],
-    lower_threshold: float,
+    lower_threshold: Union[float,List],
     grid_file: Optional[str],
     dates: List[str],
 ):
@@ -52,7 +52,7 @@ def calculate_migration_time_property(
 
 def migration_time_property_to_map(
     config_: _config.RootConfig,
-    t_prop: xtgeo.GridProperty,
+    t_prop: List[xtgeo.GridProperty],
 ):
     """
     Aggregates and writes a migration time property to file using `grid3d_aggragte_map`.
@@ -63,7 +63,6 @@ def migration_time_property_to_map(
     config_.output.aggregation_tag = False
     for prop in t_prop.values():
         temp_file,temp_path = tempfile.mkstemp()
-        print(temp_path)
         os.close(temp_file)
         if config_.input.properties is not None:
             config_.input.properties.append(_config.Property(temp_path,None,None))
