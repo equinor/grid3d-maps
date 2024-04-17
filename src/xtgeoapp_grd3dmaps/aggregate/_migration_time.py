@@ -32,7 +32,7 @@ def generate_migration_time_property(
             co2_threshold = [co2_threshold[0] for x in unique_prop_names]
         else:
             error_text = str(len(co2_threshold)) + " values of co2_threshold provided, but " + str(len(unique_prop_names)) + " properties in config file input\nfix the amount of values in co2_threshold or the amount of properties in config file"
-        raise Exception(error_text)
+            raise Exception(error_text)
     co2_thresholds = {}
     for index, value in enumerate(prop_names):
         if value not in props_idx:
