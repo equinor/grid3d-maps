@@ -83,6 +83,8 @@ def main(arguments=None):
             "Migration time computation is only supported for a single property"
         )
     p_spec = config_.input.properties.pop()
+    if isinstance(p_spec.name,str):
+        p_spec.name = [p_spec.name]
     t_prop = calculate_migration_time_property(
         p_spec.source,
         p_spec.name,
