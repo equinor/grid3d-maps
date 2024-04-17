@@ -38,8 +38,9 @@ def calculate_migration_time_property(
     files
     """
     prop_spec = [
-        _config.Property(source=f, name=property_name)
+        _config.Property(source=f, name=name)
         for f in glob.glob(properties_files, recursive=True)
+        for name in property_name
     ]
     grid = None if grid_file is None else xtgeo.grid_from_file(grid_file)
     properties = _parser.extract_properties(prop_spec, grid, dates)
@@ -60,11 +61,13 @@ def migration_time_property_to_map(
     """
     config_.computesettings.aggregation = _config.AggregationMethod.MIN
     config_.output.aggregation_tag = False
-    temp_file, temp_path = tempfile.mkstemp()
-    os.close(temp_file)
-    if config_.input.properties is not None:
-        config_.input.properties.append(_config.Property(temp_path, None, None))
-    t_prop.to_file(temp_path)
+    for prop in t_prop.values():
+        temp_file,temp_path = tempfile.mkstemp()
+        print(temp_path)
+        os.close(temp_file)
+        if config_.input.properties is not None:
+            config_.input.properties.append(_config.Property(temp_path,None,None))
+        prop.to_file(temp_path)
     grid3d_aggregate_map.generate_from_config(config_)
     os.unlink(temp_path)
 
