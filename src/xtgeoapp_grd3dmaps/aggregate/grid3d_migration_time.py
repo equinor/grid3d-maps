@@ -13,6 +13,8 @@ from xtgeoapp_grd3dmaps.aggregate import (
     grid3d_aggregate_map,
 )
 
+MIGRATION_TIME_PROPERTIES = ["AMFG","AMFW","YMFG","YMFW","XMF1","XMF2","YMF1","YMF2","SGAS","SWAT"]
+
 # Module variables for ERT hook implementation:
 DESCRIPTION = (
     "Generate migration time property maps. Docs:\n"
@@ -24,7 +26,6 @@ EXAMPLES = """
 
   FORWARD_MODEL GRID3D_MIGRATION_TIME(<CONFIG_MIGTIME>=conf.yml, <ECLROOT>=<ECLBASE>)
 """
-
 
 def calculate_migration_time_property(
     properties_files: str,
@@ -85,6 +86,14 @@ def main(arguments=None):
     p_spec = config_.input.properties.pop()
     if isinstance(p_spec.name,str):
         p_spec.name = [p_spec.name]
+    if any(x in MIGRATION_TIME_PROPERTIES for x in p_spec.name):
+        removed_props = [x for x in p_spec.name if x not in MIGRATION_TIME_PROPERTIES]
+        p_spec.name = [x for x in p_spec.name if x in MIGRATION_TIME_PROPERTIES]
+        if(len(removed_props)>0):
+            print("Time migration maps are not supported for these properties: ", ", ".join(str(x) for x in removed_props))        
+    else:
+        error_text = "Time migration maps are not supported for any of the properties provided"
+        raise ValueError(error_text)
     t_prop = calculate_migration_time_property(
         p_spec.source,
         p_spec.name,
