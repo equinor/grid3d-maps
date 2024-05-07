@@ -129,7 +129,7 @@ def generate_maps(
 
 def _property_tag(prop: str, agg_method: AggregationMethod, agg_tag: bool):
     agg = f"{agg_method.value}_" if agg_tag else ""
-    return f"{agg}{prop.replace('_', '--')}"
+    return f"{agg}{prop}"
 
 
 # pylint: disable=too-many-arguments
