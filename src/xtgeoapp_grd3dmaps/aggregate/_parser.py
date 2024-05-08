@@ -190,6 +190,9 @@ def extract_properties(
                     continue
                 prop.date = date
                 prop.name += f"--{date}"
+            if prop.date is not None and prop.name is not None:
+                if prop.name.split("_")[-1] == prop.date:
+                    prop.name = prop.name.replace("_", "--")
         if len(dates) > 0:
             props = [p for p in props if p.date in dates]
         properties += props
