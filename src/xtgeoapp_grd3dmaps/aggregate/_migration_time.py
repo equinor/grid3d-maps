@@ -20,7 +20,7 @@ def generate_migration_time_property(
     times = [datetime.datetime.strptime(_prop.date, "%Y%m%d") for _prop in co2_props]
     time_since_start = [(t - times[0]).days / 365 for t in times]
     # Duplicate first property to ensure equal actnum
-    prop_names = [prop.name.split("_")[0] for prop in co2_props]
+    prop_names = [prop.name.split("--")[0] for prop in co2_props]
     unique_prop_names = list(set(prop_names))
     props_idx = {}
     first_prop_idx = {}
