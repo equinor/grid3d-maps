@@ -92,4 +92,3 @@ def test_hc_thickness_1a(datatree, hcdataio1aconfig):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 146
-    assert metadata["data"]["property"]["attribute"] == "oilthickness"

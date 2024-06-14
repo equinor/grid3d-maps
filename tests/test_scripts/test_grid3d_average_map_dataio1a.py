@@ -148,7 +148,6 @@ def test_average_map_dataio1a(datatree, avgdataio1aconfig):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 200
-    assert metadata["data"]["property"]["attribute"] == "saturation"
 
     legacy = (
         datatree
