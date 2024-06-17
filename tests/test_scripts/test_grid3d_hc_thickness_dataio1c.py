@@ -3,6 +3,7 @@
 import json
 import os
 import shutil
+import sys
 from pathlib import Path
 
 import grid3d_maps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
@@ -66,6 +67,9 @@ def test_hc_thickness_1c_add2docs(hcdataio1cconfig):
     assert hcdataio1cconfig is not None
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="dataio currently uses NamedTemporaryFile"
+)
 @pytest.mark.parametrize(
     "variant",
     ["inputconfig", "FMU_GLOBAL_CONFIG_GRD3DMAPS", "FMU_GLOBAL_CONFIG"],

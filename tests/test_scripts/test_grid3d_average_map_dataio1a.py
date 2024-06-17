@@ -3,6 +3,7 @@
 import json
 import os
 import shutil
+import sys
 from pathlib import Path
 
 import pytest
@@ -115,6 +116,9 @@ def test_average_map_1a_legacy(datatree):
     assert out.is_file()
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="dataio currently uses NamedTemporaryFile"
+)
 def test_average_map_dataio1a(datatree, avgdataio1aconfig):
     """Test AVG with YAML config example 3a piped through dataio"""
 
