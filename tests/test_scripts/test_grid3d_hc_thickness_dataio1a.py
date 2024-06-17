@@ -3,6 +3,7 @@
 import json
 import os
 import shutil
+import sys
 from pathlib import Path
 
 import grid3d_maps.avghc.grid3d_hc_thickness as grid3d_hc_thickness
@@ -67,6 +68,9 @@ def test_hc_thickness_1a_add2docs(hcdataio1aconfig):
     assert hcdataio1aconfig is not None
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="dataio currently uses NamedTemporaryFile"
+)
 def test_hc_thickness_1a(datatree, hcdataio1aconfig):
     """Test HC thickness map piped through dataio"""
 
