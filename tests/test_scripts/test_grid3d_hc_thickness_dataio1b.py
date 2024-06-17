@@ -47,8 +47,8 @@ output:
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
-@pytest.fixture(name="hcdataio1bconfig", scope="module")
-def fixture_hcdataio1b(datatree):
+@pytest.fixture()
+def hcdataio1bconfig(datatree):
     """Fixture to make config."""
     name = "hcdataio1b.yml"
     cfg = datatree / name

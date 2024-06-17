@@ -75,8 +75,8 @@ output:
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
 
-@pytest.fixture(name="avgdataio1aconfig", scope="module")
-def fixture_avgdataio1aconfig(datatree):
+@pytest.fixture()
+def avgdataio1aconfig(datatree):
     """Fixture to make config."""
     name = "avgdataio1a.yml"
     cfg = datatree / name
