@@ -68,6 +68,7 @@ tests = [
     "types-PyYAML",
 ]
 docs = [
+    "myst-parser",
     "sphinx",
     "sphinx-argparse",
     "sphinx-autodoc-typehints",
