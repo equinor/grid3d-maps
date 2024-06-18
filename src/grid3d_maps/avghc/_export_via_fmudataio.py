@@ -83,7 +83,7 @@ def export_avg_map_dataio(surf, nametuple, config):
     mdata = metadata[nameid]
     name = mdata.get("name", "unknown_name")
     attribute = mdata.get("attribute", "unknown_attribute")
-    unit = mdata.get("unit", None)
+    unit = mdata.get("unit", "")
     tt1 = mdata.get("t1", None)
     tt2 = mdata.get("t2", None)
 
@@ -114,7 +114,6 @@ def export_avg_map_dataio(surf, nametuple, config):
         is_prediction=True,
         is_observation=False,
         tagname=globaltag + "average_" + name,
-        verbosity="WARNING",
         workflow="grid3d-maps script average maps",
     )
     fname = edata.export(surf)
@@ -141,7 +140,7 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
 
     name = hcmode + "thickness"
     attribute = name
-    unit = mdata.get("unit", None)
+    unit = mdata.get("unit", "")
 
     tt1 = None
     tt2 = None
@@ -169,7 +168,6 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
         is_observation=False,
         unit=unit,
         tagname=globaltag + name,
-        verbosity="WARNING",
         workflow="grid3d-maps script hc thickness maps",
     )
     fname = edata.export(surf)
