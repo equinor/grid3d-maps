@@ -3,9 +3,10 @@
 import shutil
 from pathlib import Path
 
-import grid3d_maps.avghc.grid3d_average_map as grid3d_hc_thickness
 import pytest
 import xtgeo
+
+import grid3d_maps.avghc.grid3d_average_map as grid3d_hc_thickness
 
 SOURCEPATH = Path(__file__).absolute().parent.parent.parent
 
