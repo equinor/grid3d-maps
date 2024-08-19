@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 import xtgeo
 import yaml
+
 from grid3d_maps.avghc import grid3d_average_map
 
 YAMLCONTENT = """
