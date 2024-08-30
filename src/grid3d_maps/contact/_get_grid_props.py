@@ -203,7 +203,7 @@ def get_numpies_contact(config, grd, initobjects, restobjects, dates):
     logger.info("Getting numpies...")
 
     logger.info("Getting actnum...")
-    actnum = grd.get_actnum().values3d
+    actnum = grd.get_actnum().values
     logger.info("Got actnum...")
     actnum = ma.filled(actnum)
     logger.info("Ran ma.filled for actnum")
@@ -211,20 +211,20 @@ def get_numpies_contact(config, grd, initobjects, restobjects, dates):
 
     logger.info("Getting xc, yc, zc...")
     xc, yc, zc = grd.get_xyz(mask=False)
-    xc = ma.filled(xc.values3d)
-    yc = ma.filled(yc.values3d)
-    zc = ma.filled(zc.values3d)
+    xc = ma.filled(xc.values)
+    yc = ma.filled(yc.values)
+    zc = ma.filled(zc.values)
 
     logger.info("Getting dz...")
-    dz = ma.filled(grd.get_dz(mask=False).values3d)
+    dz = ma.filled(grd.get_dz(mask=False).values)
     logger.info("Getting dz as ma.filled...")
     dz[actnum == 0] = 0.0
     logger.info("dz = 0 of actnum is 0 ...")
 
     logger.info("Getting dx dy...")
     dx, dy = grd.get_dxdy()
-    dx = ma.filled(dx.values3d)
-    dy = ma.filled(dy.values3d)
+    dx = ma.filled(dx.values)
+    dy = ma.filled(dy.values)
     logger.info("ma.filled for dx dy done")
 
     initd = {
@@ -241,17 +241,17 @@ def get_numpies_contact(config, grd, initobjects, restobjects, dates):
 
     for prop in initobjects:
         if prop.name == "PORO":
-            poro = ma.filled(prop.values3d, fill_value=0.0)
+            poro = ma.filled(prop.values, fill_value=0.0)
         if prop.name == "NTG":
-            ntg = ma.filled(prop.values3d, fill_value=0.0)
+            ntg = ma.filled(prop.values, fill_value=0.0)
         if prop.name == "PORV":
-            porv = ma.filled(prop.values3d, fill_value=0.0)
+            porv = ma.filled(prop.values, fill_value=0.0)
         if prop.name == "DX":
-            dx = ma.filled(prop.values3d, fill_value=0.0)
+            dx = ma.filled(prop.values, fill_value=0.0)
         if prop.name == "DY":
-            dy = ma.filled(prop.values3d, fill_value=0.0)
+            dy = ma.filled(prop.values, fill_value=0.0)
         if prop.name == "DZ":
-            dz = ma.filled(prop.values3d, fill_value=0.0)
+            dz = ma.filled(prop.values, fill_value=0.0)
 
     porv[actnum == 0] = 0.0
     poro[actnum == 0] = 0.0
@@ -275,12 +275,12 @@ def get_numpies_contact(config, grd, initobjects, restobjects, dates):
         for prop in restobjects:
             pname = "SWAT" + "_" + str(date)
             if prop.name == pname:
-                swat[date] = ma.filled(prop.values3d, fill_value=1)
+                swat[date] = ma.filled(prop.values, fill_value=1)
                 nsoil += 1
 
             pname = "SGAS" + "_" + str(date)
             if prop.name == pname:
-                sgas[date] = ma.filled(prop.values3d, fill_value=1)
+                sgas[date] = ma.filled(prop.values, fill_value=1)
                 nsoil += 1
 
             if nsoil == 2:
