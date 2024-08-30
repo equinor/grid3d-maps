@@ -18,12 +18,6 @@ DESCRIPTION = (
     "Generate migration time property maps. Docs:\n"
     + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
-CATEGORY = "modelling.reservoir"
-EXAMPLES = """
-.. code-block:: console
-
-  FORWARD_MODEL GRID3D_MIGRATION_TIME(<CONFIG_MIGTIME>=conf.yml, <ECLROOT>=<ECLBASE>)
-"""
 
 
 def calculate_migration_time_property(

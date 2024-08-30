@@ -1,36 +1,43 @@
 """Test suite for hook implementation."""
 
-import os
 import shutil
-from pathlib import Path
 
 import pytest
 
 try:
-    import ert  # noqa
+    from ert.plugins.plugin_manager import ErtPluginManager
 except ImportError:
-    try:
-        import ert_shared  # noqa
-    except ImportError:
-        pytest.skip(
-            "Not testing ERT hooks when ERT is not installed", allow_module_level=True
-        )
+    pytest.skip(
+        "Not testing ERT hooks when ERT is not installed", allow_module_level=True
+    )
 
 import grid3d_maps.hook_implementations.jobs as jobs
-
-try:
-    from ert.shared.plugins.plugin_manager import ErtPluginManager
-except ModuleNotFoundError:
-    from ert_shared.plugins.plugin_manager import ErtPluginManager
+from grid3d_maps.forward_models import (
+    Grid3dAggregateMap,
+    Grid3dAverageMap,
+    Grid3dHcThickness,
+    Grid3dMigrationTime,
+)
 
 EXPECTED_JOBS = {
-    "GRID3D_AVERAGE_MAP": "grid3d_maps/config_jobs/GRID3D_AVERAGE_MAP",
-    "GRID3D_HC_THICKNESS": "grid3d_maps/config_jobs/GRID3D_HC_THICKNESS",
-    "GRID3D_AGGREGATE_MAP": "grid3d_maps/config_jobs/GRID3D_AGGREGATE_MAP",
-    "GRID3D_MIGRATION_TIME": "grid3d_maps/config_jobs/GRID3D_MIGRATION_TIME",
+    "GRID3D_AVERAGE_MAP",
+    "GRID3D_HC_THICKNESS",
+    "GRID3D_AGGREGATE_MAP",
+    "GRID3D_MIGRATION_TIME",
 }
 
-SRC_PATH = Path(__file__).absolute().parent.parent.parent / "src"
+
+@pytest.mark.requires_ert
+def test_that_installable_fm_steps_work_as_plugins():
+    """Test that the forward models are included as ERT plugin."""
+    fms = ErtPluginManager(plugins=[jobs]).forward_model_steps
+
+    assert Grid3dHcThickness in fms
+    assert Grid3dAggregateMap in fms
+    assert Grid3dAverageMap in fms
+    assert Grid3dMigrationTime in fms
+
+    assert len(fms) == len(EXPECTED_JOBS)
 
 
 @pytest.mark.requires_ert
@@ -38,13 +45,8 @@ def test_hook_implementations():
     """Test hook implementation."""
     pma = ErtPluginManager(plugins=[jobs])
 
-    installable_jobs = pma.get_installable_jobs()
-    for wf_name, wf_location in EXPECTED_JOBS.items():
-        assert wf_name in installable_jobs
-        assert installable_jobs[wf_name].endswith(wf_location)
-        assert os.path.isfile(installable_jobs[wf_name])
-
-    assert set(installable_jobs.keys()) == set(EXPECTED_JOBS.keys())
+    installable_fm_step_jobs = [fms().name for fms in pma.forward_model_steps]
+    assert set(installable_fm_step_jobs) == set(EXPECTED_JOBS)
 
     expected_workflow_jobs = {}
     installable_workflow_jobs = pma.get_installable_workflow_jobs()
@@ -56,24 +58,21 @@ def test_hook_implementations():
 
 
 @pytest.mark.requires_ert
-def test_job_config_syntax():
-    """Check for syntax errors made in job configuration files"""
-    for _, job_config in EXPECTED_JOBS.items():
-        # Check (loosely) that double-dashes are enclosed in quotes:
-        with open(os.path.join(SRC_PATH, job_config), encoding="utf8") as f_handle:
-            for line in f_handle.readlines():
-                if not line.strip().startswith("--") and "--" in line:
-                    assert '"--' in line and " --" not in line
-
-
-@pytest.mark.requires_ert
 @pytest.mark.integration
 def test_executables():
     """Test executables listed in job configurations exist in $PATH"""
-    for _, job_config in EXPECTED_JOBS.items():
-        with open(os.path.join(SRC_PATH, job_config), encoding="utf8") as f_handle:
-            executable = f_handle.readlines()[0].split()[1]
-            assert shutil.which(executable)
+    pma = ErtPluginManager(plugins=[jobs])
+    for fm_step in pma.forward_model_steps:
+        # the executable should be equal to the job name, but in lowercase letter
+        assert shutil.which(fm_step().executable)
+
+
+@pytest.mark.requires_ert
+def test_executable_names():
+    """The executable names should be equal to the job name, but in lowercase letter"""
+    pma = ErtPluginManager(plugins=[jobs])
+    for fm_step in pma.forward_model_steps:
+        assert fm_step().executable == fm_step().name.lower()
 
 
 @pytest.mark.requires_ert
@@ -81,12 +80,7 @@ def test_hook_implementations_job_docs():
     """Testing hook job docs."""
     pma = ErtPluginManager(plugins=[jobs])
 
-    installable_jobs = pma.get_installable_jobs()
-
-    docs = pma.get_documentation_for_jobs()
-
-    assert set(docs.keys()) == set(installable_jobs.keys())
-
-    for job_name in installable_jobs:
-        assert docs[job_name]["description"] != ""
-        assert docs[job_name]["category"] != "other"
+    for fm_step in pma.forward_model_steps:
+        fm_step_doc = fm_step.documentation()
+        assert fm_step_doc.description is not None
+        assert fm_step_doc.category == "modelling.reservoir"
