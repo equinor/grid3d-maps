@@ -20,6 +20,9 @@ class Grid3dHcThickness(ForwardModelStepPlugin):
                 "--eclroot",
                 "<ECLROOT>",
             ],
+            default_mapping={
+                "<ECLROOT>": "",
+            },
         )
 
     def validate_pre_realization_run(
@@ -38,8 +41,15 @@ class Grid3dHcThickness(ForwardModelStepPlugin):
             source_function_name="Grid3dHcThickness",
             description=DESCRIPTION,
             examples="""
+Following is an example for extracting maps from the flow simulation grid
 .. code-block:: console
 
   FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
+
+where ECLBASE is already defined in your ERT config, pointing to the Eclipse/Flow
+basename relative to RUNPATH.
+
+.. note:: The <ECLROOT> argument is optional and can be omitted if sufficient
+information is provided in the config, e.g. when extracting maps from a geological grid.
 """,
         )
