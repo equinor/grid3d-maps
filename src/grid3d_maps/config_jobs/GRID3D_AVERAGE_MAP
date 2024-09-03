@@ -1,5 +1,0 @@
-EXECUTABLE grid3d_average_map
-ARGLIST "--config"  <CONFIG_AVGMAP> "--eclroot" <ECLROOT>
-
-STDERR GRID3D_AVERAGE_MAP.stderr
-STDOUT GRID3D_AVERAGE_MAP.stdout

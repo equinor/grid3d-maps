@@ -24,19 +24,11 @@ except ImportError:
 
 APPNAME = "grid3d_average_map"
 
-APPDESCR = (
+# Module variables for ERT hook implementation:
+DESCRIPTION = (
     "Make average property maps directly from 3D grids. Docs:\n"
     + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
-
-# Module variables for ERT hook implementation:
-DESCRIPTION = APPDESCR
-CATEGORY = "modelling.reservoir"
-EXAMPLES = """
-.. code-block:: console
-
-  FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
-"""
 
 xtg = XTGeoDialog()
 
@@ -45,7 +37,7 @@ logger = xtg.basiclogger(__name__)
 
 def do_parse_args(args):
     """Parse command line arguments that will override config."""
-    return _configparser.parse_args(args, APPNAME, APPDESCR)
+    return _configparser.parse_args(args, APPNAME, DESCRIPTION)
 
 
 def yamlconfig(inputfile, args):
