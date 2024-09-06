@@ -41,5 +41,8 @@ class Grid3dAggregateMap(ForwardModelStepPlugin):
 .. code-block:: console
 
   FORWARD_MODEL GRID3D_AGGREGATE_MAP(<CONFIG_AGGREGATE>=conf.yml, <ECLROOT>=<ECLBASE>)
+
+where ECLBASE is already defined in your ERT config, pointing to the Eclipse/Flow
+basename relative to RUNPATH.
 """,
         )

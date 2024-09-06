@@ -7,14 +7,20 @@ import pytest
 import yaml
 
 XTGEOTESTDATA = "tests/data/reek"
+ECLROOT = "tests/data/reek/REEK"
+
+ERT_CONFIG = """
+ECLBASE REEK.DATA
+QUEUE_SYSTEM LOCAL
+NUM_REALIZATIONS 1
+RUNPATH .
+"""
 
 
 @pytest.mark.requires_ert
-def test_grid3d_maps_through_ert(datatree):
-    """Test through ERT."""
+def test_average_map_no_eclroot(datatree):
+    """Test avg maps through ERT using grid and prop from config."""
     print(f"ERT run on {datatree}")
-
-    eclbase = "REEK"
 
     # Configuration file for grid3d_average_map,
     # based on tests/yaml/avg1f.yml
@@ -39,40 +45,115 @@ def test_grid3d_maps_through_ert(datatree):
     }
     Path("avg_conf.yml").write_text(yaml.dump(avg_conf), encoding="utf8")
 
-    # Configuration file for grid3d_thickness,
-    # based on tests/yaml/avg1f.yml
-    eclroot = str(Path(XTGEOTESTDATA) / "REEK")
-    # (eclroot cannot be only in yaml, it is overriden by the forward model
-    # default argument)
+    ert_config = Path(datatree) / "grid3d_maps_test.ert"
+    ert_config.write_text(
+        ERT_CONFIG + "FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=avg_conf.yml)"
+    )
+
+    subprocess.call(["ert", "test_run", ert_config])
+
+    assert Path("zero--avg1f_average_dz.gri").is_file()
+    assert Path("OK").is_file()
+
+
+@pytest.mark.requires_ert
+def test_average_map_eclroot_in_config(datatree):
+    """Test avg maps through ERT using eclroot in config."""
+    print(f"ERT run on {datatree}")
+
+    # eclroot defined in config
+    avg_conf = {
+        "title": "Reek",
+        "input": {"eclroot": str(ECLROOT), "PORO": "$eclroot.INIT"},
+        "computesettings": {"all": True, "tuning": {"zone_avg": True, "coarsen": 2}},
+        "output": {"tag": "erttest", "mapfolder": "."},
+    }
+    Path("avg_conf.yml").write_text(yaml.dump(avg_conf), encoding="utf8")
+
+    # eclroot not input as argument
+    ert_config = Path(datatree) / "grid3d_maps_test.ert"
+    ert_config.write_text(
+        ERT_CONFIG + "FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=avg_conf.yml)"
+    )
+
+    subprocess.call(["ert", "test_run", ert_config])
+
+    assert Path("all--erttest_average_poro.gri").is_file()
+    assert Path("OK").is_file()
+
+
+@pytest.mark.requires_ert
+def test_average_map_eclroot_in_forward_model(datatree):
+    """Test avg maps through ERT using eclroot as forward_model argument."""
+    print(f"ERT run on {datatree}")
+
+    # eclroot not present in config
+    avg_conf = {
+        "title": "Reek",
+        "input": {"PORO": "$eclroot.INIT"},
+        "computesettings": {"all": True, "tuning": {"zone_avg": True, "coarsen": 2}},
+        "output": {"tag": "erttest", "mapfolder": "."},
+    }
+    Path("avg_conf.yml").write_text(yaml.dump(avg_conf), encoding="utf8")
+
+    # eclroot input as forward_model argument
+    ert_config = Path(datatree) / "grid3d_maps_test.ert"
+    ert_config.write_text(
+        ERT_CONFIG + "FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=avg_conf.yml, "
+        f"<ECLROOT>={ECLROOT})"
+    )
+
+    subprocess.call(["ert", "test_run", ert_config])
+
+    assert Path("all--erttest_average_poro.gri").is_file()
+    assert Path("OK").is_file()
+
+
+@pytest.mark.requires_ert
+def test_hc_thickness_eclroot_in_forward_model(datatree):
+    """Test hc-thickness through ERT using eclroot as forward_model argument."""
+    print(f"ERT run on {datatree}")
+
+    # eclroot not present in config
     hc_conf = {
         "title": "Reek",
-        "input": {
-            "grid": str(Path(XTGEOTESTDATA) / "reek_grid_fromegrid.roff"),
-            "dates": ["19991201"],
-        },
+        "input": {"dates": ["19991201"]},
         "output": {"tag": "hc1f", "mapfolder": ".", "plotfolder": "."},
     }
     Path("hc_conf.yml").write_text(yaml.dump(hc_conf), encoding="utf8")
 
-    ert_config = [
-        "ECLBASE " + eclbase + ".DATA",
-        "QUEUE_SYSTEM LOCAL",
-        "NUM_REALIZATIONS 1",
-        "RUNPATH .",
-    ]
+    # eclroot input as forward_model argument
+    ert_config = Path(datatree) / "grid3d_maps_test.ert"
+    ert_config.write_text(
+        ERT_CONFIG + "FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=hc_conf.yml, "
+        f"<ECLROOT>={ECLROOT})"
+    )
+    subprocess.call(["ert", "test_run", ert_config])
 
-    ert_config.append("FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=avg_conf.yml)")
-    ert_config.append(
-        "FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=hc_conf.yml, <ECLROOT>="
-        + eclroot
-        + ")"
+    assert Path("all--hc1f_oilthickness--19991201.png").is_file()
+    assert Path("OK").is_file()
+
+
+@pytest.mark.requires_ert
+def test_hc_thickness_eclroot_in_config(datatree):
+    """Test hc-thickness through ERT using eclroot in config."""
+    print(f"ERT run on {datatree}")
+
+    # eclroot defined in config
+    hc_conf = {
+        "title": "Reek",
+        "input": {"eclroot": ECLROOT, "dates": ["19991201"]},
+        "output": {"tag": "hc1f", "mapfolder": ".", "plotfolder": "."},
+    }
+    Path("hc_conf.yml").write_text(yaml.dump(hc_conf), encoding="utf8")
+
+    # eclroot not input as argument
+    ert_config = Path(datatree) / "grid3d_maps_test.ert"
+    ert_config.write_text(
+        ERT_CONFIG + "FORWARD_MODEL GRID3D_HC_THICKNESS(<CONFIG_HCMAP>=hc_conf.yml)"
     )
 
-    ert_config_filename = Path(datatree) / "grid3d_maps_test.ert"
-    ert_config_filename.write_text("\n".join(ert_config))
+    subprocess.call(["ert", "test_run", ert_config])
 
-    subprocess.call(["ert", "test_run", ert_config_filename])
-
-    assert Path("zero--avg1f_average_dz.gri").is_file()
     assert Path("all--hc1f_oilthickness--19991201.png").is_file()
     assert Path("OK").is_file()

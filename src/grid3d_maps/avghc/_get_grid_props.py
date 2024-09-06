@@ -50,6 +50,9 @@ def files_to_import(config, appname):
             initlist["xhcpv"] = config["input"]["xhcpv"]
 
         else:
+            if eclroot is None:
+                raise ValueError("'eclroot' information is not provided")
+
             initlist["PORO"] = eclroot + ".INIT"
             initlist["NTG"] = eclroot + ".INIT"
             initlist["PORV"] = eclroot + ".INIT"

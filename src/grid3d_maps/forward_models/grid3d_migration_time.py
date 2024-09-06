@@ -41,5 +41,8 @@ class Grid3dMigrationTime(ForwardModelStepPlugin):
 .. code-block:: console
 
   FORWARD_MODEL GRID3D_MIGRATION_TIME(<CONFIG_MIGTIME>=conf.yml, <ECLROOT>=<ECLBASE>)
+
+where ECLBASE is already defined in your ERT config, pointing to the Eclipse/Flow
+basename relative to RUNPATH.
 """,
         )
