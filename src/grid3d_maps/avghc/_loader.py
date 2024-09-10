@@ -1,17 +1,17 @@
 """Loading nested config files"""
 
 import io
+import logging
 import os.path
 
 import yaml
-from xtgeo.common import XTGeoDialog, null_logger
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
 file_types = (io.IOBase,)
 
-xtg = XTGeoDialog()
-logger = null_logger(__name__)
+
+logger = logging.getLogger(__name__)
 
 
 class FMUYamlSafeLoader(yaml.SafeLoader):

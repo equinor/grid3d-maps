@@ -1,8 +1,7 @@
 """Script to estimate contact maps directly from 3D grids."""
 
+import logging
 import sys
-
-from xtgeo.common import XTGeoDialog
 
 from grid3d_maps.avghc import _configparser, _get_zonation_filters
 from grid3d_maps.contact import _compute_contact, _get_grid_props
@@ -20,9 +19,8 @@ APPDESCR = (
     + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
 
-xtg = XTGeoDialog()
 
-logger = xtg.basiclogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def do_parse_args(args):
@@ -56,20 +54,20 @@ def get_grid_props_data(config, appname):
         config, appname
     )
 
-    xtg.say("Grid file is {}".format(gfile))
+    logger.info("Grid file is {}".format(gfile))
 
     if len(initlist) > 0:
-        xtg.say("Getting INITIAL file data (as INIT or ROFF)")
+        logger.info("Getting INITIAL file data (as INIT or ROFF)")
 
         for initpar, initfile in initlist.items():
             logger.info("{} file is {}".format(initpar, initfile))
 
     if len(restartlist) > 0:
-        xtg.say("Getting RESTART file data")
+        logger.info("Getting RESTART file data")
         for restpar, restfile in restartlist.items():
             logger.info("{} file is {}".format(restpar, restfile))
 
-    xtg.say("Getting dates")
+    logger.info("Getting dates")
     for date in dates:
         logger.info("Date is {}".format(date))
 
@@ -119,28 +117,27 @@ def compute_contact(config, initd, restartd, dates):
 
 
 def main(args=None):
-    XTGeoDialog.print_xtgeo_header(APPNAME, __version__)
-
-    xtg.say("Parse command line")
+    logger.info(f"Starting {APPNAME} (version {__version__})")
+    logger.info("Parse command line")
     args = do_parse_args(args)
 
     config = None
     if not args.config:
-        xtg.error("Config file is missing")
+        logger.error("Config file is missing")
         sys.exit(1)
 
     logger.debug("--config option is applied, reading YAML ...")
 
     # get the configurations
-    xtg.say("Parse YAML file")
+    logger.info("Parse YAML file")
     config = yamlconfig(args.config, args)
 
     # get the files
-    xtg.say("Collect files...")
+    logger.info("Collect files...")
     gfile, initlist, restartlist, dates = get_grid_props_data(config, APPNAME)
 
     # import data from files and return releavnt numpies
-    xtg.say("Import files...")
+    logger.info("Import files...")
     grd, initd, restartd, dates = import_pdata(
         config, APPNAME, gfile, initlist, restartlist, dates
     )
@@ -148,7 +145,7 @@ def main(args=None):
     # Get the zonations
     # zonation, zoned = get_zranges(config, grd)
 
-    xtg.say("Grid contact map...")
+    logger.info("Grid contact map...")
     compute_contact(config, initd, restartd, dates)
 
 

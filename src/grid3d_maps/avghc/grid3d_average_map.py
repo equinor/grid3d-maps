@@ -5,9 +5,8 @@ simulation files (or eventually other similators), but ROFF files
 are equally supported.
 """
 
+import logging
 import sys
-
-from xtgeo.common import XTGeoDialog
 
 from . import (
     _compute_avg,
@@ -30,9 +29,8 @@ DESCRIPTION = (
     + "https://fmu-docs.equinor.com/docs/grid3d-maps/"
 )
 
-xtg = XTGeoDialog()
-
-logger = xtg.basiclogger(__name__)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 def do_parse_args(args):
@@ -68,17 +66,17 @@ def get_grid_props_data(config):
         config, APPNAME
     )
 
-    xtg.say(f"Grid file is {gfile}")
+    logger.info("Grid file is {}".format(gfile))
 
-    xtg.say("Getting INIT file data")
+    logger.info("Getting INIT file data")
     for initpar, initfile in initlist.items():
         logger.info("%s file is %s", initpar, initfile)
 
-    xtg.say("Getting RESTART file data")
+    logger.info("Getting RESTART file data")
     for restpar, restfile in restartlist.items():
         logger.info("%s file is %s", restpar, restfile)
 
-    xtg.say("Getting dates")
+    logger.info("Getting dates")
     for date in dates:
         logger.info("Date is %s", date)
 
@@ -134,10 +132,10 @@ def compute_avg_and_plot(
     if config["mapsettings"] is None:
         config = _mapsettings.estimate_mapsettings(config, grd)
     else:
-        xtg.say("Check map settings vs grid...")
+        logger.info("Check map settings vs grid...")
         status = _mapsettings.check_mapsettings(config, grd)
         if status >= 10:
-            xtg.critical("STOP! Mapsettings defined is outside the 3D grid!")
+            logger.critical("STOP! Mapsettings defined is outside the 3D grid!")
 
     # This is done a bit different here than in the HC thickness. Here the
     # mapping and plotting is done within _compute_avg.py
@@ -152,28 +150,27 @@ def compute_avg_and_plot(
 
 def main(args=None):
     """Main routine."""
-    XTGeoDialog.print_xtgeo_header(APPNAME, __version__)
-
-    xtg.say("Parse command line")
+    logger.info(f"Starting {APPNAME} (version {__version__})")
+    logger.info("Parse command line")
     args = do_parse_args(args)
 
     config = None
     if not args.config:
-        xtg.error("Config file is missing")
+        logger.error("Config file is missing")
         sys.exit(1)
 
     logger.debug("--config option is applied, reading YAML ...")
 
     # get the configurations
-    xtg.say("Parse YAML file")
+    logger.info("Parse YAML file")
     config = yamlconfig(args.config, args)
 
     # get the files
-    xtg.say("Collect files...")
+    logger.info("Collect files...")
     gfile, initlist, restartlist, dates = get_grid_props_data(config)
 
     # import data from files and return relevant numpies
-    xtg.say("Import files...")
+    logger.info("Import files...")
 
     grd, specd, propd, dates = import_pdata(config, gfile, initlist, restartlist, dates)
 
@@ -181,16 +178,16 @@ def main(args=None):
     filterarray = import_filters(config, grd)
     logger.info("Filter mean value: %s", filterarray.mean())
     if filterarray.mean() < 1.0:
-        xtg.say("Property filters are active")
+        logger.info("Property filters are active")
 
     for prop, val in propd.items():
         logger.info("Key is %s, avg value is %s", prop, val.mean())
 
     # Get the zonations
-    xtg.say("Get zonation info")
+    logger.info("Get zonation info")
     zonation, zoned = get_zranges(config, grd)
 
-    xtg.say("Compute average properties")
+    logger.info("Compute average properties")
     compute_avg_and_plot(config, grd, specd, propd, dates, zonation, zoned, filterarray)
 
 

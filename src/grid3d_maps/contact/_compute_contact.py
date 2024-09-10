@@ -1,10 +1,10 @@
+import logging
+
 import numpy as np
 import xtgeo
-from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.surface import RegularSurface
 
-xtg = XTGeoDialog()
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def gridmap_contact(config, specd, propd, dates):
@@ -26,4 +26,4 @@ def gridmap_contact(config, specd, propd, dates):
             yinc=config["mapsettings"].get("yinc"),
             values=np.zeros((ncol, nrow)),
         )
-    print(propd)
+    logger.info(propd)

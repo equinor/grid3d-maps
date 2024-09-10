@@ -1,17 +1,17 @@
 import getpass
+import logging
 from time import localtime, strftime
 
 import numpy as np
 import numpy.ma as ma
 import xtgeo
-from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.surface import RegularSurface
 from xtgeoviz import quickplot
 
 from ._export_via_fmudataio import export_avg_map_dataio
 
-xtg = XTGeoDialog()
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
@@ -19,7 +19,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
 
     It will return a dictionary per parameter and eventually dates
     """
-    logger.info("Dates is unused %s", dates)
+    logger.debug("Dates is unused %s", dates)
 
     avgd = {}
 
@@ -43,12 +43,12 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             values=np.zeros((ncol, nrow)),
         )
 
-    xtg.say("Mapping ...")
+    logger.info("Mapping ...")
     if len(propd) == 0 or len(zoned) == 0:
         raise RuntimeError("The dictionary <propd> or <zoned> is zero. Stop")
 
     for zname, zrange in zoned.items():
-        logger.info("ZNAME and ZRANGE are %s:  %s", zname, zrange)
+        logger.debug("ZNAME and ZRANGE are %s:  %s", zname, zrange)
         usezonation = zonation
         usezrange = zrange
 
@@ -68,7 +68,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             usezrange = 999
 
             if config["computesettings"]["all"] is not True:
-                logger.info("Skip <%s> (cf. computesettings: all)", zname)
+                logger.debug("Skip <%s> (cf. computesettings: all)", zname)
                 continue
         else:
             if config["computesettings"]["zone"] is not True:
@@ -102,7 +102,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
             if filename is None:
                 export_avg_map_dataio(avgd[usename], usename, config)
             else:
-                xtg.say("Map file to {}".format(filename))
+                logger.info("Map file to {}".format(filename))
                 avgd[usename].to_file(filename)
 
     return avgd
@@ -111,7 +111,7 @@ def get_avg(config, specd, propd, dates, zonation, zoned, filterarray):
 def do_avg_plotting(config, avgd):
     """Do plotting via matplotlib to PNG (etc) (if requested)"""
 
-    xtg.say("Plotting ...")
+    logger.info("Plotting ...")
 
     for names, xmap in avgd.items():
         # 'names' is a tuple as (zname, pname)
@@ -122,7 +122,7 @@ def do_avg_plotting(config, avgd):
 
         pcfg = _avg_plotsettings(config, zname, pname)
 
-        xtg.say(f"Plot to {plotfile}")
+        logger.info("Plot to {}".format(plotfile))
 
         usevrange = pcfg["valuerange"]
 
@@ -131,11 +131,11 @@ def do_avg_plotting(config, avgd):
             try:
                 fau = xtgeo.polygons_from_file(pcfg["faultpolygons"], fformat="guess")
                 faults = {"faults": fau}
-                xtg.say("Use fault polygons")
+                logger.info("Use fault polygons")
             except OSError as err:
-                xtg.say(err)
+                logger.info(str(err))
                 faults = None
-                xtg.say("No fault polygons")
+                logger.info("No fault polygons")
 
         quickplot(
             xmap,

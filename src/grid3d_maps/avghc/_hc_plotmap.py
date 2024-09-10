@@ -1,19 +1,17 @@
 """Private module for HC thickness functions."""
 
 import getpass
+import logging
 from time import localtime, strftime
 
 import numpy as np
 import xtgeo
-from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.surface import RegularSurface
 from xtgeoviz import quickplot
 
 from ._export_via_fmudataio import export_hc_map_dataio
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
@@ -62,17 +60,17 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
             usezrange = 999
 
             if config["computesettings"]["all"] is not True:
-                logger.info("Skip <%s> (cf. computesettings: all)", zname)
+                logger.debug("Skip <%s> (cf. computesettings: all)", zname)
                 continue
         else:
             if config["computesettings"]["zone"] is not True:
-                logger.info("Skip <%s> (cf. computesettings: zone)", zname)
+                logger.debug("Skip <%s> (cf. computesettings: zone)", zname)
                 continue
 
         mapd = {}
 
         for date, hcpfz in hcpfzd.items():
-            logger.info("Mapping <%s> for date <%s> ...", zname, date)
+            logger.debug("Mapping <%s> for date <%s> ...", zname, date)
             xmap = basemap.copy()
 
             xmap.hc_thickness_from_3dprops(
@@ -89,7 +87,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
             filename = None
             if config["output"]["mapfolder"] != "fmu-dataio":
                 filename = _hc_filesettings(config, zname, date, hcmode)
-                xtg.say(f"Map file to {filename}")
+                logger.info(f"Map file to {filename}")
                 xmap.to_file(filename)
             else:
                 export_hc_map_dataio(xmap, zname, date, hcmode, config)
@@ -106,7 +104,7 @@ def do_hc_mapping(config, initd, hcpfzd, zonation, zoned, hcmode):
 def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
     """Do plotting via matplotlib to PNG (etc) (if requested)"""
 
-    xtg.say("Plotting ...")
+    logger.info("Plotting ...")
 
     for zname, mapd in mapzd.items():
         for date, xmap in mapd.items():
@@ -114,7 +112,7 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
 
             pcfg = _hc_plotsettings(config, zname, date, filtermean)
 
-            xtg.say("Plot to {}".format(plotfile))
+            logger.info("Plot to {}".format(plotfile))
 
             usevrange = pcfg["valuerange"]
             if len(date) > 10:
@@ -128,7 +126,7 @@ def do_hc_plotting(config, mapzd, hcmode, filtermean=None):
                     )
                     faults = {"faults": fau}
                 except OSError as err:
-                    xtg.say(err)
+                    logger.info(err)
                     faults = None
 
             quickplot(
