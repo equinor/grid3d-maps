@@ -13,17 +13,13 @@ except ImportError:
 
 import grid3d_maps.hook_implementations.jobs as jobs
 from grid3d_maps.forward_models import (
-    Grid3dAggregateMap,
     Grid3dAverageMap,
     Grid3dHcThickness,
-    Grid3dMigrationTime,
 )
 
 EXPECTED_JOBS = {
     "GRID3D_AVERAGE_MAP",
     "GRID3D_HC_THICKNESS",
-    "GRID3D_AGGREGATE_MAP",
-    "GRID3D_MIGRATION_TIME",
 }
 
 
@@ -33,9 +29,7 @@ def test_that_installable_fm_steps_work_as_plugins():
     fms = ErtPluginManager(plugins=[jobs]).forward_model_steps
 
     assert Grid3dHcThickness in fms
-    assert Grid3dAggregateMap in fms
     assert Grid3dAverageMap in fms
-    assert Grid3dMigrationTime in fms
 
     assert len(fms) == len(EXPECTED_JOBS)
 
