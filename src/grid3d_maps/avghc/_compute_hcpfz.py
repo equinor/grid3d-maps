@@ -1,9 +1,8 @@
+import logging
+
 import numpy.ma as ma
-from xtgeo.common import XTGeoDialog, null_logger
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def get_hcpfz(config, initd, restartd, dates, hcmode, filterarray):
@@ -49,7 +48,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
     hcmethod = config["computesettings"]["method"]
 
     if not dates:
-        xtg.error("Dates are missing. Bug?")
+        logger.error("Dates are missing. Bug?")
         raise RuntimeError("Dates er missing. Bug?")
 
     for date in dates:
@@ -111,7 +110,7 @@ def _get_hcpfz_ecl(config, initd, restartd, dates, hcmode, filterarray):
             if dt1 in hcpfzd and dt2 in hcpfzd:
                 hcpfzd[cdate] = hcpfzd[dt1] - hcpfzd[dt2]
             else:
-                xtg.warn(
+                logger.warning(
                     f"Cannot retrieve data for date {dt1} and/or {dt2}. "
                     "Some TSTEPs failed?"
                 )

@@ -1,10 +1,10 @@
+import logging
 import pathlib
 import sys
 from typing import List
 
 import numpy as np
 import xtgeo
-from xtgeo.common import XTGeoDialog
 
 from grid3d_maps.aggregate._config import (
     AggregationMethod,
@@ -23,8 +23,8 @@ from grid3d_maps.aggregate._parser import (
 
 from . import _config, _grid_aggregation
 
-_XTG = XTGeoDialog()
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # Module variables for ERT hook implementation:
 DESCRIPTION = (
@@ -89,7 +89,7 @@ def generate_maps(
     """
     Calculate and write aggregated property maps to file
     """
-    _XTG.say("Reading grid, properties and zone(s)")
+    logger.info("Reading grid, properties and zone(s)")
     grid = xtgeo.grid_from_file(input_.grid)
     properties = extract_properties(input_.properties, grid, input_.dates)
     _filters = []
@@ -97,7 +97,7 @@ def generate_maps(
         _filters.append(("all", None))
     if computesettings.zone:
         _filters += extract_zonations(zonation, grid)
-    _XTG.say("Generating Property Maps")
+    logger.info("Generating Property Maps")
     xn, yn, p_maps = _grid_aggregation.aggregate_maps(
         create_map_template(map_settings),
         grid,

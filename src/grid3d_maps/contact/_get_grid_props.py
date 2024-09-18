@@ -1,17 +1,13 @@
+import logging
 import pprint
 from collections import defaultdict
 
 import numpy as np
 import numpy.ma as ma
 import xtgeo
-
-# from xtgeo.common.exceptions import KeywordNotFoundError
-from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def files_to_import(config, appname):
@@ -41,7 +37,7 @@ def files_to_import(config, appname):
         restartlist["SGAS"] = eclroot + ".UNRST"
 
         for date in config["input"]["dates"]:
-            logger.debug("DATE {}".format(date))
+            logger.debug(f"DATE {date}")
             if len(date) == 8:
                 dates.append(date)
             elif len(date) > 12:
@@ -129,7 +125,7 @@ def import_data(appname, gfile, initlist, restartlist, dates):
                 lookfornames.append(lookforname)
                 usenames.append(usename)
 
-            xtg.say("Import <{}> from <{}> ...".format(lookfornames, inifile))
+            logger.info(f"Import <{lookfornames}> from <{inifile}> ...")
             tmp = xtgeo.gridproperties_from_file(
                 inifile, names=lookfornames, fformat="init", grid=grd
             )
@@ -142,7 +138,7 @@ def import_data(appname, gfile, initlist, restartlist, dates):
             # single properties, typically ROFF stuff
             usename, lookforname = iniprops[0]
 
-            xtg.say("Import <{}> from <{}> ...".format(lookforname, inifile))
+            logger.info(f"Import <{lookforname}> from <{inifile}> ...")
             tmp = xtgeo.gridproperty_from_file(
                 inifile, name=lookforname, fformat="guess", grid=grd
             )
@@ -260,7 +256,7 @@ def get_numpies_contact(config, grd, initobjects, restobjects, dates):
 
     initd.update({"porv": porv, "poro": poro, "ntg": ntg, "dx": dx, "dy": dy, "dz": dz})
 
-    xtg.say("Got relevant INIT numpies, OK ...")
+    logger.info("Got relevant INIT numpies, OK ...")
 
     # restart data, they have alos a date component:
 
