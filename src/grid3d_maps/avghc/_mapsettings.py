@@ -1,11 +1,9 @@
 import copy
+import logging
 
 import xtgeo
-from xtgeo.common import null_logger
 
-xtg = xtgeo.common.XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def check_mapsettings(config, grd):

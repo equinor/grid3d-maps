@@ -1,16 +1,12 @@
+import logging
 from collections import defaultdict
 
 import numpy as np
 import numpy.ma as ma
 import xtgeo
-
-# from xtgeo.common.exceptions import KeywordNotFoundError
-from xtgeo.common import XTGeoDialog, null_logger
 from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 # Heavy need for reprogramming...:
 # pylint: disable=logging-format-interpolation
@@ -134,7 +130,7 @@ def import_data(appname, gfile, initlist, restartlist, dates):
         appname(str): Name of application
 
     """
-    logger.info("Import data for %s", appname)
+    logger.debug("Import data for %s", appname)
     # get the grid data + some geometrics
     grd = xtgeo.grid_from_file(gfile)
 
@@ -173,7 +169,7 @@ def import_data(appname, gfile, initlist, restartlist, dates):
 
     restdict = defaultdict(list)
     for rpar, rfile in restartlist.items():
-        logger.info("Parameter RESTART: %s \t file is %s", rpar, rfile)
+        logger.debug("Parameter RESTART: %s \t file is %s", rpar, rfile)
         restdict[rfile].append(rpar)
 
     initobjects = []
@@ -186,7 +182,7 @@ def import_data(appname, gfile, initlist, restartlist, dates):
                 lookfornames.append(lookforname)
                 usenames.append(usename)
 
-            xtg.say("Import <{}> from <{}> ...".format(lookfornames, inifile))
+            logger.info(f"Import <{lookfornames}> from <{inifile}> ...")
             tmp = xtgeo.gridproperties_from_file(
                 inifile, names=lookfornames, fformat="init", grid=grd
             )
@@ -203,14 +199,14 @@ def import_data(appname, gfile, initlist, restartlist, dates):
             if lookforname and lookforname.lower() in {"none", "unknown"}:
                 lookforname = None
 
-            xtg.say(f"Import <{lookforname}> from <{inifile}> ...")
+            logger.info(f"Import <{lookforname}> from <{inifile}> ...")
             tmp = xtgeo.gridproperty_from_file(
                 inifile, name=lookforname, fformat="guess", grid=grd
             )
             tmp.name = usename
             initobjects.append(tmp)
 
-    logger.info("Init type data is now imported for {}".format(appname))
+    logger.debug("Init type data is now imported for {}".format(appname))
 
     # restarts; will issue an warning if one or more dates are not found
     # assume that this is Eclipse stuff .UNRST
@@ -223,29 +219,29 @@ def import_data(appname, gfile, initlist, restartlist, dates):
             )
 
         except DateNotFoundError as rwarn:
-            logger.info("Got warning... %s", rwarn)
+            logger.debug("Got warning... %s", rwarn)
             for prop in tmp.props:
-                logger.info("Append prop: {}".format(prop))
+                logger.debug("Append prop: {}".format(prop))
                 restobjects.append(prop)
         except KeywordFoundNoDateError as rwarn:
-            logger.info("Keyword found but not for this date %s", rwarn)
+            logger.debug("Keyword found but not for this date %s", rwarn)
             raise SystemExit("STOP") from rwarn
         except Exception as message:
             raise SystemExit(message) from message
         else:
-            logger.info("Works further...")
+            logger.debug("Works further...")
             for prop in tmp.props:
-                logger.info("Append prop: {}".format(prop))
+                logger.debug("Append prop: {}".format(prop))
                 restobjects.append(prop)
 
-    logger.info("Restart type data is now imported for {}".format(appname))
+    logger.debug("Restart type data is now imported for {}".format(appname))
 
     newdateslist = []
     for rest in restobjects:
         newdateslist.append(str(rest.date))  # assure date datatype is str
 
     newdateslist = list(set(newdateslist))
-    logger.info("Actual dates to use: {}".format(newdateslist))
+    logger.debug("Actual dates to use: {}".format(newdateslist))
 
     return grd, initobjects, restobjects, newdateslist
 
@@ -268,7 +264,7 @@ def import_filters(config, appname, grd):
 
     eclroot = config["input"].get("eclroot")
 
-    logger.info("Import filter data for %s", appname)
+    logger.debug("Import filter data for %s", appname)
 
     filterarray = np.ones(grd.dimensions, dtype="int")
 
@@ -281,7 +277,7 @@ def import_filters(config, appname, grd):
     for flist in config["filters"]:
         if "name" in flist:
             name = flist["name"]
-            logger.info("Filter name: %s", name)
+            logger.debug("Filter name: %s", name)
             source = flist["source"]
             drange = flist.get("discrange", None)
 
@@ -300,7 +296,7 @@ def import_filters(config, appname, grd):
                 source = source.replace("$eclroot", eclroot)
             gprop = xtgeo.gridproperty_from_file(source, grid=grd, name=name)
             pval = gprop.values
-            xtg.say("Filter, import <{}> from <{}> ...".format(name, source))
+            logger.info("Filter, import <{}> from <{}> ...".format(name, source))
 
             if not discrete:
                 filterarray[(pval < irange[0]) | (pval > irange[1])] = 0
@@ -313,7 +309,7 @@ def import_filters(config, appname, grd):
                     filterinfo = filterinfo + ":" + str(drangetxt)
                     for ival in drange:
                         if ival not in gprop.codes:
-                            xtg.warn(
+                            logger.warning(
                                 "Filter codevalue {} is not present in "
                                 "discrete property {}".format(ival, gprop.name)
                             )
@@ -337,7 +333,7 @@ def import_filters(config, appname, grd):
 
             filterarray[zc.values < tvdrange[0]] = 0
             filterarray[zc.values > tvdrange[1]] = 0
-            xtg.say(
+            logger.info(
                 "Filter on tdvrange {} (rough; based on cell center)".format(tvdrange)
             )
 
@@ -349,27 +345,27 @@ def import_filters(config, appname, grd):
 def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
     """Process for HC thickness map; to get the needed numpies"""
 
-    logger.info("Getting numpies...")
+    logger.debug("Getting numpies...")
 
-    logger.info("Getting actnum...")
+    logger.debug("Getting actnum...")
     actnum = grd.get_actnum().values
     actnum = ma.filled(actnum)
 
-    logger.info("Getting xc, yc, zc...")
+    logger.debug("Getting xc, yc, zc...")
     xc, yc, zc = grd.get_xyz(asmasked=False)
     xc = ma.filled(xc.values)
     yc = ma.filled(yc.values)
     zc = ma.filled(zc.values)
 
-    logger.info("Getting dz...")
+    logger.debug("Getting dz...")
     dz = ma.filled(grd.get_dz(asmasked=False).values)
-    logger.info("Getting dz as ma.filled...")
+    logger.debug("Getting dz as ma.filled...")
     dz[actnum == 0] = 0.0
 
-    logger.info("Getting dx dy...")
+    logger.debug("Getting dx dy...")
     dx = ma.filled(grd.get_dx().values)
     dy = ma.filled(grd.get_dy().values)
-    logger.info("ma.filled for dx dy done")
+    logger.debug("ma.filled for dx dy done")
 
     initd = {
         "iactnum": actnum,
@@ -381,7 +377,7 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
         "dz": dz,
     }
 
-    logger.info("Got {}".format(initd.keys()))
+    logger.debug("Got {}".format(initd.keys()))
 
     if config["computesettings"]["critmode"]:
         crname = config["computesettings"]["critmode"].upper()
@@ -433,7 +429,7 @@ def get_numpies_hc_thickness(config, grd, initobjects, restobjects, dates):
             else:
                 initd["soxcr"] = None
 
-    xtg.say("Got relevant INIT numpies, OK ...")
+    logger.debug("Got relevant INIT numpies, OK ...")
 
     # restart data, they have alos a date component:
 
@@ -551,6 +547,6 @@ def get_numpies_avgprops(config, grd, initobjects, restobjects):
                     ptmp = prop.get_npvalues3d()
                     propd[pname] = ptmp
 
-    logger.info("Return specd from {} is {}".format(__name__, specd.keys()))
-    logger.info("Return propd from {} is {}".format(__name__, propd.keys()))
+    logger.debug("Return specd from {} is {}".format(__name__, specd.keys()))
+    logger.debug("Return propd from {} is {}".format(__name__, propd.keys()))
     return specd, propd

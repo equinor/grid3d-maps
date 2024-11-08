@@ -1,17 +1,15 @@
 import argparse
 import copy
 import datetime
+import logging
 import os.path
 import sys
 
 import yaml
-from xtgeo.common import XTGeoDialog, null_logger
 
 from grid3d_maps.avghc._loader import ConstructorError, FMUYamlSafeLoader
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def parse_args(args, appname, appdescr):
@@ -96,7 +94,7 @@ def parse_args(args, appname, appdescr):
 
     if len(args) < 2:
         parser.print_help()
-        print("QUIT")
+        logger.info("QUIT")
         raise SystemExit
 
     return parser.parse_args(args)
@@ -121,10 +119,10 @@ def yconfig(inputfile, tmp=False, standard=False):
             try:
                 config = yaml.load(stream, Loader=FMUYamlSafeLoader)
             except ConstructorError as errmsg:
-                xtg.error(errmsg)
+                logger.error(errmsg)
                 raise SystemExit from errmsg
 
-    xtg.say(f"Input config YAML file <{inputfile}> is read...")
+    logger.info(f"Input config YAML file <{inputfile}> is read...")
 
     # if the file is a temporary file, delete:
     if tmp:
@@ -326,7 +324,7 @@ def yconfig_override(config, args, appname):
 
     if args.eclroot:
         newconfig["input"]["eclroot"] = args.eclroot
-        xtg.say(
+        logger.info(
             "YAML config overruled... eclroot is now: <{}>".format(
                 newconfig["input"]["eclroot"]
             )
@@ -334,7 +332,7 @@ def yconfig_override(config, args, appname):
 
     if args.folderroot:
         newconfig["input"]["folderroot"] = args.folderroot
-        xtg.say(
+        logger.info(
             "YAML config overruled... folderroot is now: <{}>".format(
                 newconfig["input"]["folderroot"]
             )
@@ -342,7 +340,7 @@ def yconfig_override(config, args, appname):
 
     if args.zfile:
         newconfig["zonation"]["yamlfile"] = args.zfile
-        xtg.say(
+        logger.info(
             "YAML config overruled... zfile (yaml) is now: <{}>".format(
                 newconfig["zonation"]["yamlfile"]
             )
@@ -350,7 +348,7 @@ def yconfig_override(config, args, appname):
 
     if args.mapfolder:
         newconfig["output"]["mapfolder"] = args.mapfolder
-        xtg.say(
+        logger.info(
             "YAML config overruled... output:mapfolder is now: <{}>".format(
                 newconfig["output"]["mapfolder"]
             )
@@ -358,7 +356,7 @@ def yconfig_override(config, args, appname):
 
     if args.plotfolder:
         newconfig["output"]["plotfolder"] = args.plotfolder
-        xtg.say(
+        logger.info(
             "YAML config overruled... output:plotfolder is now: <{}>".format(
                 newconfig["output"]["plotfolder"]
             )
@@ -445,9 +443,9 @@ def yconfig_set_defaults(config, appname):
     if appname == "grid3d_hc_thickness":
         if "dates" not in newconfig["input"]:
             if newconfig["computesettings"]["mode"] in "rock":
-                xtg.say('No date give, probably OK since "rock" mode)')
+                logger.info('No date give, probably OK since "rock" mode)')
             else:
-                xtg.warn('Warning: No date given, set date to "unknowndate")')
+                logger.warning('Warning: No date given, set date to "unknowndate")')
 
             newconfig["input"]["dates"] = ["unknowndate"]
 
@@ -509,7 +507,7 @@ def yconfig_addons(config, appname):
         if "superranges" in zconfig:
             newconfig["zonation"]["superranges"] = zconfig["superranges"]
 
-    xtg.say(f"Add configuration to {appname}")
+    logger.info(f"Add configuration to {appname}")
 
     return newconfig
 

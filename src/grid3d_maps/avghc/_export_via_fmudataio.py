@@ -1,16 +1,14 @@
 """General functions that exports maps / plots using fmu-dataio."""
 
 import json
+import logging
 import os
 from pathlib import Path
 
 import fmu.dataio as dataio
 from fmu.config import utilities as ut
-from xtgeo.common import XTGeoDialog, null_logger
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _get_global_config(thisconfig):
@@ -117,7 +115,7 @@ def export_avg_map_dataio(surf, nametuple, config):
         workflow="grid3d-maps script average maps",
     )
     fname = edata.export(surf)
-    xtg.say(f"Output as fmu-dataio: {fname}")
+    logger.info(f"Output as fmu-dataio: {fname}")
     return fname
 
 
@@ -171,5 +169,5 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
         workflow="grid3d-maps script hc thickness maps",
     )
     fname = edata.export(surf)
-    xtg.say(f"Output as fmu-dataio: {fname}")
+    logger.info(f"Output as fmu-dataio: {fname}")
     return fname

@@ -1,10 +1,9 @@
+import logging
+
 import numpy as np
 import xtgeo
-from xtgeo.common import XTGeoDialog, null_logger
 
-xtg = XTGeoDialog()
-
-logger = null_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def zonation(config, grd):
@@ -57,20 +56,20 @@ def zonation(config, grd):
 
     elif "zranges" in config["zonation"]:
         zclist = config["zonation"]["zranges"]
-        logger.info(type(zclist))
+        logger.debug(type(zclist))
         for i, zz in enumerate(config["zonation"]["zranges"]):
             zname = list(zz.keys())[0]  # zz.keys()[0]
             intv = list(zz.values())[0]
             k01 = intv[0] - 1
             k02 = intv[1]
 
-            logger.info("K01 K02: %s - %s", k01, k02)
+            logger.debug("K01 K02: %s - %s", k01, k02)
 
             usezonation[:, :, k01:k02] = i + 1
             zoned[zname] = i + 1
 
     if "superranges" in config["zonation"]:
-        logger.info("Found superranges keyword...")
+        logger.debug("Found superranges keyword...")
         for i, zz in enumerate(config["zonation"]["superranges"]):
             zname = list(zz.keys())[0]
             superzoned[zname] = []
@@ -79,16 +78,16 @@ def zonation(config, grd):
             for zn in intv:
                 superzoned[zname].append(zoned[zn])
     else:
-        logger.info("Did not find any superranges...")
+        logger.debug("Did not find any superranges...")
 
     for myz, val in zoned.items():
-        logger.info("Zonation list: %s: %s", myz, val)
+        logger.debug("Zonation list: %s: %s", myz, val)
 
     for key, vals in superzoned.items():
         logger.debug("Superzoned %s  %s", key, vals)
 
-    logger.info("The zoned dict: %s", zoned)
-    logger.info("The superzoned dict: %s", superzoned)
+    logger.debug("The zoned dict: %s", zoned)
+    logger.debug("The superzoned dict: %s", superzoned)
 
     zmerged = zoned.copy()
     zmerged.update(superzoned)
