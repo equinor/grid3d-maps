@@ -13,8 +13,7 @@ Various scripts for generating maps from 3D grid properties.
 |-------------------------|---------------------|
 | `grid3d_hc_thickness`   | Make Hydrocarbon thickness maps from Eclipse and/or Roff input |
 | `grid3d_average_map`    | Make average maps from a 3D grid parameter, Eclipse or Roff input |
-| `grid3d_aggregate_map`  | Make aggregated maps (min/max/mean/sum) from a 3D grid parameter, Eclipse or Roff input |
-| `grid3d_migration_time` | Make migration time maps aimed at tracking plume migration in CCS applications |
+
 
 ## Features
 
