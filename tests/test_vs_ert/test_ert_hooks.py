@@ -6,6 +6,8 @@ from pathlib import Path
 import pytest
 import yaml
 
+pytest.importorskip("ert")
+
 XTGEOTESTDATA = "tests/data/reek"
 ECLROOT = "tests/data/reek/REEK"
 

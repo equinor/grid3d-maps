@@ -57,11 +57,13 @@ dependencies = [
 [project.optional-dependencies]
 tests = [
     "coverage>=4.1",
+    "ert; sys_platform != 'win32'",
     "ruff",
     "mypy",
     "pylint",
     "pytest",
     "pytest-cov",
+    "PyQt5-sip<12.16.0; python_version == '3.8'",
     "pytest-runner",
     "pytest-xdist",
     "rstcheck",
