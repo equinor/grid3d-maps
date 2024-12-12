@@ -12,7 +12,7 @@ write_to = "src/grid3d_maps/version.py"
 name = "grid3d_maps"
 description = "Make HC thickness, avg maps, etc directly from 3D props"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { file = "LICENSE" }
 authors = [
     { name = "Equinor", email = "fg_fmu-atlas@equinor.com" },
@@ -36,10 +36,10 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: MacOS",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Natural Language :: English",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
@@ -63,7 +63,6 @@ tests = [
     "pylint",
     "pytest",
     "pytest-cov",
-    "PyQt5-sip<12.16.0; python_version == '3.8'",
     "pytest-runner",
     "pytest-xdist",
     "rstcheck",
@@ -115,18 +114,21 @@ ignore = [
     "C901",
 ]
 select = [
-    "C",
-    "E",
-    "F",
-    "I",
-    "PIE",
-    "Q",
-    "RET",
-    "RSE",
-    "SIM",
-    "TCH",
-    "TID",
-    "W",
+    # "B",  # flake-8-bugbear
+    "C",  # pylint-convention
+    "E",  # pycodestyle-error
+    "F",  # pyflakes
+    "I",  # isort
+    "NPY",  # numpy
+    "PIE",  # flake8-pie
+    "Q",  # flake8-quotes
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    # "UP",  # pyupgrade
+    "W",  # pylint-warnings
 ]
 
 [tool.ruff.lint.isort]
