@@ -47,7 +47,7 @@ dynamic = ["version"]
 dependencies = [
     "fmu-config",
     "fmu-dataio>=1.3.0",
-    "numpy<2",
+    "numpy",
     "pyyaml",
     "xtgeo>=2.20.7",
     "xtgeoviz",
