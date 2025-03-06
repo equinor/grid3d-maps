@@ -37,6 +37,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install Ert Ubuntu dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install libegl1
+
       - name: Install grid3d-maps
         run: |
           python -m pip install -U pip
