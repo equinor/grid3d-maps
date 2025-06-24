@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   pypi-publish:
     name: Upload release to PyPI
