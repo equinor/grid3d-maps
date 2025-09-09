@@ -1,7 +1,7 @@
 # grid3d-maps
 
 [![tests](https://github.com/equinor/grid3d-maps/actions/workflows/test.yml/badge.svg)](https://github.com/equinor/grid3d-maps/actions/workflows/test.yml)
-![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.11%20|%203.12%20|%203.13-blue.svg)
 [![License: GPL v3](https://img.shields.io/github/license/equinor/grid3d-maps)](https://www.gnu.org/licenses/gpl-3.0)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
