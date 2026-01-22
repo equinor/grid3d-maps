@@ -382,6 +382,10 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/32/93/b05939e5abd14bd1ab69538bbe374b4ee2a15467b189ff895e9a8cdaddf6/cftime-1.6.5-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:7da5fdaa4360d8cb89b71b8ded9314f2246aa34581e8105c94ad58d6102d9e4f", size = 1584434, upload-time = "2025-10-13T19:39:17.084Z" },
     { url = "https://files.pythonhosted.org/packages/7f/89/648397f9936e0b330999c4e776ebf296ec3c6a65f9901687dbca4ab820da/cftime-1.6.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:bff865b4ea4304f2744a1ad2b8149b8328b321dd7a2b9746ef926d229bd7cd49", size = 1609812, upload-time = "2025-10-13T18:56:21.971Z" },
     { url = "https://files.pythonhosted.org/packages/e7/0f/901b4835aa67ad3e915605d4e01d0af80a44b114eefab74ae33de6d36933/cftime-1.6.5-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:e552c5d1c8a58f25af7521e49237db7ca52ed2953e974fe9f7c4491e95fdd36c", size = 1669768, upload-time = "2025-10-13T18:56:24.027Z" },
+    { url = "https://files.pythonhosted.org/packages/ab/05/7410e12fd03a0c52717e74e6a1b49958810807dda212e23b65d43ea99676/cftime-1.6.5-cp314-cp314t-macosx_10_15_x86_64.whl", hash = "sha256:9ef56460cb0576e1a9161e1428c9e1a633f809a23fa9d598f313748c1ae5064e", size = 533781, upload-time = "2026-01-02T20:45:04.818Z" },
+    { url = "https://files.pythonhosted.org/packages/44/ba/10e3546426d3ed9f9cc82e4a99836bb6fac1642c7830f7bdd0ac1c3f0805/cftime-1.6.5-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:4f4873d38b10032f9f3111c547a1d485519ae64eee6a7a2d091f1f8b08e1ba50", size = 515218, upload-time = "2026-01-02T20:45:06.788Z" },
+    { url = "https://files.pythonhosted.org/packages/bd/68/efa11eae867749e921bfec6a865afdba8166e96188112dde70bb8bb49254/cftime-1.6.5-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:ccce0f4c9d3f38dd948a117e578b50d0e0db11e2ca9435fb358fd524813e4b61", size = 1579932, upload-time = "2026-01-02T20:45:11.194Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/6c/0971e602c1390a423e6621dfbad9f1d375186bdaf9c9c7f75e06f1fbf355/cftime-1.6.5-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:19cbfc5152fb0b34ce03acf9668229af388d7baa63a78f936239cb011ccbe6b1", size = 1555894, upload-time = "2026-01-02T20:45:16.351Z" },
 ]
 
 [[package]]
@@ -898,7 +902,7 @@ wheels = [
 
 [[package]]
 name = "fmu-dataio"
-version = "2.18.0"
+version = "2.20.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fmu-config" },
@@ -912,9 +916,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "xtgeo" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/bd/4f14cd617f70fac0016009c7d771c99b39e885ef3bf2c5527cec3a259e06/fmu_dataio-2.18.0.tar.gz", hash = "sha256:23927a566d8404008b936e624e83b3ff04ea3996d77529415a99e68e39f64db5", size = 12429041, upload-time = "2025-11-11T13:48:34.123Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/ea/03077f28c82661ca6a139fe8378f0194eda0ffb280e5527c18d83b1c5140/fmu_dataio-2.20.0.tar.gz", hash = "sha256:56aa614933b8a5ab5ab970139a24e8d8d4118349e0b47783fe7b43db67e1cbfc", size = 12723119, upload-time = "2026-01-07T10:22:40.336Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/8c/224c65da699eec7230a4f2274e61e14b304473e7e2ffffb96cc2756b34e8/fmu_dataio-2.18.0-py3-none-any.whl", hash = "sha256:3e5cdc2305a455909fcfdf1b256e3ebbce8bcea8d35ef441fafcc2e291a2bf5b", size = 110386, upload-time = "2025-11-11T13:48:32.4Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/03/f4c2e7a42132b28ed88858315239346117cbfacff44f90022b5b0428db7c/fmu_dataio-2.20.0-py3-none-any.whl", hash = "sha256:fb2ba459bfea0569fd4946a7ab317a6c55fde85a567f7a597526cb62ffeb97d4", size = 110522, upload-time = "2026-01-07T10:22:38.668Z" },
 ]
 
 [[package]]
