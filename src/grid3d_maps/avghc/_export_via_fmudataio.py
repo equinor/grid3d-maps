@@ -2,58 +2,11 @@
 
 import json
 import logging
-import os
-from pathlib import Path
+import warnings
 
 import fmu.dataio as dataio
-from fmu.config import utilities as ut
 
 logger = logging.getLogger(__name__)
-
-
-def _get_global_config(thisconfig):
-    """Get the global config in different manners. Priority:
-
-    (1) A setting inside the setup file: input: fmu_global_config: will win if present
-    (2) FMU_GLOBAL_CONFIG_GRD3DMAPS exists as env variable. Will be second
-    (3) FMU_GLOBAL_CONFIG as env variabel!
-    """
-    alternatives = [
-        "[input][fmu_global_config] in setup file",
-        "FMU_GLOBAL_CONFIG_GRD3DMAPS",
-        "FMU_GLOBAL_CONFIG",
-    ]
-
-    alt = []
-    if "input" in thisconfig:
-        alt.append(thisconfig["input"].get("fmu_global_config"))
-    else:
-        alt.append(None)
-
-    alt.append(os.environ.get("FMU_GLOBAL_CONFIG_GRD3DMAPS"))
-    alt.append(os.environ.get("FMU_GLOBAL_CONFIG"))
-
-    cfg = None
-
-    for altno, description in enumerate(alternatives):
-        alternative = alt[altno]
-        logger.info("Global %s", alternative)
-        if not alternative:
-            continue
-
-        if Path(alternative).is_file():
-            cfg = ut.yaml_load(alternative)
-            logger.info("Global no %s config from %s", alternative, description)
-            break
-
-        raise IOError(
-            f"Config file does not exist: {alternative}, source is {description}"
-        )
-
-    if not cfg:
-        raise RuntimeError("Not able lo load the global config!")
-
-    return cfg
 
 
 def export_avg_map_dataio(surf, nametuple, config):
@@ -69,7 +22,14 @@ def export_avg_map_dataio(surf, nametuple, config):
     zoneinfo, nameid = nametuple
     logger.debug("Processed config: \n%s", json.dumps(config, indent=4))
 
-    fmu_global_config = _get_global_config(config)
+    if "input" in config and "fmu_global_config" in config["input"]:
+        warnings.warn(
+            "Setting 'fmu_global_config' in the configuration is deprecated and "
+            "has no effect. It can safely be removed. The global variables "
+            "configuration file must be located at "
+            "'fmuconfig/output/global_variables.yml'.",
+            UserWarning,
+        )
 
     metadata = config["metadata"]
     if nameid not in metadata:
@@ -103,7 +63,6 @@ def export_avg_map_dataio(surf, nametuple, config):
             tdata = [[tt2, "base"]]
 
     edata = dataio.ExportData(
-        config=fmu_global_config,
         name=zoneinfo,
         unit=unit,
         content="property",
@@ -130,7 +89,14 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
 
     logger.debug("Processed config: \n%s", json.dumps(config, indent=4))
 
-    fmu_global_config = _get_global_config(config)
+    if "input" in config and "fmu_global_config" in config["input"]:
+        warnings.warn(
+            "Setting 'fmu_global_config' in the configuration is deprecated and "
+            "has no effect. It can safely be removed. The global variables "
+            "configuration file must be located at "
+            "'fmuconfig/output/global_variables.yml'.",
+            UserWarning,
+        )
 
     mdata = config["metadata"]
 
@@ -155,7 +121,6 @@ def export_hc_map_dataio(surf, zname, date, hcmode, config):
     globaltag = globaltag + "_" if globaltag else ""
 
     edata = dataio.ExportData(
-        config=fmu_global_config,
         name=zname,
         content="property",
         content_metadata={"attribute": attribute, "is_discrete": False},

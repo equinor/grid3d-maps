@@ -92,31 +92,8 @@ Using fmu-dataio for SUMO output
 From version 1.3, a ``fmu-dataio`` pipeline is supported and encouraged. This will generate metadata
 and make results compatible with upload to SUMO. This involves some changes:
 
-  * The location of the FMU ``global_variables`` file must be set, which can be done either by:
-
-    .. code-block:: yaml
-
-        input:
-          fmu_global_config: some_path/global_variables.yml  # relative to RUNPATH in ERT
-
-    or by setting one of the following environment variables either in shell or inside ERT
-    (see e.g. ``setenv`` in ERT)
-
-    .. code-block:: bash
-
-        # bash
-        export FMU_GLOBAL_CONFIG_GRD3DMAPS=fmuconfig/output/global_variables.yml
-        export FMU_GLOBAL_CONFIG=fmuconfig/output/global_variables.yml
-
-    .. code-block:: csh
-
-        # csh
-        setenv FMU_GLOBAL_CONFIG_GRD3DMAPS fmuconfig/output/global_variables.yml
-        setenv FMU_GLOBAL_CONFIG fmuconfig/output/global_variables.yml
-
-    The first environment variable will be dedicated to the AVG and HC scripts, while the last one
-    is a generic for ``fmu.dataio``. The priority is: first use the setting under ``input:`` in
-    the script, then ``FMU_GLOBAL_CONFIG_GRD3DMAPS`` and finally ``FMU_GLOBAL_CONFIG``
+  * The location of the FMU ``global_variables.yml`` file must be in the
+    standardized location of ``fmuconfig/output/global_variables.yml``
 
   * The output.mapfolder must either:
 
@@ -130,7 +107,6 @@ and make results compatible with upload to SUMO. This involves some changes:
   .. code-block:: yaml
 
       input:
-        fmu_global_config: fmuconfig/output/global_variables.yml  # relative to RUNPATH in ERT
         eclroot: tests/data/reek/REEK
         grid: $eclroot.EGRID
 

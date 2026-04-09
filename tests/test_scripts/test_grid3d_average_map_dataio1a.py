@@ -123,9 +123,6 @@ def test_average_map_1a_legacy(datatree):
 def test_average_map_dataio1a(datatree, avgdataio1aconfig):
     """Test AVG with YAML config example 3a piped through dataio"""
 
-    os.environ["FMU_GLOBAL_CONFIG_GRD3DMAPS"] = str(
-        datatree / "tests" / "data" / "reek" / "global_variables.yml"
-    )
     grid3d_average_map.main(
         ["--config", avgdataio1aconfig, "--dump", "dump_config.yml"]
     )
@@ -162,3 +159,23 @@ def test_average_map_dataio1a(datatree, avgdataio1aconfig):
     if legacy.is_file():
         surf2 = xtgeo.surface_from_file(legacy)
         assert surf2.generate_hash() == surf.generate_hash()
+
+
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="dataio currently uses NamedTemporaryFile"
+)
+def test_average_map_dataio1a_warns_if_global_config_given(datatree, avgdataio1aconfig):
+    """A warning is issued if 'fmu_global_config' is given in the config."""
+
+    with open(avgdataio1aconfig) as f:
+        config_txt = f.read().replace("!include", "include")
+        config = yaml.unsafe_load(config_txt)
+    config["input"]["fmu_global_config"] = "fmuconfig/output/global_variables.yml"
+
+    with open(avgdataio1aconfig, mode="w") as f:
+        f.write(yaml.dump(config).replace("include", "!include"))
+
+    with pytest.warns(UserWarning, match="fmu_global_config"):
+        grid3d_average_map.main(
+            ["--config", avgdataio1aconfig, "--dump", "dump_config.yml"]
+        )

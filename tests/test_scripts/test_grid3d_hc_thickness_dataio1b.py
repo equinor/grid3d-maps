@@ -74,9 +74,6 @@ def test_hc_thickness_1b_add2docs(hcdataio1bconfig):
 def test_hc_thickness_1b(datatree, hcdataio1bconfig):
     """Test HC thickness map piped through dataio, using 'both' mode"""
 
-    os.environ["FMU_GLOBAL_CONFIG_GRD3DMAPS"] = str(
-        datatree / "tests" / "data" / "reek" / "global_variables.yml"
-    )
     grid3d_hc_thickness.main(
         ["--config", hcdataio1bconfig, "--dump", "dump_config.yml"]
     )
