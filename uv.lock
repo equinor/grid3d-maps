@@ -938,10 +938,9 @@ wheels = [
 
 [[package]]
 name = "fmu-dataio"
-version = "2.25.0"
+version = "2.26.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "fmu-config" },
     { name = "fmu-datamodels" },
     { name = "fmu-settings" },
     { name = "fmu-sumo" },
@@ -953,9 +952,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "xtgeo" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/d4/ea27874f7307e65ca9775be6d6b2deda9c9198139c7d312b7c38f513e2f5/fmu_dataio-2.25.0.tar.gz", hash = "sha256:8b905c8bba7e3f013943f7f1cec35b2b9eedd675a76d90e297894e2b023b523f", size = 12756958, upload-time = "2026-04-07T10:12:37.893Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/57/7bec4bbcfc43c550bfee39ccc493a87a30a379c243e18aa029f2860914b2/fmu_dataio-2.26.0.tar.gz", hash = "sha256:f2f96d17e394d4789e7081225d6b9957fd968af4703722ffb6d99db9ae08f62e", size = 12761366, upload-time = "2026-04-09T08:31:24.356Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/8b/d2e0a5f5c22be1213f3aa2db2af7eca6e2cdd5e4d1e37094dab859633ca7/fmu_dataio-2.25.0-py3-none-any.whl", hash = "sha256:e0da9f0550f9737b9dbfb496b1f1d095798602fce83e5295854a3ca8278763e7", size = 116530, upload-time = "2026-04-07T10:12:36.052Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/af/f0e6c83d8b49c458a9acd433523f7f840c8ced867ec02c423eb969e65343/fmu_dataio-2.26.0-py3-none-any.whl", hash = "sha256:ad0888d42ea87545f2bfcb33d045d672a12efc64f5918908c66a709c4373d1f8", size = 116989, upload-time = "2026-04-09T08:31:22.622Z" },
 ]
 
 [[package]]
@@ -1201,7 +1200,7 @@ requires-dist = [
     { name = "coverage", marker = "extra == 'tests'", specifier = ">=4.1" },
     { name = "ert", marker = "sys_platform != 'win32' and extra == 'tests'" },
     { name = "fmu-config" },
-    { name = "fmu-dataio", specifier = ">=1.3.0" },
+    { name = "fmu-dataio", specifier = ">=2.26.0" },
     { name = "mypy", marker = "extra == 'tests'" },
     { name = "myst-parser", marker = "extra == 'docs'" },
     { name = "numpy" },

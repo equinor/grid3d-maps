@@ -75,9 +75,6 @@ def test_hc_thickness_1a_add2docs(hcdataio1aconfig):
 def test_hc_thickness_1a(datatree, hcdataio1aconfig):
     """Test HC thickness map piped through dataio"""
 
-    os.environ["FMU_GLOBAL_CONFIG_GRD3DMAPS"] = str(
-        datatree / "tests" / "data" / "reek" / "global_variables.yml"
-    )
     grid3d_hc_thickness.main(
         ["--config", hcdataio1aconfig, "--dump", "dump_config.yml"]
     )
@@ -97,3 +94,22 @@ def test_hc_thickness_1a(datatree, hcdataio1aconfig):
         print(json.dumps(metadata, indent=4))
 
     assert metadata["data"]["spec"]["ncol"] == 146
+
+
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="dataio currently uses NamedTemporaryFile"
+)
+def test_hc_thickness_1a_warns_if_global_config_given(datatree, hcdataio1aconfig):
+    """A warning is issued if 'fmu_global_config' is given in the config."""
+
+    with open(hcdataio1aconfig) as f:
+        config = yaml.safe_load(f.read())
+        config["input"]["fmu_global_config"] = "fmuconfig/output/global_variables.yml"
+
+    with open(hcdataio1aconfig, mode="w") as f:
+        yaml.dump(config, f)
+
+    with pytest.warns(UserWarning, match="fmu_global_config"):
+        grid3d_hc_thickness.main(
+            ["--config", hcdataio1aconfig, "--dump", "dump_config.yml"]
+        )

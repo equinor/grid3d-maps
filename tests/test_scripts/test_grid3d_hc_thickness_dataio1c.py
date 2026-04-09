@@ -71,23 +71,12 @@ def test_hc_thickness_1c_add2docs(hcdataio1cconfig):
 @pytest.mark.skipif(
     sys.platform == "win32", reason="dataio currently uses NamedTemporaryFile"
 )
-@pytest.mark.parametrize(
-    "variant",
-    ["inputconfig", "FMU_GLOBAL_CONFIG_GRD3DMAPS", "FMU_GLOBAL_CONFIG"],
-)
-def test_hc_thickness_1c(datatree, hcdataio1cconfig, variant):
+def test_hc_thickness_1c(datatree: Path, hcdataio1cconfig):
     """Test HC thickness map piped through dataio, see former yaml hc_thickness2a."""
 
-    if "FMU" in variant:
-        os.environ[variant] = str(
-            datatree / "tests" / "data" / "reek" / "global_variables.yml"
-        )
-    else:
-        cfg = ut.yaml_load(hcdataio1cconfig)
-        cfg["input"]["fmu_global_config"] = "tests/data/reek/global_variables.yml"
-
-        with open(hcdataio1cconfig, "w", encoding="utf-8") as outfile:
-            yaml.dump(cfg, outfile)
+    cfg = ut.yaml_load(hcdataio1cconfig)
+    with open(hcdataio1cconfig, "w", encoding="utf-8") as outfile:
+        yaml.dump(cfg, outfile)
 
     grid3d_hc_thickness.main(
         ["--config", hcdataio1cconfig, "--dump", "dump_config.yml"]
