@@ -71,7 +71,7 @@ class FMUYamlSafeLoader(yaml.SafeLoader):
         """The include_from method, which parses parts of another YAML.
 
         E.g.
-        dates: !include_from /private/jriv/tmp/global_config.yml::global.DATES
+        dates: !include_from /some_home/any/tmp/global_config.yml::global.DATES
         diffdates: !include_from tests/yaml/global_config.yml::global.DIFFDATES
 
         In the first case, it will read the ['global']['DATES'] values

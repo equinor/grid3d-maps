@@ -62,7 +62,6 @@ master_doc = "index"
 
 # General information about the project.
 project = "grid3d_maps"
-copyright = "equinor (contact person: Jan C. Rivenæs, JRIV@equinor.com)"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout

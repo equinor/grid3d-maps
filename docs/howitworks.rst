@@ -14,7 +14,3 @@ sum hc thickness map per zone or by all zones that are spesified.
 
 For average maps, a thickness weighted average is computed.
 
-Further details
----------------
-
-Contact JRIV@equinor.com for further details.
