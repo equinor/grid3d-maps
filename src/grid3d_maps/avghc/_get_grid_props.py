@@ -8,13 +8,6 @@ from xtgeo.common.exceptions import DateNotFoundError, KeywordFoundNoDateError
 
 logger = logging.getLogger(__name__)
 
-# Heavy need for reprogramming...:
-# pylint: disable=logging-format-interpolation
-# pylint: disable=too-many-statements
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-branches
-# pylint: disable=too-many-nested-blocks
-
 
 def files_to_import(config, appname):
     """Get a list of files to import, based on config"""

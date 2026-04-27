@@ -60,7 +60,6 @@ tests = [
     "ert; sys_platform != 'win32'",
     "ruff",
     "mypy",
-    "pylint",
     "pytest",
     "pytest-cov",
     "pytest-runner",
@@ -114,7 +113,6 @@ ignore = [
 ]
 select = [
     # "B",  # flake-8-bugbear
-    "C",  # pylint-convention
     "E",  # pycodestyle-error
     "F",  # pyflakes
     "I",  # isort
@@ -127,7 +125,6 @@ select = [
     "TCH",  # flake8-type-checking
     "TID",  # flake8-tidy-imports
     # "UP",  # pyupgrade
-    "W",  # pylint-warnings
 ]
 
 [tool.ruff.lint.isort]
