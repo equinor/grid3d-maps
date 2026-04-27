@@ -21,8 +21,6 @@ class FMUYamlSafeLoader(yaml.SafeLoader):
     https://davidchall.github.io/yaml-includes.html
     """
 
-    # pylint: disable=too-many-ancestors
-
     def __init__(self, stream):
         self._root = os.path.split(stream.name)[0]
         super().__init__(stream)
