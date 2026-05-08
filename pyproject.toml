@@ -129,3 +129,17 @@ select = [
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+
+[tool.uv]
+exclude-newer = "1 week"
+# Exclude specific package(s) we maintain for quick iteration
+
+[tool.uv.exclude-newer-package]
+"fmu-config" = false
+"fmu-dataio" = false
+"fmu-datamodels" = false
+"fmu-settings" = false
+"sumo-wrapper-python" = false
+"ert" = false
+"xtgeo" = false
+"xtgeoviz" = false
