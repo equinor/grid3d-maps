@@ -138,5 +138,6 @@ exclude-newer = "1 week"
 [tool.uv.exclude-newer-package]
 "fmu-config" = false
 "fmu-dataio" = false
+"fmu-datamodels" = false
 "xtgeo" = false
 "xtgeoviz" = false
