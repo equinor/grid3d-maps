@@ -47,6 +47,7 @@ dynamic = ["version"]
 dependencies = [
     "fmu-config",
     "fmu-dataio>=2.26.0",
+    "fmu-datamodels",
     "numpy",
     "pyyaml",
     "xtgeo>=2.20.7",
@@ -129,3 +130,14 @@ select = [
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+
+[tool.uv]
+exclude-newer = "1 week"
+# Exclude specific package(s) we maintain for quick iteration
+
+[tool.uv.exclude-newer-package]
+"fmu-config" = false
+"fmu-dataio" = false
+"fmu-datamodels" = false
+"xtgeo" = false
+"xtgeoviz" = false
