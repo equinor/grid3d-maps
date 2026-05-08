@@ -47,7 +47,6 @@ dynamic = ["version"]
 dependencies = [
     "fmu-config",
     "fmu-dataio>=2.26.0",
-    "fmu-datamodels",
     "numpy",
     "pyyaml",
     "xtgeo>=2.20.7",
@@ -139,5 +138,8 @@ exclude-newer = "1 week"
 "fmu-config" = false
 "fmu-dataio" = false
 "fmu-datamodels" = false
+"fmu-settings" = false
+"sumo-wrapper-python" = false
+"ert" = false
 "xtgeo" = false
 "xtgeoviz" = false
