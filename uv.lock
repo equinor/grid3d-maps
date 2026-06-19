@@ -1000,7 +1000,7 @@ wheels = [
 
 [[package]]
 name = "fmu-dataio"
-version = "2.29.1"
+version = "2.29.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fmu-datamodels" },
@@ -1014,9 +1014,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "xtgeo" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4e/94/fa6641f9c06e1275674e4f4d418da281be31659f7a93e5a523b233438999/fmu_dataio-2.29.1.tar.gz", hash = "sha256:3176c9d950aed644320f4e64b980841c1a27876681d2627c113d466e0c9c06d9", size = 12758091, upload-time = "2026-06-03T13:22:29.385Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/c1/1458ad6fc455d1a2f1e709f30e3f9c790c70dd1d9423bdf41e8d83c2a2c9/fmu_dataio-2.29.2.tar.gz", hash = "sha256:795efe670a17e7d653c3444e50f76acdeecc9ec31038d01237e151ba40439235", size = 12758122, upload-time = "2026-06-12T11:12:16.477Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d8/4d/3ffda4c73732a6b002dc3db03e365ba635e7faea924e4ea24f1bc00920df/fmu_dataio-2.29.1-py3-none-any.whl", hash = "sha256:ab41850bb6c288aa1a97457359e72c5a7ac448ede5aebd7f5883e932ecc30d98", size = 111244, upload-time = "2026-06-03T13:22:27.066Z" },
+    { url = "https://files.pythonhosted.org/packages/cc/75/e750170dd71969075a53fc56257eea99a8f6a247ac2415ebf525266b2886/fmu_dataio-2.29.2-py3-none-any.whl", hash = "sha256:6bfe16a1c23ef47f6e9688e61fb4aeb726a47db9fb832819b50c851f15d80516", size = 111254, upload-time = "2026-06-12T11:12:14.215Z" },
 ]
 
 [[package]]
