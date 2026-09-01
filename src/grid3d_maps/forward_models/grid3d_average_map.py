@@ -51,6 +51,7 @@ where ECLBASE is already defined in your ERT config, pointing to the Eclipse/Flo
 basename relative to RUNPATH.
 
 .. note:: The <ECLROOT> argument is optional and can be omitted if sufficient
-   information is provided in the config, e.g. when extracting maps from a geological grid.
+   information is provided in the config, e.g. when extracting maps from a geological
+   grid.
 """,
         )
