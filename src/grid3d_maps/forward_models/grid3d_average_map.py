@@ -42,6 +42,7 @@ class Grid3dAverageMap(ForwardModelStepPlugin):
             description=DESCRIPTION,
             examples="""
 Following is an example for extracting maps from the flow simulation grid
+
 .. code-block:: console
 
   FORWARD_MODEL GRID3D_AVERAGE_MAP(<CONFIG_AVGMAP>=conf.yml, <ECLROOT>=<ECLBASE>)
@@ -50,6 +51,6 @@ where ECLBASE is already defined in your ERT config, pointing to the Eclipse/Flo
 basename relative to RUNPATH.
 
 .. note:: The <ECLROOT> argument is optional and can be omitted if sufficient
-information is provided in the config, e.g. when extracting maps from a geological grid.
+   information is provided in the config, e.g. when extracting maps from a geological grid.
 """,
         )
