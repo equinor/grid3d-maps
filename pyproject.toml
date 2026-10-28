@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=45.0",
+    "setuptools>=77.0",
     "setuptools_scm[toml]>=6.2",
 ]
 build-backend = "setuptools.build_meta"
@@ -13,7 +13,8 @@ name = "grid3d_maps"
 description = "Make HC thickness, avg maps, etc directly from 3D props"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { file = "LICENSE" }
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
 authors = [
     { name = "Equinor", email = "fg_fmu-atlas@equinor.com" },
 ]
@@ -41,7 +42,6 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
     "Natural Language :: English",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
 dynamic = ["version"]
 dependencies = [
