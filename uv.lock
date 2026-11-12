@@ -6289,7 +6289,7 @@ wheels = [
 
 [[package]]
 name = "xtgeoviz"
-version = "0.3.2"
+version = "0.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "matplotlib" },
@@ -6300,9 +6300,9 @@ dependencies = [
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "xtgeo" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/a3/3bc321041e237cc6956c74a827bdc12f89bd82fdcc98ce14a8ed4b066326/xtgeoviz-0.3.2.tar.gz", hash = "sha256:188d44a9c17c6309bee6e4c145dc4036942067996ea01b3a9f2aa7ad3c7e2549", size = 257916, upload-time = "2026-07-01T06:58:53.609Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/9e/ef4445d708af1378141a703a7642dd6523a8b8df69ef92818cd482e09226/xtgeoviz-0.3.3.tar.gz", hash = "sha256:8ff0489db3c9b9e573ed12383b72016e94d756aa326f2e03ef8791acd61bf456", size = 303976, upload-time = "2026-11-10T08:42:48.533Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/d5/7c6f506848dcdf00ccd9e69fa14d89d68e1f7eee6dad833c26a1a82f7413/xtgeoviz-0.3.2-py3-none-any.whl", hash = "sha256:5db19fc0a74f165858a0a03bc4abf265876019082b251c7216ddce0e56141787", size = 40583, upload-time = "2026-07-01T06:58:52.513Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/bb/7fa4a09103bb49aa34ecff151cbfe01c0552278a9dd816cb8a8ce0da882b/xtgeoviz-0.3.3-py3-none-any.whl", hash = "sha256:2725ea67d78c4b1289445095a292b6b147c36de7cdfb8452836d00e50bd8985e", size = 36879, upload-time = "2026-11-10T08:42:47.272Z" },
 ]
 
 [[package]]
